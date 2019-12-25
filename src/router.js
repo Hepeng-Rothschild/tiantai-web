@@ -6,9 +6,8 @@ import Records from '@/views/Indent/Details/records.vue'
 import Aide from '@/views/Indent/Aide'
 import newOrder from '@/views/NewOrder'
 import Select from '@/views/NewOrder/select.vue'
-import Newly from '@/views/NewOrder/Newly'
+import Newly from '@/views/NewOrder/Newly/index.vue'
 import DefaultPay from '@/views/NewOrder/Newly/defaultPay.vue'
-import Choose from '@/views/NewOrder/Choose'
 
 Vue.use(VueRouter)
 
@@ -24,7 +23,7 @@ const routes = [
   {
     path: '/choose',
     name: 'choose',
-    component: Choose
+    component: () => import(/* webpackChunkName: "about" */ './views/NewOrder/Choose/index.vue')
   },
   {
     path: '/defaultPay',

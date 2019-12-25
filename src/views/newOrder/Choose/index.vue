@@ -4,9 +4,11 @@
                  left-arrow
                  fixed
                  @click-left="back" />
-    <van-search input-align="center"
-                v-model="serarchText" />
+
+    <van-search input-align="center" v-model="serarchText" />
+
     <span class="history">{{company.name}}的历史购买</span>
+
     <van-cell-group v-for="(information,index) in informations"
                     :key="index">
       <van-cell :title="information.code"
@@ -26,9 +28,10 @@
                   name="add-o" />
       </van-cell>
     </van-cell-group>
+
+
     <div class="submit">
       <div class="left">
-
         <span>已选 {{chooseNum}} 种</span>
         <br />
         <span>￥ {{money}}</span>

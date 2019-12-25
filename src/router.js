@@ -1,14 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Indent from '@/views/Indent'
-import Details from '@/views/Indent/Details'
-import Records from '@/views/Indent/Details/records.vue'
-import Aide from '@/views/Indent/Aide'
-import newOrder from '@/views/NewOrder'
-import Select from '@/views/NewOrder/select.vue'
-import Newly from '@/views/NewOrder/Newly'
-import DefaultPay from '@/views/NewOrder/Newly/defaultPay.vue'
-import Choose from '@/views/NewOrder/Choose'
 
 Vue.use(VueRouter)
 
@@ -24,47 +15,56 @@ const routes = [
   {
     path: '/choose',
     name: 'choose',
-    component: Choose
+    meta:{title:'选择商品'},
+    component: () => import(/* webpackChunkName: "Choose" */ '@/views/NewOrder/Choose.vue')
   },
   {
     path: '/defaultPay',
     name: 'defaultPay',
-    component: DefaultPay
+    meta:{title:'默认收款方式'},
+    component: () => import(/* webpackChunkName: "DefaultPay" */ '@/views/NewOrder/DefaultPay.vue')
   },
   {
     path: '/newly',
     name: 'newly',
-    component: Newly
+    meta:{title:'新增客户'},
+    component: () => import(/* webpackChunkName: "Newly" */ '@/views/NewOrder/Newly.vue')
   },
   {
     path: '/select',
     name: 'select',
-    component: Select
+    meta:{title:'新增销售订单'},
+    component: () => import(/* webpackChunkName: "Select" */ '@/views/NewOrder/select.vue')
   },
   {
     path: '/indent',
     name: 'indent',
-    component: Indent,
+    meta:{title:'销售订单'},
+    component: () => import(/* webpackChunkName: "Indent" */ '@/views/Indent')
   },
   {
     path: '/details',
     name: 'details',
-    component: Details
+    meta:{title:'订单详情'},
+    component: () => import(/* webpackChunkName: "Details" */ '@/views/Indent/Details.vue')
   },
   {
     path: '/records',
     name: 'records',
-    component: Records
+    meta:{title:'订单详情'},
+    component: () => import(/* webpackChunkName: "Records" */ '@/views/Indent/Records.vue')
   },
   {
     path: '/aide',
     name: 'aide',
-    component: Aide
+    meta:{title:'销售小助手'},
+    component: () => import(/* webpackChunkName: "Aide" */ '@/views/Indent/Aide.vue')
   },
   {
     path: '/neworder',
     name: 'neworder',
-    component: newOrder
+    meta:{title:'新增销售订单'},
+    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/NewOrder')
   }
 ]
 

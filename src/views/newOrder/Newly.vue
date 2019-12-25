@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="新增客户"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <van-cell-group>
       <div class="spacing-two">
         <van-cell title="客户名称"
@@ -74,10 +70,6 @@ export default {
     }
   },
   methods: {
-    back () {
-      console.log('255');
-
-    }
   }
 }
 </script>

@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="新增销售订单"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <van-cell-group>
       <van-cell title="单据日期*"
                 :value="myDate"
@@ -101,10 +97,7 @@ export default {
     }
   },
   methods: {
-    back () {
-      console.log('255');
 
-    },
     // 打开开始时间控件
     startTime () {
       this.show = true

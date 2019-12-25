@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="订单详情"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <div class="plan">
       <div class="left">
         <span class="ball"></span>
@@ -34,9 +30,7 @@ export default {
     }
   },
   methods: {
-    back () {
-      this.$router.push({ name: 'details' })
-    }
+
   }
 }
 </script>

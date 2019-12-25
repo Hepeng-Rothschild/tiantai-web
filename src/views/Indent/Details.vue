@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="订单详情"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <div class="content">
       <van-row>
         <van-col span="10">
@@ -134,9 +130,6 @@ export default {
     }
   },
   methods: {
-    back () {
-      this.$router.push({ name: 'indent' })
-    }
   }
 }
 </script>

@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="新增销售订单"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <van-search placeholder="输入客户名称进行查找"
                 input-align="center"
                 v-model="serarchText" />
@@ -30,10 +26,6 @@ export default {
     }
   },
   methods: {
-    back () {
-      this.$router.push({ name: 'neworder' })
-
-    },
   }
 }
 </script>

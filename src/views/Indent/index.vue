@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="销售订单"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <!-- 搜索栏 -->
     <van-search placeholder="输入客户、编号进行查找"
                 input-align="center"
@@ -89,10 +85,6 @@ export default {
     }
   },
   methods: {
-    back () {
-      console.log('fanhui');
-
-    },
     changeState (value) {
       console.log('111')
     },

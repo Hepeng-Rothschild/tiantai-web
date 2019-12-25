@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="销售小助手"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <div class="aide">
       <ul v-for="state in status"
           :key="state.id" @click="details">
@@ -31,9 +27,7 @@ export default {
     }
   },
   methods: {
-    back () {
-      this.$router.push({ name: 'details' })
-    },
+
     details () {
       this.$router.push ({name:'details'})
     }

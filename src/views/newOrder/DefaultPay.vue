@@ -1,9 +1,5 @@
 <template>
   <div>
-    <van-nav-bar title="默认收款方式"
-                 left-arrow
-                 fixed
-                 @click-left="back" />
     <van-radio-group v-model="radio">
       <van-radio name="1">全额订金</van-radio>
       <van-radio name="2">全额现结</van-radio>
@@ -23,9 +19,6 @@ export default {
     }
   },
   methods: {
-    back () {
-      this.$router.push({ name: 'newly' })
-    }
   }
 }
 </script>

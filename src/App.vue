@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <van-nav-bar :title="$route.meta.title"
+                 left-arrow
+                 fixed
+                 @click-left="back" />
     <router-view />
   </div>
 
@@ -7,7 +11,11 @@
 
 <script>
 export default {
-
+  methods: {
+    back () {
+      this.$router.go(-1)
+    }
+  }
 }
 </script>
 

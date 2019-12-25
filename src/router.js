@@ -4,8 +4,11 @@ import Indent from '@/views/Indent'
 import Details from '@/views/Indent/Details'
 import Records from '@/views/Indent/Details/records.vue'
 import Aide from '@/views/Indent/Aide'
-import newOrder from '@/views/newOrder'
-import New from '@/views/Indent/Details/new.vue'
+import newOrder from '@/views/NewOrder'
+import Select from '@/views/NewOrder/select.vue'
+import Newly from '@/views/NewOrder/Newly'
+import DefaultPay from '@/views/NewOrder/Newly/defaultPay.vue'
+import Choose from '@/views/NewOrder/Choose'
 
 Vue.use(VueRouter)
 
@@ -19,9 +22,24 @@ const routes = [
   //   component: () => import(/* webpackChunkName: "about" */ '../views/Indent')
   // }
   {
-    path: '/New',
-    name: 'New',
-    component: New,New
+    path: '/choose',
+    name: 'choose',
+    component: Choose
+  },
+  {
+    path: '/defaultPay',
+    name: 'defaultPay',
+    component: DefaultPay
+  },
+  {
+    path: '/newly',
+    name: 'newly',
+    component: Newly
+  },
+  {
+    path: '/select',
+    name: 'select',
+    component: Select
   },
   {
     path: '/indent',

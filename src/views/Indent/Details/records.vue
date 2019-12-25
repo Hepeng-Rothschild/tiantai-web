@@ -45,8 +45,9 @@ export default {
 .plan {
   border-top: 1px solid #c0c4cc;
   margin-top: 59px;
+  position: relative;
   .left {
-    position: fixed;
+    position: absolute;
     left: 18px;
     width: 1px;
     height: 60px;

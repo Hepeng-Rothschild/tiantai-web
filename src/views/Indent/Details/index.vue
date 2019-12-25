@@ -6,7 +6,7 @@
                  @click-left="back" />
     <div class="content">
       <van-row>
-        <van-col span="7">
+        <van-col span="10">
           <ul>
             <li>单据编号</li>
             <li>客户</li>
@@ -15,7 +15,7 @@
           </ul>
 
         </van-col>
-        <van-col span="14">
+        <van-col span="11">
           <ul>
             <li>{{contents.number}}</li>
             <li>{{contents.client}}</li>
@@ -29,7 +29,7 @@
                 to="records"
                 value="状态记录" />
       <van-row>
-        <van-col span="7">
+        <van-col span="10">
           <ul>
             <li>联系人</li>
             <li>电话</li>
@@ -37,7 +37,7 @@
           </ul>
 
         </van-col>
-        <van-col span="14">
+        <van-col span="11">
           <ul>
             <li>{{contents.number}}</li>
             <li>{{contents.phone}}</li>
@@ -56,20 +56,20 @@
           </ul>
 
         </van-col>
-        <van-col span="8">
+        <van-col span="7">
           <ul>
             <li>{{contents.number}}</li>
             <li>{{contents.phone}}</li>
           </ul>
         </van-col>
-        <van-col span="4">
+        <van-col span="6">
           <ul>
             <li>含税单价</li>
             <li>含税金额</li>
           </ul>
 
         </van-col>
-        <van-col span="8">
+        <van-col span="7">
           <ul>
             <li>￥{{contents.number}}</li>
             <li>￥{{contents.phone}}</li>
@@ -83,13 +83,13 @@
                 value="内容"
                 class="bottom" />
       <van-row>
-        <van-col span="7">
+        <van-col span="10">
           <ul>
             <li>币种</li>
             <li>汇率</li>
           </ul>
         </van-col>
-        <van-col span="14">
+        <van-col span="11">
           <ul>
             <li>{{contents.number}}</li>
             <li>{{contents.phone}}</li>
@@ -97,14 +97,14 @@
         </van-col>
       </van-row>
       <van-row>
-        <van-col span="7">
+        <van-col span="10">
           <ul>
             <li>送货要求</li>
             <li>备注</li>
           </ul>
 
         </van-col>
-        <van-col span="14">
+        <van-col span="11">
           <ul>
             <li>{{contents.number}}</li>
             <li>{{contents.phone}}</li>
@@ -126,7 +126,7 @@ export default {
     return {
       // 订单详情信息
       contents:
-        { number: 525545454, client: 'xxx公司', sales: '张强', predict: '2019-12-12', phone: '1545565656', address: 'xx省xx市' },
+        { number: 5255, client: 'xxx公司', sales: '张强', predict: '2019-12-12', phone: '154', address: 'xx省xx市' },
       // 订单修改信息
       revise: {
         title: '19D'
@@ -151,16 +151,16 @@ export default {
     list-style: none;
     margin-bottom: 12px;
   }
-  .van-row .van-col--7 {
+  .van-row .van-col--10 {
     margin-left: 16px;
     color: rgba(153, 153, 153, 1);
-    font-size: 10px;
+    font-size: 15px;
     text-align: left;
     font-family: "PingFangSC-regular";
   }
-  .van-row .van-col--14 {
+  .van-row .van-col--11 {
     color: #101010;
-    font-size: 10px;
+    font-size: 15px;
     text-align: left;
     font-family: "PingFangSC-regular";
   }
@@ -170,13 +170,13 @@ export default {
     .van-cell__title {
       margin-left: 16px;
       color: rgba(1, 113, 240, 1);
-      font-size: 10px;
+      font-size: 15px;
       text-align: left;
       font-family: "PingFangSC-regular";
     }
     .van-cell__value {
       color: rgba(153, 153, 153, 1);
-      font-size: 10px;
+      font-size: 15px;
       text-align: right;
       font-family: "PingFangSC-regular";
     }
@@ -197,27 +197,39 @@ export default {
     .van-row {
       // margin-top: 16px;
       padding: 14px 0px 16px 0px;
-      .van-col--7 {
+      .van-col--10 {
         color: rgba(153, 153, 153, 1);
-        font-size: 10px;
+        font-size: 15px;
         text-align: left;
         font-family: "PingFangSC-regular";
       }
-      .van-col--14 {
+      .van-col--11 {
         color: #101010;
-        font-size: 10px;
+        font-size: 15px;
         text-align: left;
         font-family: "PingFangSC-regular";
       }
       .van-col--4 {
         color: rgba(153, 153, 153, 1);
-        font-size: 10px;
+        font-size: 15px;
         text-align: left;
         font-family: "PingFangSC-regular";
       }
-      .van-col--8 {
+      .van-col--6 {
+        color: rgba(153, 153, 153, 1);
+        font-size: 15px;
+        text-align: left;
+        font-family: "PingFangSC-regular";
+      }
+      .van-col--5 {
         color: #101010;
-        font-size: 10px;
+        font-size: 15px;
+        text-align: left;
+        font-family: "PingFangSC-regular";
+      }
+      .van-col--7 {
+        color: #101010;
+        font-size: 15px;
         text-align: left;
         font-family: "PingFangSC-regular";
       }
@@ -229,14 +241,14 @@ export default {
       padding: 0px;
       .van-cell__title span {
         color: rgba(153, 153, 153, 1);
-        font-size: 10px;
+        font-size: 15px;
         text-align: left;
         font-family: "PingFangSC-regular";
       }
       .van-cell__value span {
         margin-right: 23px;
         color: #101010;
-        font-size: 10px;
+        font-size: 15px;
         text-align: left;
         font-family: "PingFangSC-regular";
       }

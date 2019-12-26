@@ -127,8 +127,9 @@ export default {
     }
   }
 }
-
-// 底部完成按钮
+.footer {
+  margin-bottom: 95px;
+  // 底部完成按钮
 .submit {
   position: fixed;
   bottom: 0px;
@@ -159,4 +160,6 @@ export default {
     }
   }
 }
+}
+
 </style>

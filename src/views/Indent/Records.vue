@@ -1,19 +1,32 @@
 <template>
   <div>
     <div class="plan">
-      <div class="left">
-        <span class="ball"></span>
-      </div>
-      <div class="right"
+
+      <div class="order-container"
            v-for="(record,index) in records"
            :key="index">
-        <van-cell :title="record.title"
-                  :label="record.label"
-                  :value="record.value">
-        </van-cell>
+        <div class="left">
+          <div class="line-top">
+
+          </div>
+          <div class="line-ball">
+
+          </div>
+          <div class="line-bottom">
+
+          </div>
+        </div>
+        <div class="right">
+          <van-cell :title="record.title"
+                    :label="record.label"
+                    :value="record.value">
+          </van-cell>
+        </div>
+
       </div>
+
+    </div>  
     </div>
-  </div>
 </template>
 
 <script>
@@ -40,7 +53,40 @@ export default {
   border-top: 1px solid #c0c4cc;
   margin-top: 59px;
   position: relative;
-  .left {
+  .order-container {
+    display: flex;
+    height: 60px;
+    box-sizing: content-box;
+    border-top: 1px solid red;
+    &:last-child{
+      border-bottom: 1px solid red;
+    }
+
+    .left {
+      width: 37px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      .line-top {
+        width: 1px;
+        height: 10px;
+        background: red;
+      }
+      .line-ball {
+        width: 10px;
+        height: 10px;
+        border-radius: 10px;
+        background: red;
+      }
+      .line-bottom {
+        width: 1px;
+        height: 40px;
+        background: red;
+      }
+    }
+  }
+  /* .left {
+
     position: absolute;
     left: 18px;
     width: 1px;
@@ -57,13 +103,13 @@ export default {
       border-radius: 50%;
       text-align: center;
     }
-  }
-  .right {
+  } */
+  /* .right {
     border-bottom: 1px solid #c0c4cc;
     .van-cell {
       width: 93%;
       margin-left: 20px;
     }
-  }
+  } */
 }
 </style>

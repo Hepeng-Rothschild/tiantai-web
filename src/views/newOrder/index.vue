@@ -4,7 +4,7 @@
       <van-cell title="单据日期*"
                 :value="myDate"
                 is-link
-                @click="startTime">
+                @click="changeDate('myDate')">
 
       </van-cell>
       <!-- 开启遮罩层，，给需要点击的单元格设定一个属性，通过这个属性来判断调取那个时间控件 -->
@@ -14,19 +14,19 @@
         <van-datetime-picker v-model="currentDate"
                              type="date"
                              @cancel="cancelPicker"
-                             @confirm="confirmPicker"
-                             v-if="datePicker == 'currentDate'" />
+                             @confirm="confirmPicker(datePicker)"/>
+                              <!-- v-if="datePicker == 'currentDate'" -->
         <!-- 预计日期控件 -->
-        <van-datetime-picker v-model="newCurrentDate"
+        <!-- <van-datetime-picker v-model="newCurrentDate"
                              type="date"
                              @cancel="cancelPicker1"
                              @confirm="confirmPicker1"
-                             v-if="datePicker == 'newCurrentDate'" />
+                             v-if="datePicker == 'newCurrentDate'" /> -->
       </van-overlay>
       <van-cell title="预计交货日期*"
                 :value="newDate"
                 is-link
-                @click="endTime">
+                @click="changeDate('newDate')">
       </van-cell>
       <van-cell title="客户*"
                 value="请选择客户"
@@ -97,7 +97,10 @@ export default {
     }
   },
   methods: {
-
+    changeDate(key){
+      this.show = true
+      this.datePicker = key
+    },
     // 打开开始时间控件
     startTime () {
       this.show = true
@@ -114,10 +117,12 @@ export default {
       this.datePicker = ""
     },
     // 开始确定按钮，时间格式化并显示在页面上
-    confirmPicker () {
-      this.myDate = dayjs(this.currentDate).format('YYYY-MM-DD')
-      this.show = false;
-      this.datePicker = "";
+    confirmPicker (v) {
+      console.log(v)
+      this[v] = dayjs(this.currentDate).format('YYYY-MM-DD')
+      // this.myDate = dayjs(this.currentDate).format('YYYY-MM-DD')
+      // this.show = false;
+      // this.datePicker = "";
     },
     // 结束选择器取消按钮点击事件
     cancelPicker1 () {

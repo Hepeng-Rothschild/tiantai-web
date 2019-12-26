@@ -45,6 +45,11 @@
     <van-panel v-model="revise">
       <span>{{revise.title}}</span>
       <van-row>
+        <van-col span="4">名称</van-col>
+        <van-col span="8">{{contents.number}</van-col>
+      </van-row>
+      
+      <van-row>
         <van-col span="4">
           <ul>
             <li>名称</li>
@@ -52,6 +57,8 @@
           </ul>
 
         </van-col>
+
+        
         <van-col span="7">
           <ul>
             <li>{{contents.number}}</li>

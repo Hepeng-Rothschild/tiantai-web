@@ -1,16 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-<<<<<<< HEAD
-=======
-import Indent from '@/views/Indent'
-import Details from '@/views/Indent/Details'
-import Records from '@/views/Indent/Details/records.vue'
-import Aide from '@/views/Indent/Aide'
-import newOrder from '@/views/NewOrder'
-import Select from '@/views/NewOrder/select.vue'
-import Newly from '@/views/NewOrder/Newly/index.vue'
-import DefaultPay from '@/views/NewOrder/Newly/defaultPay.vue'
->>>>>>> 95a3dd2ff9f49934db68c6259f0ae2f212363cb5
 
 Vue.use(VueRouter)
 
@@ -26,12 +15,8 @@ const routes = [
   {
     path: '/choose',
     name: 'choose',
-<<<<<<< HEAD
     meta:{title:'选择商品'},
     component: () => import(/* webpackChunkName: "Choose" */ '@/views/NewOrder/Choose.vue')
-=======
-    component: () => import(/* webpackChunkName: "about" */ './views/NewOrder/Choose/index.vue')
->>>>>>> 95a3dd2ff9f49934db68c6259f0ae2f212363cb5
   },
   {
     path: '/defaultPay',

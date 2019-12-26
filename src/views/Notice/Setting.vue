@@ -1,7 +1,7 @@
 <template>
-  <div class="info">
-    <div class="info_box">
-      <van-cell title="公司银行账号" is-link value="详细信息" to="bank"/>
+  <div class="setting">
+    <div class="setting_box">
+      <van-cell title="采购到货提醒" is-link to="bank">已订阅 5</van-cell>
     </div>
   </div>
 </template>
@@ -11,10 +11,10 @@ export default {};
 </script>
 
 <style lang="less" scoped>
-.info {
+.setting {
   padding-top: 59px;
 
-  .info_box {
+  .setting_box {
     height: 46px;
     border-top: 1.5px solid #e5e5e5;
     border-bottom: 1.5px solid #e5e5e5;

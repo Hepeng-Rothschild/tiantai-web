@@ -32,9 +32,9 @@ export default {};
   .bottom {
     color: rgba(16, 16, 16, 1);
     font-size: 14px;
-    .line {
-        height: 30px;
-    }
+  }
+  .line {
+    height: 30px;
   }
 }
 </style>

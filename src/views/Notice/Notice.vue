@@ -22,7 +22,7 @@
         <span>到货时间</span>
         <span class="margin_left">2019-12-26</span>
       </div>
-      <div class="human">
+      <div class="author">
         <span>发布者</span>
         <span class="margin_left">2019-12-26</span>
       </div>
@@ -60,23 +60,21 @@ export default {};
   font-size: 14px;
   margin-top: 12px;
   padding: 13px 0px 10px 15px;
-  .title {
-    .CG {
-      color: rgba(34, 34, 34, 1);
-      font-size: 17px;
-    }
-    .DY {
-      display: inline-block;
-      margin-left: 145px;
-      width: 54px;
-      height: 24px;
-      line-height: 24px;
-      border-radius: 4px;
-      color: rgba(16, 16, 16, 1);
-      font-size: 13px;
-      text-align: center;
-      border: 1px solid rgba(187, 187, 187, 1);
-    }
+  .CG {
+    color: rgba(34, 34, 34, 1);
+    font-size: 17px;
+  }
+  .DY {
+    display: inline-block;
+    margin-left: 145px;
+    width: 54px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 4px;
+    color: rgba(16, 16, 16, 1);
+    font-size: 13px;
+    text-align: center;
+    border: 1px solid rgba(187, 187, 187, 1);
   }
   .text {
     color: rgba(16, 16, 16, 1);
@@ -85,7 +83,7 @@ export default {};
       margin-left: 10px;
     }
   }
-  .human {
+  .author {
     height: 18px;
     color: rgba(136, 136, 136, 1);
     font-size: 13px;

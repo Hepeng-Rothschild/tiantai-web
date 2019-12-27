@@ -8,6 +8,9 @@ import './utils/rem'
 import 'amfe-flexible/index.js'
 import './styles/index.less'
 
+import Parse from './utils/Parse.js'
+Vue.prototype.$Parse = Parse
+
 Vue.use(Vant);
 Vue.config.productionTip = false
 

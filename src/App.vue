@@ -9,13 +9,25 @@
       @click-right="$router.push($route.meta.url)"
     />
     <router-view />
-    <div class="footBox"></div>
   </div>
 </template>
 
 <script>
 export default {
+  created() {
+    this.login();
+    // this.logout()
+  },
   methods: {
+    async logout() {
+      const data = await this.$Parse.User.logOut()
+      console.log('退出登录',data)
+    },
+    async login() {
+      const {data} = await this.$Parse.Cloud.run("login");
+      const user = await this.$Parse.User.become(data.sessionToken)
+      console.log('我带着token又登录啦',user);
+    },
     back() {
       this.$router.go(-1);
     }
@@ -24,13 +36,14 @@ export default {
 </script>
 
 <style lang="less">
-html,body {
+html,
+body {
   height: 100%;
 }
 #app {
   height: 100%;
   & /deep/ .van-nav-bar__text {
-        color: #000;
-    }
+    color: #000;
+  }
 }
 </style>

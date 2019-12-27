@@ -30,6 +30,11 @@ export default {
   padding-left: 16px;
   .van-radio {
     margin-bottom: 20px;
+    .van-radio__label {
+      color: rgba(0, 0, 0, 1);
+      font-size: 17px;
+      text-align: left;
+    }
   }
 }
 /* // 按钮样式 */

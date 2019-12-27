@@ -7,10 +7,10 @@ import 'vant/lib/index.css'
 import './utils/rem'
 import 'amfe-flexible/index.js'
 import './styles/index.less'
-
+import Parse from './utils/parse.js' 
 Vue.use(Vant);
 Vue.config.productionTip = false
-
+Vue.prototype.$Parse = Parse
 new Vue({
   router,
   store,

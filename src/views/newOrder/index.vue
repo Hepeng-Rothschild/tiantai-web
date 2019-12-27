@@ -10,18 +10,10 @@
       <!-- 开启遮罩层，，给需要点击的单元格设定一个属性，通过这个属性来判断调取那个时间控件 -->
       <van-overlay :show="show"
                    @click="show = false">
-        <!-- 单据日期控件 -->
+        <!-- 日期控件 -->
         <van-datetime-picker v-model="currentDate"
                              type="date"
-                             @cancel="cancelPicker"
-                             @confirm="confirmPicker(datePicker)"/>
-                              <!-- v-if="datePicker == 'currentDate'" -->
-        <!-- 预计日期控件 -->
-        <!-- <van-datetime-picker v-model="newCurrentDate"
-                             type="date"
-                             @cancel="cancelPicker1"
-                             @confirm="confirmPicker1"
-                             v-if="datePicker == 'newCurrentDate'" /> -->
+                             @confirm="confirmPicker(datePicker)" />
       </van-overlay>
       <van-cell title="预计交货日期*"
                 :value="newDate"
@@ -31,43 +23,68 @@
       <van-cell title="客户*"
                 value="请选择客户"
                 is-link
-                class="spacing" to="/select">
+                class="spacing"
+                to="/select">
       </van-cell>
       <van-cell title="业务员"
-                value="请选择"
+                :value="salesmanName"
                 is-link
-                class="spacing">
+                class="spacing"
+                @click="popupShow = true">
       </van-cell>
+      <van-popup v-model="popupShow"
+                 position="bottom"
+                 :style="{ height: '30%' }">
+        <div v-for="salesman in salesmans"
+             :key="salesman.id"
+             @click="changeName(salesman.name)">{{salesman.name}}</div>
+      </van-popup>
       <van-cell title="选择商品"
                 value="请选择"
                 is-link
-                class="spacing" to="/choose">
+                class="spacing"
+                to="/choose">
       </van-cell>
       <div class="spacing-two">
         <van-cell title="币种"
-                  value="请选择"
-                  is-link>
+                  :value="coinsName"
+                  is-link
+                  @click="popupShowCoin = true">
         </van-cell>
-        <van-cell title="汇率"
-                  value="请输入"
-                  is-link>
+        <van-popup v-model="popupShowCoin"
+                   position="bottom"
+                   :style="{ height: '30%' }">
+          <div v-for="coin in coins"
+               :key="coin.id"
+               @click="changeCoin(coin.name)">{{coin.name}}</div>
+        </van-popup>
+        <van-cell title="汇率">
+          <van-field v-model="value.rate"
+                     placeholder="请输入"
+                     input-align="right"
+                     style="border:0px;" />
         </van-cell>
       </div>
       <div class="spacing-two">
-        <van-cell title="发货要求"
-                  value="请输入"
-                  is-link>
+        <van-cell title="发货要求">
+          <van-field v-model="value.send"
+                     placeholder="请输入"
+                     input-align="right"
+                     style="border:0px;" />
         </van-cell>
-        <van-cell title="送货要求"
-                  value="请输入"
-                  is-link>
+        <van-cell title="送货要求">
+          <van-field v-model="value.delivery"
+                     placeholder="请输入"
+                     input-align="right"
+                     style="border:0px;" />
         </van-cell>
       </div>
-      <van-cell title="备注"
-                label="添加备注"
-                class="filed">
-      </van-cell>
-
+      <div class="remark">
+        <div class="remark-name">备注</div>
+        <van-field v-model="value.remark"
+                   placeholder="添加备注"
+                   style="border:0px;" />
+      </div>
     </van-cell-group>
     <div class="buttonBox">
       <van-button plain
@@ -84,57 +101,50 @@ import dayjs from 'dayjs'
 export default {
   data () {
     return {
-      // 单据日期
+      coinsName: '请选择',
+      salesmanName: '请选择',
+      // 币种
+      coins: [{ id: 1, name: '人民币' }, { id: 2, name: '美元' }, { id: 3, name: '英镑' }],
+      // 业务人员
+      salesmans: [{ id: 1, name: '罗永浩' }, { id: 2, name: '杰克马' }, { id: 3, name: '罗玉凤' }],
+      // 控制单元格内的输入框
+      value:
+        {
+          rate: '',
+          send: '',
+          delivery: '',
+          remark: ''
+        },
+      popupShowCoin: false,
+      // 控制弹出层显示隐藏
+      popupShow: false,
+      // 日期
       currentDate: new Date(),
-      // 预计日期
-      newCurrentDate: new Date(),
       // 单据日期遮罩层
       show: false,
-      datePicker: '', // 用于判断哪个选择器的显示与隐藏
+      // 开始时间默认值
       myDate: '请选择',
+      // 结束时间默认值
       newDate: '请选择'
 
     }
   },
   methods: {
-    changeDate(key){
+    changeCoin (coinNew) {
+      this.coinsName = coinNew
+      this.popupShowCoin = false
+    },
+    changeName (nameNew) {
+      this.salesmanName = nameNew
+      this.popupShow = false
+    },
+    changeDate (dateNew) {
       this.show = true
-      this.datePicker = key
+      this.datePicker = dateNew
     },
-    // 打开开始时间控件
-    startTime () {
-      this.show = true
-      this.datePicker = 'currentDate'
-    },
-    // 打开结束时间控件
-    endTime () {
-      this.show = true
-      this.datePicker = 'newCurrentDate'
-    },
-    // 开始选择器取消按钮点击事件
-    cancelPicker () {
-      this.show = false;
-      this.datePicker = ""
-    },
-    // 开始确定按钮，时间格式化并显示在页面上
-    confirmPicker (v) {
-      console.log(v)
-      this[v] = dayjs(this.currentDate).format('YYYY-MM-DD')
-      // this.myDate = dayjs(this.currentDate).format('YYYY-MM-DD')
-      // this.show = false;
-      // this.datePicker = "";
-    },
-    // 结束选择器取消按钮点击事件
-    cancelPicker1 () {
-      this.show = false;
-      this.datePicker = "";
-    },
-    // 结束确定按钮，时间格式化并显示在页面上
-    confirmPicker1 () {
-      this.newDate = dayjs(this.newCurrentDate).format('YYYY-MM-DD')
-      this.show = false;
-      this.datePicker = "";
-    },
+    confirmPicker (value) {
+      this[value] = dayjs(this.currentDate).format('YYYY-MM-DD')
+    }
   }
 }
 </script>
@@ -144,9 +154,25 @@ export default {
   margin-top: 59px;
   border-top: 1px solid #c0c4cc;
   margin-bottom: 16px;
+  // 底部弹框样式
+  .van-popup {
+    div {
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      font-size: 17px;
+      color: rgba(16, 16, 16, 1);
+    }
+  }
   .van-cell {
     padding: 10px 15px 10px 15px;
     border-bottom: 1px solid #c0c4cc;
+    // 单元格内输入框样式
+    .van-field {
+      padding: 0px;
+      font-size: 17px;
+      padding-right: 20px;
+    }
     .van-cell__title {
       color: rgba(0, 0, 0, 1);
       font-size: 17px;
@@ -178,6 +204,13 @@ export default {
   }
   .filed {
     border-top: 1px solid #c0c4cc;
+  }
+  .remark {
+    border-bottom: 1px solid #c0c4cc;
+    .remark-name {
+      margin-left: 16px;
+      font-size: 17px;
+    }
   }
 }
 // 底部两个按钮

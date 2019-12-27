@@ -2,18 +2,15 @@
   <div>
     <div class="plan">
 
-      <div class="order-container"
+      <div class="order-record"
            v-for="(record,index) in records"
            :key="index">
         <div class="left">
           <div class="line-top">
-
           </div>
           <div class="line-ball">
-
           </div>
           <div class="line-bottom">
-
           </div>
         </div>
         <div class="right">
@@ -50,16 +47,15 @@ export default {
 
 <style lang = "less" scoped>
 .plan {
-  border-top: 1px solid #c0c4cc;
   margin-top: 59px;
   position: relative;
-  .order-container {
+  .order-record {
     display: flex;
     height: 60px;
     box-sizing: content-box;
-    border-top: 1px solid red;
+    border-top: 1px solid #c0c4cc;
     &:last-child{
-      border-bottom: 1px solid red;
+      border-bottom: 1px solid #c0c4cc;
     }
 
     .left {
@@ -70,19 +66,27 @@ export default {
       .line-top {
         width: 1px;
         height: 10px;
-        background: red;
+        background: #c0c4cc;
       }
       .line-ball {
         width: 10px;
         height: 10px;
         border-radius: 10px;
-        background: red;
+        background: #c0c4cc;
       }
       .line-bottom {
         width: 1px;
         height: 40px;
-        background: red;
+        background: #c0c4cc;
       }
+    }
+    .right {
+      flex:1;
+      .van-cell {
+        padding-bottom: 0px;
+        padding-left: 0px;
+      }
+      
     }
   }
   /* .left {

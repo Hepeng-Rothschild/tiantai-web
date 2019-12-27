@@ -3,11 +3,16 @@
     <van-search placeholder="输入客户名称进行查找"
                 input-align="center"
                 v-model="serarchText" />
-    <van-cell-group v-for="(customer,index) in customers" :key="index">
+    <van-cell-group v-for="(customer,index) in customers"
+                    :key="index">
       <van-cell :title="customer.name"
                 :label="customer.money"
                 is-link />
     </van-cell-group>
+    <!-- 新增客户按钮 -->
+    <van-button round
+                type="default"
+                class="add" @click="$router.push('/newly')">+</van-button>
   </div>
 </template>
 
@@ -18,10 +23,10 @@ export default {
       // 搜索内容
       serarchText: "",
       //客户信息
-      customers:[
-        {name:'客户A',money:'应收余额： ￥200.00',from:''},
-        {name:'客户b',money:'应收余额： ￥22.00',from:''},
-        {name:'客户c',money:'',from:'来自CRM'},
+      customers: [
+        { name: '客户A', money: '应收余额： ￥200.00', from: '' },
+        { name: '客户b', money: '应收余额： ￥22.00', from: '' },
+        { name: '客户c', money: '', from: '来自CRM' },
       ]
     }
   },
@@ -42,7 +47,9 @@ export default {
   border: 1px solid rgba(187, 187, 187, 1);
 }
 .van-cell-group {
-  border-top: 1px solid #c0c4cc;
+  .van-cell:first-child {
+    border-top: 1px solid #c0c4cc;
+  }
   .van-cell {
     border-bottom: 1px solid #c0c4cc;
     .van-icon {
@@ -60,6 +67,20 @@ export default {
       text-align: right;
       font-family: "PingFangSC-regular";
     }
+  }
+}
+.add {
+  position: fixed;
+  width: 57px;
+  height: 50px;
+  right: 26px;
+  bottom: 75px;
+   text-align: center;
+  border-radius: 50%;
+  box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
+  .van-button__text {
+    font-size: 35px;
+    color: rgba(1, 113, 240, 1);
   }
 }
 </style>

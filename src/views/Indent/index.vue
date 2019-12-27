@@ -24,7 +24,7 @@
                 to="/details"
                 :class="draft?'draft':''">
         {{indent.value}}
-        <div >
+        <div>
           <van-tag type="primary">{{statusList[indent.state]}}</van-tag>
         </div>
       </van-cell>
@@ -33,7 +33,7 @@
     <!-- 添加订单按钮 -->
     <van-button round
                 type="default"
-                class="add">+</van-button>
+                class="add" @click="$router.push('/neworder')">+</van-button>
   </div>
 </template>
 
@@ -103,7 +103,6 @@ export default {
   width: 94%;
   height: 36px;
   font-size: 14px;
-  font-family: "Microsoft Yahei";
   border-radius: 6px;
   border: 1px solid rgba(187, 187, 187, 1);
 }
@@ -169,12 +168,15 @@ export default {
 
 .add {
   position: fixed;
+  width: 57px;
+  height: 50px;
   right: 26px;
   bottom: 75px;
+  text-align: center;
   border-radius: 50%;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
   .van-button__text {
-    font-size: 24px;
+    font-size: 35px;
     color: rgba(1, 113, 240, 1);
   }
 }

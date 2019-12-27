@@ -45,5 +45,8 @@ body {
   & /deep/ .van-nav-bar__text {
     color: #000;
   }
+  & /deep/ .van-nav-bar {
+    z-index: 4;
+  }
 }
 </style>

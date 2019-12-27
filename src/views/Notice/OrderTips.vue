@@ -1,9 +1,9 @@
 <template>
   <div class="orderTips">
     <div class="top">
-      <div class="padding_5">
-        <span>开启</span>
-        <input type="checkbox" />
+      <div class="switch padding_5">
+        <span class="switch_text">开启</span>
+        <my-switch v-model="switchValue" @click.native="changeSwitchValue"/>
       </div>
       <div class="care">
         <span class="padding_5">请添加关注商品</span>
@@ -21,39 +21,40 @@
 
 <script>
 import MySearch from "../../components/Search.vue";
+import MySwitch from "../../components/Switch.vue";
 export default {
   data() {
     return {
+      switchValue: false,
       checked: true,
-      searchValue: null
+      searchValue: null,
     };
   },
   components: {
-    MySearch: MySearch
-  }
+    MySearch,
+    MySwitch
+  },
+  methods: {
+    changeSwitchValue() {
+      this.switchValue = !this.switchValue
+    }
+  },
 };
 </script>
 
 <style lang="less" scoped>
 .orderTips {
-  // background-color: #02e166;
-  input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    position: relative;
-    width: 50px;
-    height: 26px;
-    border: 1px solid #ccc;
-    background-color: #ccc;
-    border-radius: 0.7rem;
-    outline: none;
-  }
-
   overflow: auto;
   height: 100%;
   background-color: #f8f8f8;
   font-size: 17px;
+  .switch {
+    display: flex;
+    justify-content: space-between;
+    .switch_text {
+      line-height: 28px;
+    }
+  }
   .top {
     padding: 60px 8px 8px 10px;
     border-bottom: 1px solid #e5e5e5;

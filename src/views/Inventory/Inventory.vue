@@ -1,7 +1,14 @@
 <template>
   <div class="inventory">
     <my-search v-model="searchValue" placeholder="请输入商品名称" class="search" />
-    <div class="list">
+    <!-- list -->
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
+      :offset="10"
+    >
       <div class="cell" v-for="(item,index) in inventory" :key="index" @click="goToDtail(item)">
         <div class="text">
           <div class="text_title">{{item.InventoryName}}</div>
@@ -14,7 +21,7 @@
           <img src="../../assets/arrow.png" alt />
         </div>
       </div>
-    </div>
+    </van-list>
   </div>
 </template>
 
@@ -26,7 +33,11 @@ export default {
     return {
       searchValue: null,
       shopName: null,
-      inventory: null
+      inventory: null,
+      loading: false,
+      finished: false,
+      pageIndex: 0,
+      pageSize: 10
     };
   },
   components: {
@@ -34,14 +45,20 @@ export default {
   },
   watch: {
     searchValue(newValue, oldValue) {
+      this.pageIndex = 1;
       this.getData(newValue);
     }
   },
-  created() {
-    this.getData();
-    console.log(this.searchValue);
-  },
+  created() {},
   methods: {
+    onLoad() {
+      this.pageIndex++;
+      console.log(this.pageIndex);
+      this.getData();
+      setTimeout(() => {
+        this.loading = false;
+      }, 2000);
+    },
     goToDtail(item) {
       this.$router.push({ name: "detailinfo" });
       setItem("inventory", item);
@@ -50,11 +67,18 @@ export default {
       var _this = this;
       const { data } = await this.$Parse.Cloud.run("getStock", {
         inventoryName,
-        pageSize: 10,
-        pageIndex: 1
+        pageSize: _this.pageSize,
+        pageIndex: _this.pageIndex
       });
-      this.inventory = data;
-      console.log("库存查询", data);
+      let listData = this.inventory || [];
+      for (let i = 0; i < data.length; i++) {
+        listData.push(data[i]);
+      }
+      this.inventory = listData;
+      if (!data.length||data.length < 10) {
+        this.finished = true;
+      }
+      console.log("库存查询", this.inventory);
     }
   }
 };
@@ -66,33 +90,31 @@ export default {
   .search {
     margin-bottom: 15px;
   }
-  .list {
-    .cell {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 5px;
+  .cell {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 5px;
 
-      .text {
-        width: 220px;
-        .text_title {
-          color: rgba(16, 16, 16, 1);
-          font-size: 18px;
-          height: 34px;
-        }
-        .text_txt {
-          color: rgba(153, 153, 153, 1);
-          font-size: 14px;
-          display: flex;
-          justify-content: space-between;
-        }
+    .text {
+      width: 220px;
+      .text_title {
+        color: rgba(16, 16, 16, 1);
+        font-size: 18px;
+        margin-bottom: 15px;
       }
+      .text_txt {
+        color: rgba(153, 153, 153, 1);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
 
-      .arrow {
-        img {
-          width: 14px;
-          height: 13px;
-          padding-top: 23px;
-        }
+    .arrow {
+      img {
+        width: 14px;
+        height: 13px;
+        padding-top: 23px;
       }
     }
   }

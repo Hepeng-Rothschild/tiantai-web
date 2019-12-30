@@ -101,7 +101,7 @@ const routes = [
     path: '/ordertips',
     name: 'ordertips',
     meta:{title:'采购提醒'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Notice/OrderTips.vue')
+    component: () => import( '@/views/Notice/OrderTips.vue')
   },
   {
     path: '/publish',
@@ -113,14 +113,20 @@ const routes = [
     path: '/inventory',
     name: 'inventory',
     meta:{title:'库存查询'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Inventory/Inventory.vue')
+    component: () => import( '@/views/Inventory/Inventory.vue')
   },
   {
     path: '/detailinfo',
     name: 'detailinfo',
     meta:{title:'库存查询'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Inventory/DetailInfo.vue')
+    component: () => import( '@/views/Inventory/DetailInfo.vue')
   },
+  // {
+  //   path: '/remind',
+  //   name: 'remind',
+  //   meta:{title:'应收账款',icon:true},
+  //   component: () => import( '@/views/Remind/Remind.vue')
+  // },
 ]
 
 const router = new VueRouter({

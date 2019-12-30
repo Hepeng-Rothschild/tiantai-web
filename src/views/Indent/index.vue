@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- 搜索栏 -->
-    <van-search placeholder="输入客户、编号进行查找"
-                input-align="center"
-                v-model="serarchText" />
+    <my-search v-model="searchValue"
+               placeholder="输入客户、编号进行查找"></my-search>
+
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex"
@@ -33,16 +33,21 @@
     <!-- 添加订单按钮 -->
     <van-button round
                 type="default"
-                class="add" @click="$router.push('/neworder')">+</van-button>
+                class="add"
+                @click="$router.push('/neworder')">+</van-button>
   </div>
 </template>
 
 <script>
+import MySearch from "../../components/Search.vue"
 export default {
   name: 'IndentIndex',
+  components: {
+    MySearch: MySearch
+  },
   data () {
     return {
-      serarchText: null,
+      searchValue: null,
       // 是否有草稿
       draft: null,
       // 下拉框信息
@@ -97,14 +102,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.van-search {
+.search {
   margin: 59px 10px 10px 10px;
-  padding: 0px;
   width: 94%;
-  height: 36px;
-  font-size: 14px;
-  border-radius: 6px;
-  border: 1px solid rgba(187, 187, 187, 1);
 }
 .van-list {
   .date {

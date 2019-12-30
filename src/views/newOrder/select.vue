@@ -1,8 +1,7 @@
 <template>
   <div>
-    <van-search placeholder="输入客户名称进行查找"
-                input-align="center"
-                v-model="serarchText" />
+    <my-search v-model="searchValue"
+               placeholder="输入客户名称进行查找"></my-search>
     <van-cell-group v-for="(customer,index) in customers"
                     :key="index">
       <van-cell :title="customer.name"
@@ -12,16 +11,22 @@
     <!-- 新增客户按钮 -->
     <van-button round
                 type="default"
-                class="add" @click="$router.push('/newly')">+</van-button>
+                class="add"
+                @click="$router.push('/newly')">+</van-button>
   </div>
 </template>
 
 <script>
+import MySearch from "../../components/Search.vue";
+
 export default {
+  components: {
+    MySearch: MySearch
+  },
   data () {
     return {
       // 搜索内容
-      serarchText: "",
+      searchValue: null,
       //客户信息
       customers: [
         { name: '客户A', money: '应收余额： ￥200.00', from: '' },
@@ -36,15 +41,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.van-search {
+.search {
   margin: 59px 10px 10px 10px;
-  padding: 0px;
   width: 94%;
-  height: 36px;
-  font-size: 14px;
-  font-family: "Microsoft Yahei";
-  border-radius: 6px;
-  border: 1px solid rgba(187, 187, 187, 1);
 }
 .van-cell-group {
   .van-cell:first-child {
@@ -75,7 +74,7 @@ export default {
   height: 50px;
   right: 26px;
   bottom: 75px;
-   text-align: center;
+  text-align: center;
   border-radius: 50%;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
   .van-button__text {

@@ -1,10 +1,8 @@
 <template>
   <div>
     <div class="header">
-
       <!-- 搜索栏 -->
-      <van-search input-align="center"
-                  v-model="serarchText" />
+      <my-search v-model="searchValue"></my-search>
       <!-- 交易历史记录 -->
       <span class="history">{{company.name}}的历史购买</span>
       <!-- 单元格大盒子 -->
@@ -47,7 +45,8 @@
                          position="bottom"
                          :style="{ height: '30%' }">
                 <div v-for="weight in weights"
-             :key="weight.id" @click="changeWeight(weight.name)">{{weight.name}}</div>
+                     :key="weight.id"
+                     @click="changeWeight(weight.name)">{{weight.name}}</div>
               </van-popup>
               <van-cell title="含税单价">
                 <van-field v-model="value.price"
@@ -106,12 +105,17 @@
 </template>
 
 <script>
+import MySearch from "../../components/Search.vue"
+
 export default {
+  components: {
+    MySearch: MySearch
+  },
   data () {
     return {
-      weightName:'',
+      weightName: '',
       // 重量
-      weights:[{id:1,name:'T'},{id:2,name:'KG'},{id:3,name:'G'}],
+      weights: [{ id: 1, name: 'T' }, { id: 2, name: 'KG' }, { id: 3, name: 'G' }],
       // 控制弹出层显示隐藏
       popupShow: false,
       // 控制单元格内的输入框
@@ -130,7 +134,7 @@ export default {
       // 总计价格
       money: '22120.00',
       // 搜索内容
-      serarchText: "",
+      searchValue: null,
       // 返回 到的公司名称
       company:
         { name: '山西xxxxx公司' },
@@ -148,7 +152,7 @@ export default {
     }
   },
   methods: {
-    changeWeight(weightNew) {
+    changeWeight (weightNew) {
       this.weightName = weightNew
       this.popupShow = false
     }
@@ -159,15 +163,9 @@ export default {
 <style lang="less" scoped>
 .header {
   width: 100%;
-  .van-search {
+  .search {
     margin: 59px 10px 10px 10px;
-    padding: 0px;
     width: 94%;
-    height: 36px;
-    font-size: 14px;
-    font-family: "Microsoft Yahei";
-    border-radius: 6px;
-    border: 1px solid rgba(187, 187, 187, 1);
   }
   .history {
     margin-left: 16px;
@@ -255,7 +253,7 @@ export default {
           line-height: 40px;
           text-align: center;
           font-size: 17px;
-          color: rgba(16, 16, 16, 1)
+          color: rgba(16, 16, 16, 1);
         }
       }
       .van-cell {

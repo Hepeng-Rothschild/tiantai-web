@@ -39,7 +39,6 @@ export default {
     outline: none;
     background: #fff url(../assets/search.png) no-repeat 9px 7px;
     background-size: 23px;
-    margin-bottom: 15px;
     font-size: 14px;
     color: rgba(136, 136, 136, 1);
     text-align: center;

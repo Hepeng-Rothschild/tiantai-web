@@ -1,8 +1,6 @@
 <template>
   <div class="inventory">
-    <div class="search">
-      <my-search v-model="searchValue" placeholder="请输入商品名称"></my-search>
-    </div>
+    <my-search v-model="searchValue" placeholder="请输入商品名称" class="search" />
     <div class="list">
       <div class="cell" v-for="(item,index) in inventory" :key="index" @click="goToDtail(item)">
         <div class="text">
@@ -65,7 +63,9 @@ export default {
 <style lang="less" scoped>
 .inventory {
   padding: 60px 10px 10px 10px;
-
+  .search {
+    margin-bottom: 15px;
+  }
   .list {
     .cell {
       display: flex;

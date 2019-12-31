@@ -33,7 +33,7 @@ const routes = [
   {
     path: '/select',
     name: 'select',
-    meta:{title:'新增销售订单'},
+    meta:{title:'选择客户'},
     component: () => import(/* webpackChunkName: "Select" */ '@/views/NewOrder/select.vue')
   },
   {
@@ -71,31 +71,31 @@ const routes = [
     path: '/info',
     name: 'info',
     meta:{title:'常用信息'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Info/Info.vue')
+    component: () => import( '@/views/Info/Info.vue')
   },
   {
     path: '/bank',
     name: 'bank',
     meta:{title:'公司银行账号'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Info/InfoBank.vue')
+    component: () => import( '@/views/Info/InfoBank.vue')
   },
   {
     path: '/phone',
     name: 'phone',
     meta:{title:'联系方式'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Info/InfoPhone.vue')
+    component: () => import( '@/views/Info/InfoPhone.vue')
   },
   {
     path: '/notice',
     name: 'notice',
     meta:{title:'公告',right:'设置订阅',url:'/setting'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Notice/Notice.vue')
+    component: () => import( '@/views/Notice/Notice.vue')
   },
   {
     path: '/setting',
     name: 'setting',
     meta:{title:'订阅设置'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Notice/Setting.vue')
+    component: () => import( '@/views/Notice/Setting.vue')
   },
   {
     path: '/ordertips',

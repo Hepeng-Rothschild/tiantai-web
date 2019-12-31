@@ -36,7 +36,7 @@ export default {
       inventory: null,
       loading: false,
       finished: false,
-      pageIndex: 0,
+      pageIndex: 1,
       pageSize: 10
     };
   },
@@ -49,15 +49,10 @@ export default {
       this.getData(newValue);
     }
   },
-  created() {},
   methods: {
     onLoad() {
-      this.pageIndex++;
       console.log(this.pageIndex);
       this.getData();
-      setTimeout(() => {
-        this.loading = false;
-      }, 2000);
     },
     goToDtail(item) {
       this.$router.push({ name: "detailinfo" });
@@ -75,9 +70,12 @@ export default {
         listData.push(data[i]);
       }
       this.inventory = listData;
-      if (!data.length||data.length < 10) {
+      this.loading = false;
+      if (!data.length || data.length < 10) {
         this.finished = true;
+        return;
       }
+      this.pageIndex++;
       console.log("库存查询", this.inventory);
     }
   }
@@ -103,18 +101,19 @@ export default {
         margin-bottom: 15px;
       }
       .text_txt {
-        color: rgba(153, 153, 153, 1);
-        font-size: 14px;
         display: flex;
         justify-content: space-between;
+        font-size: 14px;
+        color: rgba(153, 153, 153, 1);
       }
     }
 
     .arrow {
+      display: flex;
+      align-items: center;
       img {
         width: 14px;
         height: 13px;
-        padding-top: 23px;
       }
     }
   }

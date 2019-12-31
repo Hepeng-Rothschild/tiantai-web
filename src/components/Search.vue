@@ -35,7 +35,7 @@ export default {
     width: 300px;
     height: 36px;
     border-radius: 6px;
-    border: 1px solid #888;
+    border: 1.25px solid rgba(187, 187, 187, 1);
     outline: none;
     background: #fff url(../assets/search.png) no-repeat 9px 7px;
     background-size: 23px;

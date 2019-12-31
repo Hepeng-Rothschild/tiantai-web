@@ -1,84 +1,76 @@
 <template>
   <div>
-    <my-search v-model="searchValue"
-               placeholder="输入客户名称进行查找"></my-search>
-    <van-cell-group v-for="(customer,index) in customers"
-                    :key="index">
-      <van-cell :title="customer.name"
-                :label="customer.money"
-                is-link />
+    <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+    <van-cell-group
+      v-for="(partner,index) in partner"
+      :key="index"
+      @click="selectPartner(partner)"
+    >
+      <van-cell :title="partner.Name" :label="Number(partner.ARBalance).toFixed(2)" is-link />
     </van-cell-group>
     <!-- 新增客户按钮 -->
-    <van-button round
-                type="default"
-                class="add"
-                @click="$router.push('/newly')">+</van-button>
+    <van-button round type="default" class="add" @click="$router.push('/newly')">+</van-button>
   </div>
 </template>
 
 <script>
 import MySearch from "../../components/Search.vue";
-
+import { setItem, getItem } from "../../utils/Storage.js";
+import { mapState } from "vuex";
 export default {
   components: {
     MySearch: MySearch
   },
-  data () {
+  data() {
     return {
-      // 搜索内容
-      searchValue: null,
-      //客户信息
-      customers: [
-        { name: '客户A', money: '应收余额： ￥200.00', from: '' },
-        { name: '客户b', money: '应收余额： ￥22.00', from: '' },
-        { name: '客户c', money: '', from: '来自CRM' },
-      ]
+      searchValue: null
+    };
+  },
+  mounted() {
+    this.$store.dispatch("getPartner");
+  },
+  computed: {
+    ...mapState(["allPartner"]),
+    partner: function() {
+      if (this.searchValue) {
+        return this.allPartner.filter((item, i) => {
+          return item.Name.indexOf(this.searchValue) != -1;
+        });
+      }
+      return this.allPartner;
     }
   },
   methods: {
+    selectPartner(partner) {
+      this.$router.push({name:'neworder'})
+      setItem('singlePartner',partner)
+    }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 .search {
-  margin: 59px 10px 10px 10px;
-  width: 94%;
+  padding: 59px 10px 10px 10px;
+  border-bottom: 1px solid #c0c4cc;
 }
-.van-cell-group {
-  .van-cell:first-child {
-    border-top: 1px solid #c0c4cc;
-  }
-  .van-cell {
-    border-bottom: 1px solid #c0c4cc;
-    .van-icon {
-      margin-top: 14px;
-    }
-    .van-cell__title {
-      color: #000000;
-      font-size: 17px;
-      text-align: left;
-      font-family: "PingFangSC-regular";
-    }
-    .van-cell__value {
-      color: rgba(0, 0, 0, 1);
-      font-size: 17px;
-      text-align: right;
-      font-family: "PingFangSC-regular";
-    }
-  }
+.van-cell {
+  border-bottom: 1px solid #c0c4cc;
+  color: #000000;
+  font-size: 17px;
+  align-items: center;
 }
 .add {
   position: fixed;
   width: 57px;
   height: 50px;
   right: 26px;
-  bottom: 75px;
-  text-align: center;
+  bottom: 45px;
+  padding: 0;
   border-radius: 50%;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
   .van-button__text {
-    font-size: 35px;
+    font-size: 40px;
     color: rgba(1, 113, 240, 1);
   }
 }

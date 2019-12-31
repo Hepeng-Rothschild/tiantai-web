@@ -33,7 +33,7 @@ const routes = [
   {
     path: '/select',
     name: 'select',
-    meta:{title:'新增销售订单'},
+    meta:{title:'选择客户'},
     component: () => import(/* webpackChunkName: "Select" */ '@/views/NewOrder/select.vue')
   },
   {
@@ -71,37 +71,37 @@ const routes = [
     path: '/info',
     name: 'info',
     meta:{title:'常用信息'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Info/Info.vue')
+    component: () => import( '@/views/Info/Info.vue')
   },
   {
     path: '/bank',
     name: 'bank',
     meta:{title:'公司银行账号'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Info/InfoBank.vue')
+    component: () => import( '@/views/Info/InfoBank.vue')
   },
   {
     path: '/phone',
     name: 'phone',
     meta:{title:'联系方式'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Info/InfoPhone.vue')
+    component: () => import( '@/views/Info/InfoPhone.vue')
   },
   {
     path: '/notice',
     name: 'notice',
     meta:{title:'公告',right:'设置订阅',url:'/setting'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Notice/Notice.vue')
+    component: () => import( '@/views/Notice/Notice.vue')
   },
   {
     path: '/setting',
     name: 'setting',
     meta:{title:'订阅设置'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Notice/Setting.vue')
+    component: () => import( '@/views/Notice/Setting.vue')
   },
   {
     path: '/ordertips',
     name: 'ordertips',
     meta:{title:'采购提醒'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Notice/OrderTips.vue')
+    component: () => import( '@/views/Notice/OrderTips.vue')
   },
   {
     path: '/publish',
@@ -113,14 +113,20 @@ const routes = [
     path: '/inventory',
     name: 'inventory',
     meta:{title:'库存查询'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Inventory/Inventory.vue')
+    component: () => import( '@/views/Inventory/Inventory.vue')
   },
   {
     path: '/detailinfo',
     name: 'detailinfo',
     meta:{title:'库存查询'},
-    component: () => import(/* webpackChunkName: "Neworder" */ '@/views/Inventory/DetailInfo.vue')
+    component: () => import( '@/views/Inventory/DetailInfo.vue')
   },
+  // {
+  //   path: '/remind',
+  //   name: 'remind',
+  //   meta:{title:'应收账款',icon:true},
+  //   component: () => import( '@/views/Remind/Remind.vue')
+  // },
 ]
 
 const router = new VueRouter({

@@ -8,27 +8,28 @@
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex"
                          :options="dateStatus"
-                         @change="changeDate(dateIndex)" />
+                         @change="changeDate" />
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
-                         @change="changeState(orderIndex)" />
+                         @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
     <van-list>
-      <span class="date">{{this.indentDate}}</span>
-      <van-cell v-for="indent in allIndent"
-                :key="indent.id"
-                :title="indent.title"
-                :label="indent.label"
+      <span class="date">{{this.endTime}}</span>
+      <van-cell v-for="(indent,index) in allIndent"
+                :key="index"
+                :title="indent.partnerName"
+                :label="indent.saleOrderCode"
                 is-link
                 to="/details"
+                @click="toDetails(indent)"
                 :class="draft?'draft':''">
-        {{indent.value}}
+        ￥{{indent.origTaxAmount}}
         <div>
-          <van-tag type="primary">{{statusList[indent.state]}}</van-tag>
+          <van-tag type="primary">{{indent.saleOrderState}}</van-tag>
         </div>
       </van-cell>
-      <span class="date">{{this.indentDate}}</span>
+      <span class="date">{{this.startTime}}</span>
     </van-list>
     <!-- 添加订单按钮 -->
     <van-button round
@@ -39,6 +40,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
+import { setItem } from "../../utils/Storage.js";
 import MySearch from "../../components/Search.vue"
 export default {
   name: 'IndentIndex',
@@ -47,6 +50,8 @@ export default {
   },
   data () {
     return {
+      loading: false,
+      finished: false,
       searchValue: null,
       // 是否有草稿
       draft: null,
@@ -60,42 +65,113 @@ export default {
         { text: '本年', value: 4 },
         { text: '自定义', value: 5 }
       ],
-      orderIndex: 'g',
-      statusList: ['未审',
-        '生效',
-        '中止',
-        '未执行',
-        '执行中',
-        '执行完',],
+      orderIndex: null,
       orderStatus: [
-        { text: '订单状态', value: 'g' },
-        { text: '未审', value: 'a' },
-        { text: '生效', value: 'b' },
-        { text: '中止', value: 'c' },
-        { text: '未执行', value: 'd' },
-        { text: '执行中', value: 'e' },
-        { text: '执行完', value: 'f' }
+        { text: '全部', value: null },
+        { text: '未审', value: '未审' },
+        { text: '生效', value: '生效' }
       ],
       // 所有订单
-      allIndent: [
-        { title: 'xxx公司', label: '6251521', id: 1, value: '$255455', date: '2019-12-28', state: 1 },
-        { title: 'xxx公司', label: '6251521', id: 2, value: '$255455', date: '2019-12-28', state: 0 },
-        { title: 'xxx公司', label: '6251521', id: 3, value: '$255455', date: '2019-12-28', state: 2 },
-        { title: 'xxx公司', label: '6251521', id: 4, value: '$255455', date: '2019-12-28', state: 3 },
-        { title: 'xxx公司', label: '6251521', id: 4, value: '$255455', date: '2019-12-28', state: 0 },
-        { title: 'xxx公司', label: '6251521', id: 4, value: '$255455', date: '2019-12-27', state: 4 }
-      ],
-      // 订单日期
-      indentDate: '2019-12-22'
+      allIndent: [],
+      // 开始时间
+      startTime: '',
+      // 结束时间
+      endTime: '',
+      // 订单编号
+      code: null,
+      // 当前状态
+      state: null
     }
   },
+  created () {
+    this.initDate()
+  },
   methods: {
-    changeState (value) {
-      console.log('111')
+    // 跳转到详情页面
+    toDetails (indent) {
+      this.$router.push({ name: 'details' })
+      setItem("allIndent", indent)
     },
-    changeDate (value) {
-      console.log('222');
-
+    // 初始化日期
+    initDate () {
+      const nowMonth = new Date().setDate(1)
+      this.startTime = dayjs(new Date(nowMonth)).format('YYYY-MM-DD')
+      this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+      this.getData()
+    },
+    // 调取订单查询接口
+    async getData () {
+      const { data } = await this.$Parse.Cloud.run("getOrder", {
+        startTime: this.startTime, endTime: this.endTime, code: this.code, state: this.state
+      })
+      this.allIndent = data.reverse()
+    },
+    // 获取本季度开端月份
+    getQuarterStartMonth () {
+      let nowMonth = new Date().getMonth();
+      var quarterStartMonth = 0;
+      if (nowMonth < 3) {
+        quarterStartMonth = 0;
+      }
+      if (2 < nowMonth && nowMonth < 6) {
+        quarterStartMonth = 3;
+      }
+      if (5 < nowMonth && nowMonth < 9) {
+        quarterStartMonth = 6;
+      }
+      if (nowMonth > 8) {
+        quarterStartMonth = 9;
+      }
+      return quarterStartMonth;
+    },
+    // 获取本年度第一天的日期
+    getCurrentYear () {
+      //获取当前时间  
+      let currentDate = new Date();
+      //获得当前年份4位年  
+      let currentYear = currentDate.getFullYear();
+      //本年第一天  
+      let currentYearFirstDate = new Date(currentYear, 0, 1);
+      return currentYearFirstDate
+    },
+    // 改变时间进行筛选
+    async changeDate (orderDate) {
+      // 近7天
+      if (orderDate == 0) {
+        const sevenDay = new Date().getTime() - 7 * 24 * 60 * 60 * 1000
+        this.startTime = dayjs(new Date(sevenDay)).format('YYYY-MM-DD')
+        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+        // 本月
+      } else if (orderDate == 1) {
+        const nowMonth = new Date().setDate(1)
+        this.startTime = dayjs(new Date(nowMonth)).format('YYYY-MM-DD')
+        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+        // 上个月
+      } else if (orderDate == 2) {
+        const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+        this.startTime = dayjs(new Date(lastMonth)).format('YYYY-MM-DD')
+        const day = new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate();
+        const enddate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, day);
+        this.endTime = dayjs(new Date(enddate)).format('YYYY-MM-DD')
+        // 本季度
+      } else if (orderDate == 3) {
+        const quarterStartDate = new Date(new Date().getFullYear(), this.getQuarterStartMonth(), 1);
+        this.startTime = dayjs(new Date(quarterStartDate)).format('YYYY-MM-DD')
+        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+        // 本年
+      } else if (orderDate == 4) {
+        const getCurrentYear = this.getCurrentYear()
+        this.startTime = dayjs(new Date(getCurrentYear)).format('YYYY-MM-DD')
+        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+      }
+      console.log(this.startTime, this.endTime);
+      await this.getData()
+      console.log(this.allIndent);
+    },
+    // 改变订单状态值进行筛选
+    async changeState (orderState) {
+      this.state = orderState
+      await this.getData()
     }
   }
 }

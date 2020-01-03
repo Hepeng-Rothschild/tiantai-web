@@ -3,7 +3,7 @@
     <van-cell-group>
       <!-- 第一行 和 第一个日期控件 -->
       <van-cell title="单据日期*" :value="date_1" is-link @click="show_1 = true"></van-cell>
-      <van-overlay :show="show_1" position="bottom">
+      <van-overlay :show="show_1">
         <!-- 日期控件 -->
         <van-datetime-picker
           v-model="currentDate"
@@ -14,7 +14,7 @@
       </van-overlay>
       <!-- 第二行 和 第二个日期控件-->
       <van-cell title="预计交货日期*" :value="date_2" is-link @click="show_2=true"></van-cell>
-      <van-overlay :show="show_2" position="bottom">
+      <van-overlay :show="show_2">
         <!-- 日期控件 -->
         <van-datetime-picker
           v-model="currentDate"
@@ -23,11 +23,11 @@
           @cancel="show_2=false"
         />
       </van-overlay>
-
+      <!-- 选择客户 -->
       <van-cell title="客户*" is-link class="spacing" to="/select">{{ selectPartner()}}</van-cell>
-
-      <van-cell title="业务员" :value="salesmanName" is-link class="spacing" @click="popupShow = true"></van-cell>
-      <van-popup v-model="popupShow" position="bottom" :style="{ height: '30%' }">
+      <!-- 选择业务员 -->
+      <van-cell title="业务员" :value="salesmanName" is-link class="spacing" @click="goSaleMan()"></van-cell>
+      <van-popup v-model="popupShow" position="bottom" :style="{ height: '40%' }">
         <div
           v-for="saleMan in saleMan"
           :key="saleMan.id"
@@ -85,8 +85,8 @@
 
 <script>
 import dayjs from "dayjs";
-import {mapState} from 'vuex'
-import {getItem,setItem} from '../../utils/Storage.js'
+import { mapState } from "vuex";
+import { getItem, setItem } from "../../utils/Storage.js";
 export default {
   data() {
     return {
@@ -119,12 +119,15 @@ export default {
       date_2: "请选择"
     };
   },
-  computed: {
-    ...mapState(['saleMan']) // 业务员
+  watch: {
+    user(newValue, oldValue) {
+      // console.log("user变化了", newValue, oldValue);
+      this.$store.dispatch("getSaleMan");
+      // console.log("---saleMan", this.saleMan, "---user", this.user);
+    }
   },
-  mounted() {
-    this.$store.dispatch('getSaleMan')
-
+  computed: {
+    ...mapState(["saleMan", "user"]) // 业务员
   },
   methods: {
     changeCoin(coinNew) {
@@ -133,28 +136,30 @@ export default {
     },
     changeName(name) {
       this.salesmanName = name;
+      console.log(name);
       this.popupShow = false;
     },
     changeDate(dateNew) {
       this.datePicker = dateNew;
     },
 
-
+    goSaleMan() {
+      this.popupShow = true;
+      // console.log("---saleMan", this.saleMan, "---user", this.user);
+    },
     confirmPicker1(value) {
-      // console.log("dataNew", value);
-      console.log("date1");
       this.show_1 = false;
       this.date_1 = dayjs(value).format("YYYY-MM-DD");
     },
     confirmPicker2(value) {
-      console.log("date2");
-
-      // console.log("dataNew", value);
       this.show_2 = false;
       this.date_2 = dayjs(value).format("YYYY-MM-DD");
     },
     selectPartner() {
-      return getItem('singlePartner').Name || "请选择客户"
+      return (
+        (getItem("singlePartner") && getItem("singlePartner").Name) ||
+        "请选择客户"
+      );
     }
   }
 };

@@ -7,7 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     allPartner: getItem('allPartner') || null,
-    saleMan: getItem('saleMan') || null
+    saleMan: getItem('saleMan') || null,
+    user:getItem('user') || null
   },
   mutations: {
     changePartnerData (state,data) {
@@ -15,22 +16,34 @@ export default new Vuex.Store({
     },
     changeSaleMan(state,data) {
       state.saleMan = data
+    },
+    changeUser(state,data) {
+      state.user = data
     }
   },
   actions: {
     // 获取客户
     async getPartner(context) {
       const { data } = await Parse.Cloud.run("getPartner");
-      context.commit('changePartnerData',data)
-      setItem("allPartner", data);
+      console.log('客户',data)
+      context.commit('changePartnerData',data[0])
+      setItem("allPartner", data[0]);
     },
     // getSaleMan 获取业务员
     async getSaleMan(context) {
       const {data}  = await Parse.Cloud.run("getSaleMan");
-      console.log(data)
-      context.commit('changeSaleMan',data)
-      setItem("saleMan", data);
+      console.log('业务员',data)
+      context.commit('changeSaleMan',data[0])
+      setItem("saleMan", data[0]);
     },
+    // 获取 token
+    async getUser(context) {
+      const { data } = await Parse.Cloud.run("login");
+      const user = await Parse.User.become(data.sessionToken);
+      context.commit('changeUser',data)
+      setItem('user',data)
+      console.log("我带着token又登录啦", user);
+    }
   },
   
 })

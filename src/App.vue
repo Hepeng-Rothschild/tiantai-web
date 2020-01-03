@@ -19,6 +19,11 @@ export default {
     this.login();
     // this.logout()
   },
+  mounted() {
+    if(!this.$store.state.user) {
+      this.$store.dispatch('getUser')
+    }
+  },
   methods: {
     async logout() {
       const data = await this.$Parse.User.logOut();

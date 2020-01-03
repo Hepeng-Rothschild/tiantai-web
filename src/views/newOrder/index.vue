@@ -121,9 +121,9 @@ export default {
   },
   watch: {
     user(newValue, oldValue) {
-      // console.log("user变化了", newValue, oldValue);
+      console.log("user变化了", newValue, oldValue);
       this.$store.dispatch("getSaleMan");
-      // console.log("---saleMan", this.saleMan, "---user", this.user);
+      console.log("---saleMan", this.saleMan, "---user", this.user);
     }
   },
   computed: {
@@ -145,7 +145,7 @@ export default {
 
     goSaleMan() {
       this.popupShow = true;
-      // console.log("---saleMan", this.saleMan, "---user", this.user);
+      console.log("---saleMan", this.saleMan, "---user", this.user);
     },
     confirmPicker1(value) {
       this.show_1 = false;

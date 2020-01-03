@@ -31,8 +31,8 @@ export default {
     },
     async login() {
       const {data} = await this.$Parse.Cloud.run("login");
-       console.log(data);
-      const user = await this.$Parse.User.become(data.message)
+      //  console.log(data);
+      const user = await this.$Parse.User.become(data.sessionToken)
      
       
       console.log('我带着token又登录啦',user);

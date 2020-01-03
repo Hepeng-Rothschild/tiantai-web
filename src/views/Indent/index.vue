@@ -27,12 +27,11 @@
       <van-cell v-for="(indent,index) in allIndent"
                 :key="index"
                 :title="indent.partnerName"
-                :label="indent.saleOrderCode"
+                :label="indent.SA_SaleOrder_code"
                 is-link
-                to="/details"
                 @click="toDetails(indent)"
                 :class="draft?'draft':''">
-        ￥{{indent.origTaxAmount}}
+        ￥{{indent.SA_SaleOrder_origTaxAmount}}
         <div>
           <van-tag type="primary">{{indent.saleOrderState}}</van-tag>
         </div>
@@ -58,8 +57,6 @@ export default {
   },
   data () {
     return {
-      date_1: '请选择',
-      date_2: '请选择',
       // 日期
       currentDate: new Date(),
       // 自定义日期遮罩层
@@ -119,7 +116,8 @@ export default {
       const { data } = await this.$Parse.Cloud.run("getOrder", {
         startTime: this.startTime, endTime: this.endTime, code: this.code, state: this.state
       })
-
+      console.log(data);
+      
       this.allIndent = data.reverse()
     },
     // 获取本季度开端月份

@@ -9,13 +9,13 @@
                          :options="dateStatus"
                          @change="changeDate">
       </van-dropdown-item>
-      <van-popup v-model="overlay_show"
+      <!-- <van-popup v-model="overlay_show"
                  position="bottom">
         <van-datetime-picker v-model="currentDate"
                              type="date"
                              @confirm="confirmPicker1"
                              @cancel="overlay_show=false" />
-      </van-popup>
+      </van-popup> -->
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
                          @change="changeState" />
@@ -26,14 +26,14 @@
       <span class="date">{{this.endTime}}</span>
       <van-cell v-for="(indent,index) in allIndent"
                 :key="index"
-                :title="indent.partnerName"
+                :title="indent.partnerInfo.AA_Partner_name"
                 :label="indent.SA_SaleOrder_code"
                 is-link
                 @click="toDetails(indent)"
                 :class="draft?'draft':''">
         ￥{{indent.SA_SaleOrder_origTaxAmount}}
         <div>
-          <van-tag type="primary">{{indent.saleOrderState}}</van-tag>
+          <van-tag type="primary">{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
         </div>
       </van-cell>
       <span class="date">{{this.startTime}}</span>
@@ -79,8 +79,8 @@ export default {
       orderIndex: null,
       orderStatus: [
         { text: '全部', value: null },
-        { text: '未审', value: '未审' },
-        { text: '生效', value: '生效' }
+        { text: '未审', value: 181 },
+        { text: '已审', value: 189 }
       ],
       // 所有订单
       allIndent: [],
@@ -116,9 +116,8 @@ export default {
       const { data } = await this.$Parse.Cloud.run("getOrder", {
         startTime: this.startTime, endTime: this.endTime, code: this.code, state: this.state
       })
-      console.log(data);
-      
-      this.allIndent = data.reverse()
+      console.log(data[0]);
+      this.allIndent = data[0]
     },
     // 获取本季度开端月份
     getQuarterStartMonth () {
@@ -173,31 +172,10 @@ export default {
           break;
         default:
           this.overlay_show = true
-          // this.date_1 = this.confirmPicker1()   
-          this.confirmPicker1()
+          // this.confirmPicker1()
           break;
       }
-      // if (orderDate == 0) {
-      //   startTimeTmp = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
-      //   // 本月
-      // } else if (orderDate == 1) {
-      //   startTimeTmp = new Date(new Date().setDate(1))
-      //   // 上个月
-      // } else if (orderDate == 2) {
 
-      //   // 本季度
-      // } else if (orderDate == 3) {
-      //   startTimeTmp = new Date(new Date().getFullYear(), this.getQuarterStartMonth(), 1);
-      //   // 本年
-      // } else if (orderDate == 4) {
-      //   startTimeTmp = this.getCurrentYear()
-      // } else {
-      //   // 自定义
-      //   this.overlay_show = true
-      //   // this.date_1 = this.confirmPicker1()   
-      //   this.confirmPicker1()
-
-      // }
       this.startTime = dayjs(startTimeTmp).format('YYYY-MM-DD')
       this.endTime = dayjs(endTimeTmp).format('YYYY-MM-DD')
       console.log(this.startTime, this.endTime);
@@ -205,11 +183,11 @@ export default {
       console.log(this.allIndent);
     },
     // 选择自定义的日期
-    confirmPicker1 (value) {
-      this.overlay_show = false;
-      this.date_1 = dayjs(value).format("YYYY-MM-DD");
+    // confirmPicker1 (value) {
+    //   this.overlay_show = false;
+    //   this.date_1 = dayjs(value).format("YYYY-MM-DD");
 
-    },
+    // },
     // 改变订单状态值进行筛选
     async changeState (orderState) {
       this.state = orderState

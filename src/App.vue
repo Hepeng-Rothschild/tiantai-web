@@ -23,10 +23,10 @@
 <script>
 export default {
   mounted() {
-    if(!this.$store.state.user) {
+    // if(!this.$store.state.user) {
       this.$store.dispatch('logout')
       this.$store.dispatch('getUser')
-    }
+    // }
   },
   methods: {
     back() {

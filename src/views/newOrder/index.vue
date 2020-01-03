@@ -127,7 +127,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["saleMan", "user"]) // 业务员
+    ...mapState(["saleMan"]) // 业务员
   },
   methods: {
     changeCoin(coinNew) {

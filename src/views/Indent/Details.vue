@@ -3,11 +3,11 @@
     <div class="content">
       <div class="order-information">
         <span class="title">单据编号</span>
-        <span class="information">{{content.saleOrderCode}}</span>
+        <span class="information">{{content.SA_SaleOrder_code}}</span>
       </div>
       <div class="order-information">
         <span class="title">客户</span>
-        <span class="information">{{content.partnerName}}</span>
+        <span class="information">{{content.partnerInfo.AA_Partner_name}}</span>
       </div>
       <div class="order-information">
         <span class="title">业务员</span>
@@ -15,7 +15,7 @@
       </div>
       <div class="order-information">
         <span class="title">预计交货</span>
-        <span class="information">{{format(content.deliveryDate)}}</span>
+        <span class="information">{{format(content.SA_SaleOrder_deliveryDate)}}</span>
       </div>
       <van-cell title="待审核"
                 is-link
@@ -23,50 +23,50 @@
                 value="状态记录" />
       <div class="order-information">
         <span class="title">联系人</span>
-        <span class="information">{{content.LinkMan}}</span>
+        <span class="information">{{content.SA_SaleOrder_linkMan}}</span>
       </div>
       <div class="order-information">
         <span class="title">电话</span>
-        <span class="information">{{content.phone}}</span>
+        <span class="information">{{content.SA_SaleOrder_contactPhone}}</span>
       </div>
       <div class="order-information">
         <span class="title">送货地址</span>
-        <span class="information">{{content.Address}}</span>
+        <span class="information">{{content.SA_SaleOrder_address}}</span>
       </div>
     </div>
     <div class="price">
-      <span>{{content.inventoryCode}}</span>
+      <span>{{content.AA_Inventory_shorthand}}</span>
       <div class="order-information">
         <div class="product-name">
           <span class="name-left">名称</span>
-          <span class="name-right">{{content.inventoryName}}</span>
+          <span class="name-right">{{content.AA_Inventory_name}}</span>
         </div>
         <div class="product-price">
           <span class="name-left">含税单价</span>
-          <span class="name-right">￥{{content.origTaxPrice}}</span>
+          <span class="name-right">￥{{content.SA_SaleOrder_b_origTaxPrice}}</span>
         </div>
       </div>
       <div class="order-information">
         <div class="product-name">
           <span class="name-left">数量</span>
-          <span class="name-right">{{content.quantity}}{{content.unitName}}</span>
+          <span class="name-right">{{content.SA_SaleOrder_b_quantity}}</span>
         </div>
         <div class="product-price">
           <span class="name-left">含税金额</span>
-          <span class="name-right">￥{{content.origTaxAmount}}</span>
+          <span class="name-right">￥{{content.SA_SaleOrder_origTaxAmount}}</span>
         </div>
       </div>
       <van-cell title="本币金额"
-                class="cell-first">￥{{content.univalence}}</van-cell>
+                class="cell-first">￥{{content.SA_SaleOrder_origAmount}}</van-cell>
       <van-cell title="含税金额"
-                class="cell-second">￥{{content.univalence}}</van-cell>
+                class="cell-second">￥{{content.SA_SaleOrder_origTaxAmount}}</van-cell>
       <div class="parities">
         <span class="title">币种</span>
-        <span class="information">{{content.CurrencyName}}</span>
+        <span class="information">{{content.SA_SaleOrder_idcurrency}}</span>
       </div>
       <div class="parities">
         <span class="title">汇率</span>
-        <span class="information">1.0</span>
+        <span class="information">{{content.SA_SaleOrder_exchangeRate}}</span>
       </div>
       <div class="parities claim">
         <span class="title">送货要求</span>
@@ -90,6 +90,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 import { getItem } from "../../utils/Storage.js";
 export default {
   name: 'detailsIndex',
@@ -99,12 +101,23 @@ export default {
       content: getItem("allIndent"),
     }
   },
+  computed: {
+    ...mapState(["saleMan", "user"]) // 业务员
+  },
   methods: {
-    format (delivery) {
-      var today = new Date(parseInt(delivery.substr(6, 13))).toLocaleDateString();
-        var arr = today.split('/')
-        var str = arr.join('-')
-        return str  
+        goSaleMan() {
+      console.log("---saleMan", this.saleMan);
+    },
+    format (time) {
+      const dateTime = new Date(time)
+      const year = dateTime.getFullYear()
+      const month = dateTime.getMonth() + 1
+      const date = dateTime.getDate()
+      return `${year}-${this.addZero(month)}-${this.addZero(date)} `
+
+    },
+    addZero (v) {
+      return v < 10 ? '0' + v : v
     }
   }
 }

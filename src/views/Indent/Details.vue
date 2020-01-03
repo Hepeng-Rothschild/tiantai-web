@@ -104,7 +104,7 @@ export default {
       var today = new Date(parseInt(delivery.substr(6, 13))).toLocaleDateString();
         var arr = today.split('/')
         var str = arr.join('-')
-        return b   
+        return str  
     }
   }
 }

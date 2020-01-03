@@ -14,6 +14,7 @@
                   is-link
                   @click="showProperty = true">
         </van-cell>
+        
         <van-popup v-model="showProperty"
                    position="bottom"
                    :style="{ height: '30%' }">
@@ -131,7 +132,7 @@ export default {
       },
       // 客户性质
       propertys: [{ id: 1, name: '爸爸级' }, { id: 2, name: '大哥级' }, { id: 3, name: '儿子级' }, { id: 4, name: '垃圾' }],
-      propertyName: '请选择',
+      propertyName: '客户',
       // 所属类别
       categorys: [{ id: 1, name: '央企' }, { id: 2, name: '国企' }, { id: 3, name: '上市' }, { id: 4, name: '小屁' }],
       categoryName: '请选择',
@@ -140,10 +141,7 @@ export default {
       departmentName: '请选择',
       // 分管人员
       manages: [{ id: 1, name: '国务委员' }, { id: 2, name: '正部级' }, { id: 3, name: '金主爸爸' }, { id: 4, name: '弱鸡' }],
-      manageName: '请选择',
-      // 默认收款方式
-      // collects: [{ id: 1, name: '银行转账' }, { id: 2, name: '支付宝' }, { id: 3, name: '微信' }, { id: 4, name: '现金' }],
-      // collectName: '请选择'
+      manageName: '罗玉龙',
     }
   },
   methods: {

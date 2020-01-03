@@ -3,16 +3,24 @@
     <!-- 搜索栏 -->
     <my-search v-model="searchValue"
                placeholder="输入客户、编号进行查找"></my-search>
-
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex"
                          :options="dateStatus"
-                         @change="changeDate" />
+                         @change="changeDate">
+      </van-dropdown-item>
+      <van-popup v-model="overlay_show"
+                 position="bottom">
+        <van-datetime-picker v-model="currentDate"
+                             type="date"
+                             @confirm="confirmPicker1"
+                             @cancel="overlay_show=false" />
+      </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
                          @change="changeState" />
     </van-dropdown-menu>
+
     <!-- 筛选列表 -->
     <van-list>
       <span class="date">{{this.endTime}}</span>
@@ -50,6 +58,12 @@ export default {
   },
   data () {
     return {
+      date_1: '请选择',
+      date_2: '请选择',
+      // 日期
+      currentDate: new Date(),
+      // 自定义日期遮罩层
+      overlay_show: false,
       loading: false,
       finished: false,
       searchValue: null,
@@ -63,7 +77,7 @@ export default {
         { text: '上月', value: 2 },
         { text: '本季度', value: 3 },
         { text: '本年', value: 4 },
-        { text: '自定义', value: 5 }
+        { text: '自定义', value: 5 },
       ],
       orderIndex: null,
       orderStatus: [
@@ -87,6 +101,7 @@ export default {
     this.initDate()
   },
   methods: {
+
     // 跳转到详情页面
     toDetails (indent) {
       this.$router.push({ name: 'details' })
@@ -104,6 +119,7 @@ export default {
       const { data } = await this.$Parse.Cloud.run("getOrder", {
         startTime: this.startTime, endTime: this.endTime, code: this.code, state: this.state
       })
+
       this.allIndent = data.reverse()
     },
     // 获取本季度开端月份
@@ -137,36 +153,64 @@ export default {
     // 改变时间进行筛选
     async changeDate (orderDate) {
       // 近7天
-      if (orderDate == 0) {
-        const sevenDay = new Date().getTime() - 7 * 24 * 60 * 60 * 1000
-        this.startTime = dayjs(new Date(sevenDay)).format('YYYY-MM-DD')
-        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
-        // 本月
-      } else if (orderDate == 1) {
-        const nowMonth = new Date().setDate(1)
-        this.startTime = dayjs(new Date(nowMonth)).format('YYYY-MM-DD')
-        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
-        // 上个月
-      } else if (orderDate == 2) {
-        const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
-        this.startTime = dayjs(new Date(lastMonth)).format('YYYY-MM-DD')
-        const day = new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate();
-        const enddate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, day);
-        this.endTime = dayjs(new Date(enddate)).format('YYYY-MM-DD')
-        // 本季度
-      } else if (orderDate == 3) {
-        const quarterStartDate = new Date(new Date().getFullYear(), this.getQuarterStartMonth(), 1);
-        this.startTime = dayjs(new Date(quarterStartDate)).format('YYYY-MM-DD')
-        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
-        // 本年
-      } else if (orderDate == 4) {
-        const getCurrentYear = this.getCurrentYear()
-        this.startTime = dayjs(new Date(getCurrentYear)).format('YYYY-MM-DD')
-        this.endTime = dayjs(new Date()).format('YYYY-MM-DD')
+      let startTimeTmp = new Date();;
+      let endTimeTmp = new Date();
+      switch (orderDate) {
+        case 0:
+          startTimeTmp = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case 1:
+          startTimeTmp = new Date(new Date().setDate(1));
+          break;
+        case 2:
+          startTimeTmp = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+          const day = new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate();
+          endTimeTmp = new Date(new Date().getFullYear(), new Date().getMonth() - 1, day);
+          break;
+        case 3:
+          startTimeTmp = new Date(new Date().getFullYear(), this.getQuarterStartMonth(), 1);
+          break;
+        case 4:
+          startTimeTmp = this.getCurrentYear()
+          break;
+        default:
+          this.overlay_show = true
+          // this.date_1 = this.confirmPicker1()   
+          this.confirmPicker1()
+          break;
       }
+      // if (orderDate == 0) {
+      //   startTimeTmp = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
+      //   // 本月
+      // } else if (orderDate == 1) {
+      //   startTimeTmp = new Date(new Date().setDate(1))
+      //   // 上个月
+      // } else if (orderDate == 2) {
+
+      //   // 本季度
+      // } else if (orderDate == 3) {
+      //   startTimeTmp = new Date(new Date().getFullYear(), this.getQuarterStartMonth(), 1);
+      //   // 本年
+      // } else if (orderDate == 4) {
+      //   startTimeTmp = this.getCurrentYear()
+      // } else {
+      //   // 自定义
+      //   this.overlay_show = true
+      //   // this.date_1 = this.confirmPicker1()   
+      //   this.confirmPicker1()
+
+      // }
+      this.startTime = dayjs(startTimeTmp).format('YYYY-MM-DD')
+      this.endTime = dayjs(endTimeTmp).format('YYYY-MM-DD')
       console.log(this.startTime, this.endTime);
       await this.getData()
       console.log(this.allIndent);
+    },
+    // 选择自定义的日期
+    confirmPicker1 (value) {
+      this.overlay_show = false;
+      this.date_1 = dayjs(value).format("YYYY-MM-DD");
+
     },
     // 改变订单状态值进行筛选
     async changeState (orderState) {
@@ -181,6 +225,17 @@ export default {
 .search {
   margin: 59px 10px 10px 10px;
   width: 94%;
+}
+.customize {
+  display: flex;
+  font-size: 15px;
+  input {
+    width: 100%;
+    height: 100%;
+    font-size: 15px;
+    text-align: center;
+    border: 0px;
+  }
 }
 .van-list {
   .date {

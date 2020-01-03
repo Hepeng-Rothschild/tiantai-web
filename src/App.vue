@@ -8,13 +8,6 @@
       @click-left="back"
       @click-right="toDoSomething()"
     >
-      <!-- <van-icon
-        name="notes-o"
-        slot="right"
-        v-if="$route.meta.icon"
-        class="icon"
-        @click="doSomething()"
-      /> -->
     </van-nav-bar>
     <router-view />
   </div>
@@ -23,7 +16,7 @@
 <script>
 export default {
   created() {
-    // this.login();
+    this.login();
     // this.logout()
   },
   methods: {
@@ -32,9 +25,9 @@ export default {
       console.log("退出登录", data);
     },
     async login() {
-      // const {data} = await this.$Parse.Cloud.run("login");
-       console.log('====');
-      const user = await this.$Parse.User.become('r:d2a41743323e79090238c5bf1a6018a1')
+      const {data} = await this.$Parse.Cloud.run("login");
+       console.log(data);
+      const user = await this.$Parse.User.become(data.message)
      
       
       console.log('我带着token又登录啦',user);

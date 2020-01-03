@@ -37,9 +37,12 @@ export default {
       console.log("退出登录", data);
     },
     async login() {
-      const { data } = await this.$Parse.Cloud.run("login");
-      const user = await this.$Parse.User.become(data.sessionToken);
-      console.log("我带着token又登录啦", user);
+      // const {data} = await this.$Parse.Cloud.run("login");
+       console.log('====');
+      const user = await this.$Parse.User.become('r:d2a41743323e79090238c5bf1a6018a1')
+     
+      
+      console.log('我带着token又登录啦',user);
     },
     back() {
       this.$router.go(-1);

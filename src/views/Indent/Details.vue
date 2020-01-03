@@ -3,19 +3,19 @@
     <div class="content">
       <div class="order-information">
         <span class="title">单据编号</span>
-        <span class="information">{{contents.number}}</span>
+        <span class="information">{{content.saleOrderCode}}</span>
       </div>
       <div class="order-information">
         <span class="title">客户</span>
-        <span class="information">{{contents.client}}</span>
+        <span class="information">{{content.partnerName}}</span>
       </div>
       <div class="order-information">
         <span class="title">业务员</span>
-        <span class="information">{{contents.sales}}</span>
+        <span class="information">666</span>
       </div>
       <div class="order-information">
         <span class="title">预计交货</span>
-        <span class="information">{{contents.predict}}</span>
+        <span class="information">{{format(content.deliveryDate)}}</span>
       </div>
       <van-cell title="待审核"
                 is-link
@@ -23,46 +23,46 @@
                 value="状态记录" />
       <div class="order-information">
         <span class="title">联系人</span>
-        <span class="information">{{contents.sales}}</span>
+        <span class="information">{{content.LinkMan}}</span>
       </div>
       <div class="order-information">
         <span class="title">电话</span>
-        <span class="information">{{contents.phone}}</span>
+        <span class="information">{{content.phone}}</span>
       </div>
       <div class="order-information">
         <span class="title">送货地址</span>
-        <span class="information">{{contents.address}}</span>
+        <span class="information">{{content.Address}}</span>
       </div>
     </div>
     <div class="price">
-      <span>{{contents.revise}}</span>
+      <span>{{content.inventoryCode}}</span>
       <div class="order-information">
         <div class="product-name">
           <span class="name-left">名称</span>
-          <span class="name-right">{{contents.proName}}</span>
+          <span class="name-right">{{content.inventoryName}}</span>
         </div>
         <div class="product-price">
           <span class="name-left">含税单价</span>
-          <span class="name-right">￥ {{contents.univalence}}</span>
+          <span class="name-right">￥{{content.origTaxPrice}}</span>
         </div>
       </div>
       <div class="order-information">
         <div class="product-name">
           <span class="name-left">数量</span>
-          <span class="name-right">{{contents.univalence}}KG</span>
+          <span class="name-right">{{content.quantity}}{{content.unitName}}</span>
         </div>
         <div class="product-price">
           <span class="name-left">含税金额</span>
-          <span class="name-right">￥ {{contents.univalence}}</span>
+          <span class="name-right">￥{{content.origTaxAmount}}</span>
         </div>
       </div>
       <van-cell title="本币金额"
-                class="cell-first">￥ {{contents.univalence}}</van-cell>
+                class="cell-first">￥{{content.univalence}}</van-cell>
       <van-cell title="含税金额"
-                class="cell-second">￥ {{contents.univalence}}</van-cell>
+                class="cell-second">￥{{content.univalence}}</van-cell>
       <div class="parities">
         <span class="title">币种</span>
-        <span class="information">人民币</span>
+        <span class="information">{{content.CurrencyName}}</span>
       </div>
       <div class="parities">
         <span class="title">汇率</span>
@@ -70,11 +70,17 @@
       </div>
       <div class="parities claim">
         <span class="title">送货要求</span>
-        <span class="information">送货要求</span>
+        <!-- <van-field v-model="value" placeholder="送货要求" /> -->
+        <input type="text"
+               class="input"
+               placeholder="送货要求">
       </div>
       <div class="parities">
         <span class="title">备注</span>
-        <span class="information">备注备注</span>
+        <!-- <van-field v-model="value" placeholder="备注" /> -->
+        <input type="text"
+               class="input"
+               placeholder="备注">
       </div>
     </div>
     <div class="menu">
@@ -84,16 +90,22 @@
 </template>
 
 <script>
+import { getItem } from "../../utils/Storage.js";
 export default {
   name: 'detailsIndex',
   data () {
     return {
       // 订单详情信息
-      contents:
-        { number: 5255, client: 'xxx公司', sales: '张强', predict: '2019-12-12', phone: '155582695', address: 'xx省xx市', revise: '19D', proName: '滑石粉', univalence: '200.00', amount: '4000.00' },
+      content: getItem("allIndent"),
     }
   },
   methods: {
+    format (delivery) {
+      var today = new Date(parseInt(delivery.substr(6, 13))).toLocaleDateString();
+        var arr = today.split('/')
+        var str = arr.join('-')
+        return b   
+    }
   }
 }
 </script>
@@ -216,6 +228,14 @@ export default {
       font-size: 15px;
       // margin-bottom: 5px;
       color: #101010;
+    }
+    input {
+      flex: 3;
+      font-size: 15px;
+      // margin-bottom: 5px;
+      color: #101010;
+      border: 0px;
+      margin-bottom: 10px;
     }
   }
 }

@@ -6,7 +6,7 @@
       :key="index"
       @click="selectPartner(partner)"
     >
-      <van-cell :title="partner.Name" :label="Number(partner.ARBalance).toFixed(2)" is-link />
+      <van-cell :title="partner.AA_Partner_name" :label="Number(partner.ARBalance).toFixed(2)" is-link />
     </van-cell-group>
     <!-- 新增客户按钮 -->
     <van-button round type="default" class="add" @click="$router.push('/newly')">+</van-button>

@@ -40,9 +40,6 @@ export default {
     background-color: #fff;
     box-shadow: 0 0 2px #999;
   }
-  .left {
-    justify-content: flex-start;
-  }
   .right {
     justify-content: flex-end;
   }

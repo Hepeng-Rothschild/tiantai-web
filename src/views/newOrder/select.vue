@@ -1,12 +1,12 @@
 <template>
   <div>
     <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
-    <van-cell-group
-      v-for="(partner,index) in partner"
-      :key="index"
-      @click="selectPartner(partner)"
-    >
-      <van-cell :title="partner.AA_Partner_name" :label="Number(partner.ARBalance).toFixed(2)" is-link />
+    <van-cell-group v-for="(partner,index) in partner" :key="index" @click="selectPartner(partner)">
+      <van-cell
+        :title="partner.AA_Partner_Contact"
+        :label="Number(partner.AA_Partner_Pay_AdvPBalance).toFixed(2)"
+        is-link
+      />
     </van-cell-group>
     <!-- 新增客户按钮 -->
     <van-button round type="default" class="add" @click="$router.push('/newly')">+</van-button>
@@ -23,27 +23,30 @@ export default {
   },
   data() {
     return {
-      searchValue: null
+      searchValue: null,
+      partner: null
     };
   },
   mounted() {
-    this.$store.dispatch("getPartner");
+    this.getPartner();
   },
-  computed: {
-    ...mapState(["allPartner"]),
-    partner: function() {
-      if (this.searchValue) {
-        return this.allPartner.filter((item, i) => {
-          return item.Name.indexOf(this.searchValue) != -1;
-        });
-      }
-      return this.allPartner;
+  watch: {
+     searchValue(newValue,oldValue) {
+        console.log(this.searchValue)
+        this.getPartner()
+        console.log(this.partner)
     }
   },
   methods: {
+    // 获取客户
+    async getPartner() {
+      const { data } = await this.$Parse.Cloud.run("getPartner",{name:this.searchValue});
+      console.log("客户", data[0]);
+      this.partner = data[0]
+    },
     selectPartner(partner) {
-      this.$router.push({name:'neworder'})
-      setItem('singlePartner',partner)
+      this.$router.push({ name: "neworder" });
+      setItem("singlePartner", partner);
     }
   }
 };

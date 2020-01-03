@@ -14,7 +14,7 @@
         v-if="$route.meta.icon"
         class="icon"
         @click="doSomething()"
-      /> -->
+      />-->
     </van-nav-bar>
     <router-view />
   </div>
@@ -23,10 +23,13 @@
 <script>
 export default {
   mounted() {
-    // if(!this.$store.state.user) {
-      this.$store.dispatch('logout')
-      this.$store.dispatch('getUser')
-    // }
+    if (!this.$store.state.user) {
+      this.$store.dispatch("logout");
+      this.$store.dispatch("login");
+    }else {
+
+      this.$store.dispatch("keepLogin");
+    }
   },
   methods: {
     back() {
@@ -37,7 +40,7 @@ export default {
     },
     toDoSomething() {
       if (this.$route.meta.url) {
-        this.$router.push(this.$route.meta.url)
+        this.$router.push(this.$route.meta.url);
       }
     }
   }

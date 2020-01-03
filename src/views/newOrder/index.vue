@@ -26,7 +26,7 @@
       <!-- 选择客户 -->
       <van-cell title="客户*" is-link class="spacing" to="/select">{{ selectPartner()}}</van-cell>
       <!-- 选择业务员 -->
-      <van-cell title="业务员" :value="salesmanName" is-link class="spacing" @click="goSaleMan()"></van-cell>
+      <van-cell title="业务员" :value="salesmanName" is-link class="spacing" @click="popupShow = true"></van-cell>
       <van-popup v-model="popupShow" position="bottom" :style="{ height: '40%' }">
         <div
           v-for="saleMan in saleMan"
@@ -116,18 +116,22 @@ export default {
       // 开始时间默认值
       date_1: "请选择",
       // 结束时间默认值
-      date_2: "请选择"
+      date_2: "请选择",
+      saleMan: []
     };
   },
-  watch: {
-    user(newValue, oldValue) {
-      console.log("user变化了", newValue, oldValue);
-      this.$store.dispatch("getSaleMan");
-      console.log("---saleMan", this.saleMan, "---user", this.user);
-    }
-  },
-  computed: {
-    ...mapState(["saleMan"]) // 业务员
+  // watch: {
+  //   user(newValue, oldValue) {
+  //     console.log("user变化了", newValue, oldValue);
+  //     this.$store.dispatch("getSaleMan");
+  //     console.log("---saleMan", this.saleMan, "---user", this.user);
+  //   }
+  // },
+  // computed: {
+  //   ...mapState(["saleMan", "user"]) // 业务员
+  // },
+  mounted() {
+    this.getSaleMan()
   },
   methods: {
     changeCoin(coinNew) {
@@ -142,10 +146,11 @@ export default {
     changeDate(dateNew) {
       this.datePicker = dateNew;
     },
-
-    goSaleMan() {
-      this.popupShow = true;
-      console.log("---saleMan", this.saleMan, "---user", this.user);
+    // getSaleMan 获取业务员
+    async getSaleMan() {
+        const {data}  = await this.$Parse.Cloud.run("getSaleMan");
+        this.saleMan = data[0]
+        console.log('业务员',data[0])
     },
     confirmPicker1(value) {
       this.show_1 = false;

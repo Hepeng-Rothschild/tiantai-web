@@ -43,6 +43,10 @@ export default new Vuex.Store({
       context.commit('changeUser',data)
       setItem('user',data)
       console.log("我带着token又登录啦", user);
+    },
+    async logout() {
+      const data = await Parse.User.logOut();
+      console.log("退出登录", data);
     }
   },
   

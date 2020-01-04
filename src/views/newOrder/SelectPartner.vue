@@ -41,7 +41,6 @@ export default {
     async searchValue(newValue, oldValue) {
       this.finished = false
       this.pageIndex = 0;
-      this.searchValue = newValue;
       this.partner = [];
       this.getPartner();
     }
@@ -58,13 +57,12 @@ export default {
         pageIndex: _this.pageIndex,
         pageSize: _this.pageSize
       });
-      console.log(data[0].length)
+      console.log(data[0])
       let listData = this.partner || [];
       for (let i = 0; i < data[0].length; i++) {
         listData.push(data[0][i]);
       }
       this.partner = listData;
-      console.log("partner", this.partner);
 
       this.loading = false;
      

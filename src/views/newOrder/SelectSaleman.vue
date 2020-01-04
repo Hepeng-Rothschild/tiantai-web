@@ -1,21 +1,19 @@
 <template>
   <div>
     <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
-    <van-cell-group v-for="(partner,index) in partner" :key="index" @click="selectPartner(partner)">
-      <van-cell
-        :title="partner.AA_Partner_Contact"
-        :label="Number(partner.AA_Partner_Pay_AdvPBalance).toFixed(2)"
-        is-link
-      />
-    </van-cell-group>
 
-    <!-- <div
-      v-for="saleMan in saleMan"
-      :key="saleMan.id"
-      @click="changeName(saleMan.name)"
-    >{{saleMan.name}}</div> -->
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :offset="100"
+      @load="onLoad"
+    >
+      <van-cell-group v-for="item in saleMan" :key="item.id" @click="selectSaleMan(item)">
+        <van-cell :title="item.name" :label="item.id" is-link />
+      </van-cell-group>
+    </van-list>
 
-    
     <!-- 新增客户按钮 -->
     <van-button round type="default" class="add" @click="$router.push('/newly')">+</van-button>
   </div>
@@ -24,7 +22,6 @@
 <script>
 import MySearch from "../../components/Search.vue";
 import { setItem, getItem } from "../../utils/Storage.js";
-import { mapState } from "vuex";
 export default {
   components: {
     MySearch: MySearch
@@ -32,32 +29,51 @@ export default {
   data() {
     return {
       searchValue: null,
-      partner: null
+      saleMan: null,
+      loading: false,
+      finished: false,
+      pageIndex: 0,
+      pageSize: 10
     };
-  },
-  mounted() {
-    this.getPartner();
   },
   watch: {
     searchValue(newValue, oldValue) {
-      console.log(this.searchValue);
-      this.getPartner();
-      console.log(this.partner);
+      this.finished = false;
+      this.pageIndex = 0;
+      this.saleMan = [];
+      this.getSaleMan();
     }
   },
   methods: {
-    // 获取业务员
-
-    async getPartner() {
-      const { data } = await this.$Parse.Cloud.run("getPartner", {
-        name: this.searchValue
-      });
-      console.log("客户", data[0]);
-      this.partner = data[0];
+    onLoad() {
+      this.getSaleMan();
     },
-    selectPartner(partner) {
+    // getSaleMan 获取业务员
+    async getSaleMan() {
+      var _this = this;
+      const { data } = await this.$Parse.Cloud.run("getSaleMan", {
+        name: _this.searchValue,
+        pageIndex: _this.pageIndex,
+        pageSize: _this.pageSize
+      });
+      // console.log("业务员", data[0]);
+      let listData = this.saleMan || [];
+      for (let i = 0; i < data[0].length; i++) {
+        listData.push(data[0][i]);
+      }
+      this.saleMan = listData;
+      console.log("saleMan", this.saleMan);
+      console.log(this.pageIndex)
+      this.loading = false;
+      if (data[0].length) {
+        this.pageIndex++;
+      } else {
+        this.finished = true;
+      }
+    },
+    selectSaleMan(saleMan) {
       this.$router.push({ name: "neworder" });
-      setItem("selectPartner", partner);
+      setItem("selectSaleMan", saleMan);
     }
   }
 };

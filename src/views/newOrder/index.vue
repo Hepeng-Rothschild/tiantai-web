@@ -24,15 +24,35 @@
         />
       </van-overlay>
       <!-- 选择客户 -->
-      <van-cell title="客户*" is-link class="spacing" to="/selectpartner">{{ partner.AA_Partner_Contact }}</van-cell>
+      <van-cell
+        title="客户*"
+        is-link
+        class="spacing"
+        to="/selectpartner"
+      >{{ partner?partner.AA_Partner_Contact:'请选择客户' }}</van-cell>
       <!-- 选择业务员 -->
-      <van-cell title="业务员" :value="saleManName" is-link class="spacing" to="/selectsaleman"></van-cell>
-       
-
+      <van-cell
+        title="业务员"
+        is-link
+        class="spacing"
+        to="/selectsaleman"
+      >{{saleMan?saleMan.name:'请选择'}}</van-cell>
+      <!-- 选择商品 -->
       <van-cell title="选择商品" value="请选择" is-link class="spacing" to="/choose"></van-cell>
+      <div class="goods">
+        <div class="left">
+          <div class="code">19D</div>
+          <div class="gray">滑石粉</div>
+          <div class="gray">￥3.00*300</div>
+        </div>
+        <div class="right">
+          <div class="edit">编辑</div>
+          <div class="money">￥750</div>
+        </div>
+      </div>
       <div class="spacing-two">
         <van-cell title="币种" :value="moneyType" is-link @click="popupShowCoin = true"></van-cell>
-        <van-popup v-model="popupShowCoin" position="bottom" :style="{ height: '23%' }">
+        <van-popup v-model="popupShowCoin" position="bottom" :style="{ height: '25%' }">
           <div
             v-for="coin in coins"
             :key="coin.id"
@@ -52,7 +72,7 @@
       <div class="spacing-two">
         <van-cell title="发货要求">
           <van-field
-            v-model="value.send"
+            v-model="value.deliveryRequire"
             placeholder="请输入"
             input-align="right"
             style="border:0px;"
@@ -60,7 +80,7 @@
         </van-cell>
         <van-cell title="送货要求">
           <van-field
-            v-model="value.delivery"
+            v-model="value.sendRequire"
             placeholder="请输入"
             input-align="right"
             style="border:0px;"
@@ -98,19 +118,12 @@ export default {
       ],
       // 控制单元格内的输入框
       value: {
-        exchangeRate: 1.0.toFixed(1),
-        send: "",
-        delivery: "",
+        exchangeRate: (1.0).toFixed(1),
+        sendRequire: "",
+        deliveryRequire: "",
         remark: ""
       },
-      saleManReqBody:{
-        name:null,
-        pageIndex:1,
-        pageSize:10
-      },
       popupShowCoin: false,
-      // 控制弹出层显示隐藏
-      popupShow: false,
       // 日期
       currentDate: new Date(),
       // 单据日期遮罩层
@@ -120,12 +133,11 @@ export default {
       date_1: "请选择",
       // 结束时间默认值
       date_2: "请选择",
-      saleMan: [],
-      partner: "请选择客户"
+      saleMan: getItem("selectSaleMan"),
+      partner: getItem("selectPartner")
     };
   },
   mounted() {
-    this.getSaleMan();
     getItem("selectPartner") && this.selectPartner();
   },
   methods: {
@@ -133,19 +145,11 @@ export default {
       this.moneyType = type;
       this.popupShowCoin = false;
     },
-    changeName(name) {
-      this.saleManName = name;
-      this.popupShow = false;
-    },
+
     changeDate(dateNew) {
       this.datePicker = dateNew;
     },
-    // getSaleMan 获取业务员
-    async getSaleMan() {
-      const { data } = await this.$Parse.Cloud.run("getSaleMan",this.saleManReqBody);
-      this.saleMan = data[0];
-      console.log("业务员", data[0]);
-    },
+
     confirmPicker1(value) {
       this.show_1 = false;
       this.date_1 = dayjs(value).format("YYYY-MM-DD");
@@ -155,11 +159,10 @@ export default {
       this.date_2 = dayjs(value).format("YYYY-MM-DD");
     },
     selectPartner() {
-        this.partner = getItem("selectPartner");
-        const saleManName = this.saleMan.filter((item,index)=>{
-          return item.id == this.partner.AA_Partner_idsaleman
-        })
-        this.saleManName = saleManName[0]? saleManName[0].name : '请选择'
+      // const saleManName = this.saleMan.filter((item,index)=>{
+      //   return item.id == this.partner.AA_Partner_idsaleman
+      // })
+      // this.saleManName = saleManName[0]? saleManName[0].name : '请选择'
     }
   }
 };
@@ -221,7 +224,7 @@ export default {
     }
   }
 }
-// 底部两个按钮
+// 底部按钮
 .buttonBox {
   margin-bottom: 20px;
   display: flex;
@@ -237,6 +240,28 @@ export default {
     border-radius: 5px;
     background-color: rgba(1, 113, 240, 1);
     border: 1px solid rgba(5, 5, 5, 0.08);
+  }
+}
+.goods {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 14px;
+  font-size: 15px;
+
+  .code {
+    color: rgba(16, 16, 16, 1);
+    font-size: 17px;
+  }
+  .gray {
+    color: rgba(153, 153, 153, 1);
+  }
+  .edit {
+    color: rgba(40, 142, 248, 1);
+    font-size: 14px;
+  }
+  .money {
+    color: rgba(51, 51, 51, 1);
+    font-size: 15px;
   }
 }
 </style>

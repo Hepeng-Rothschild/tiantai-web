@@ -28,6 +28,7 @@ export default {
   margin-top: 59px;
   border-bottom: 1px solid #c0c4cc;
   padding-left: 16px;
+  
   .van-radio {
     margin-bottom: 20px;
     .van-radio__label {

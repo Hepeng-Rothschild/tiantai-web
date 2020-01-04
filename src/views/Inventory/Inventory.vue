@@ -7,7 +7,7 @@
       :finished="finished"
       finished-text="没有更多了"
       @load="onLoad"
-      :offset="10"
+      :offset="100"
     >
       <div class="cell" v-for="(item,index) in inventory" :key="index" @click="goToDtail(item)">
         <div class="text">
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     onLoad() {
-      console.log(this.pageIndex);
+      // console.log(this.pageIndex);
       this.getData();
     },
     goToDtail(item) {

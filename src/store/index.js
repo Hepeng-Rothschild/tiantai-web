@@ -17,18 +17,18 @@ export default new Vuex.Store({
     // 获取 token
     async login(context) {
       const { data } = await Parse.Cloud.run("login");
-      console.log('登录',data)
+      console.log('登录')
       context.commit('changeUser',data)
       setItem('user',data)
       
     },
     async keepLogin(context) {
       const user = await Parse.User.become(context.state.user.sessionToken);
-      console.log("我带着token又登录啦", user);
+      console.log("我带着token又登录啦",user);
     },
     async logout() {
-      const data = await Parse.User.logOut();
-      console.log("退出登录", data);
+      await Parse.User.logOut();
+      console.log("退出登录");
     }
   },
   

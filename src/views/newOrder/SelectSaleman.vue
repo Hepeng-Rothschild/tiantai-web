@@ -8,6 +8,14 @@
         is-link
       />
     </van-cell-group>
+
+    <!-- <div
+      v-for="saleMan in saleMan"
+      :key="saleMan.id"
+      @click="changeName(saleMan.name)"
+    >{{saleMan.name}}</div> -->
+
+    
     <!-- 新增客户按钮 -->
     <van-button round type="default" class="add" @click="$router.push('/newly')">+</van-button>
   </div>
@@ -31,22 +39,25 @@ export default {
     this.getPartner();
   },
   watch: {
-     searchValue(newValue,oldValue) {
-        console.log(this.searchValue)
-        this.getPartner()
-        console.log(this.partner)
+    searchValue(newValue, oldValue) {
+      console.log(this.searchValue);
+      this.getPartner();
+      console.log(this.partner);
     }
   },
   methods: {
-    // 获取客户
+    // 获取业务员
+
     async getPartner() {
-      const { data } = await this.$Parse.Cloud.run("getPartner",{name:this.searchValue});
+      const { data } = await this.$Parse.Cloud.run("getPartner", {
+        name: this.searchValue
+      });
       console.log("客户", data[0]);
-      this.partner = data[0]
+      this.partner = data[0];
     },
     selectPartner(partner) {
       this.$router.push({ name: "neworder" });
-      setItem("singlePartner", partner);
+      setItem("selectPartner", partner);
     }
   }
 };

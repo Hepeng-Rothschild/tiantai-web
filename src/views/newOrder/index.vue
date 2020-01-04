@@ -24,26 +24,24 @@
         />
       </van-overlay>
       <!-- 选择客户 -->
-      <van-cell title="客户*" is-link class="spacing" to="/select">{{ selectPartner()}}</van-cell>
+      <van-cell title="客户*" is-link class="spacing" to="/selectpartner">{{ partner.AA_Partner_Contact }}</van-cell>
       <!-- 选择业务员 -->
-      <van-cell title="业务员" :value="salesmanName" is-link class="spacing" @click="popupShow = true"></van-cell>
-      <van-popup v-model="popupShow" position="bottom" :style="{ height: '40%' }">
-        <div
-          v-for="saleMan in saleMan"
-          :key="saleMan.id"
-          @click="changeName(saleMan.name)"
-        >{{saleMan.name}}</div>
-      </van-popup>
+      <van-cell title="业务员" :value="saleManName" is-link class="spacing" to="/selectsaleman"></van-cell>
+       
 
       <van-cell title="选择商品" value="请选择" is-link class="spacing" to="/choose"></van-cell>
       <div class="spacing-two">
-        <van-cell title="币种" :value="coinsName" is-link @click="popupShowCoin = true"></van-cell>
-        <van-popup v-model="popupShowCoin" position="bottom" :style="{ height: '30%' }">
-          <div v-for="coin in coins" :key="coin.id" @click="changeCoin(coin.name)">{{coin.name}}</div>
+        <van-cell title="币种" :value="moneyType" is-link @click="popupShowCoin = true"></van-cell>
+        <van-popup v-model="popupShowCoin" position="bottom" :style="{ height: '23%' }">
+          <div
+            v-for="coin in coins"
+            :key="coin.id"
+            @click="changeMoneyType(coin.name)"
+          >{{coin.name}}</div>
         </van-popup>
         <van-cell title="汇率">
           <van-field
-            v-model="value.rate"
+            v-model="value.exchangeRate"
             placeholder="请输入"
             input-align="right"
             style="border:0px;"
@@ -90,8 +88,8 @@ import { getItem, setItem } from "../../utils/Storage.js";
 export default {
   data() {
     return {
-      coinsName: "请选择",
-      salesmanName: "请选择",
+      moneyType: "人民币",
+      saleManName: "请选择",
       // 币种
       coins: [
         { id: 1, name: "人民币" },
@@ -100,10 +98,15 @@ export default {
       ],
       // 控制单元格内的输入框
       value: {
-        rate: "",
+        exchangeRate: 1.0.toFixed(1),
         send: "",
         delivery: "",
         remark: ""
+      },
+      saleManReqBody:{
+        name:null,
+        pageIndex:1,
+        pageSize:10
       },
       popupShowCoin: false,
       // 控制弹出层显示隐藏
@@ -117,30 +120,21 @@ export default {
       date_1: "请选择",
       // 结束时间默认值
       date_2: "请选择",
-      saleMan: []
+      saleMan: [],
+      partner: "请选择客户"
     };
   },
-  // watch: {
-  //   user(newValue, oldValue) {
-  //     console.log("user变化了", newValue, oldValue);
-  //     this.$store.dispatch("getSaleMan");
-  //     console.log("---saleMan", this.saleMan, "---user", this.user);
-  //   }
-  // },
-  // computed: {
-  //   ...mapState(["saleMan", "user"]) // 业务员
-  // },
   mounted() {
-    this.getSaleMan()
+    this.getSaleMan();
+    getItem("selectPartner") && this.selectPartner();
   },
   methods: {
-    changeCoin(coinNew) {
-      this.coinsName = coinNew;
+    changeMoneyType(type) {
+      this.moneyType = type;
       this.popupShowCoin = false;
     },
     changeName(name) {
-      this.salesmanName = name;
-      console.log(name);
+      this.saleManName = name;
       this.popupShow = false;
     },
     changeDate(dateNew) {
@@ -148,9 +142,9 @@ export default {
     },
     // getSaleMan 获取业务员
     async getSaleMan() {
-        const {data}  = await this.$Parse.Cloud.run("getSaleMan");
-        this.saleMan = data[0]
-        console.log('业务员',data[0])
+      const { data } = await this.$Parse.Cloud.run("getSaleMan",this.saleManReqBody);
+      this.saleMan = data[0];
+      console.log("业务员", data[0]);
     },
     confirmPicker1(value) {
       this.show_1 = false;
@@ -161,10 +155,11 @@ export default {
       this.date_2 = dayjs(value).format("YYYY-MM-DD");
     },
     selectPartner() {
-      return (
-        (getItem("singlePartner") && getItem("singlePartner").Name) ||
-        "请选择客户"
-      );
+        this.partner = getItem("selectPartner");
+        const saleManName = this.saleMan.filter((item,index)=>{
+          return item.id == this.partner.AA_Partner_idsaleman
+        })
+        this.saleManName = saleManName[0]? saleManName[0].name : '请选择'
     }
   }
 };

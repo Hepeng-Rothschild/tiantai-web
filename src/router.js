@@ -31,10 +31,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "Newly" */ '@/views/NewOrder/Newly.vue')
   },
   {
-    path: '/select',
-    name: 'select',
+    path: '/selectpartner',
+    name: 'selectpartner',
     meta:{title:'选择客户'},
-    component: () => import(/* webpackChunkName: "Select" */ '@/views/NewOrder/select.vue')
+    component: () => import( '@/views/NewOrder/SelectPartner.vue')
+  },
+  {
+    path: '/selectsaleman',
+    name: 'selectsaleman',
+    meta:{title:'选择业务员'},
+    component: () => import( '@/views/NewOrder/SelectSaleman.vue')
   },
   {
     path: '/indent',

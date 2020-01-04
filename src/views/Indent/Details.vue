@@ -7,11 +7,11 @@
       </div>
       <div class="order-information">
         <span class="title">客户</span>
-        <span class="information">{{content.partnerInfo.AA_Partner_name}}</span>
+        <span class="information">{{content.AA_Partner_name}}</span>
       </div>
       <div class="order-information">
         <span class="title">业务员</span>
-        <span class="information">666</span>
+        <span class="information">{{content.partnerInfo.AA_Person_name}}</span>
       </div>
       <div class="order-information">
         <span class="title">预计交货</span>
@@ -90,8 +90,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-
 import { getItem } from "../../utils/Storage.js";
 export default {
   name: 'detailsIndex',
@@ -101,13 +99,7 @@ export default {
       content: getItem("allIndent"),
     }
   },
-  computed: {
-    ...mapState(["saleMan", "user"]) // 业务员
-  },
   methods: {
-        goSaleMan() {
-      console.log("---saleMan", this.saleMan);
-    },
     format (time) {
       const dateTime = new Date(time)
       const year = dateTime.getFullYear()

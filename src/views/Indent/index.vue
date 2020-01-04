@@ -2,7 +2,7 @@
   <div>
     <!-- 搜索栏 -->
     <my-search v-model="searchValue"
-               placeholder="输入客户、编号进行查找"></my-search>
+               placeholder="输入客户名称进行查找"></my-search>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex"
@@ -22,11 +22,13 @@
     </van-dropdown-menu>
 
     <!-- 筛选列表 -->
-    <van-list>
+    <van-list v-model="loading"
+              :finished="finished"
+              @load="getData">
       <span class="date">{{this.endTime}}</span>
       <van-cell v-for="(indent,index) in allIndent"
                 :key="index"
-                :title="indent.partnerInfo.AA_Partner_name"
+                :title="indent.AA_Partner_name"
                 :label="indent.SA_SaleOrder_code"
                 is-link
                 @click="toDetails(indent)"
@@ -50,6 +52,8 @@
 import dayjs from 'dayjs'
 import { setItem } from "../../utils/Storage.js";
 import MySearch from "../../components/Search.vue"
+import { debounce } from 'loadsh'
+
 export default {
   name: 'IndentIndex',
   components: {
@@ -57,12 +61,12 @@ export default {
   },
   data () {
     return {
+      // 列表加载
+      loading: false,
+      // 全部加载完成
+      finished: false,
       // 日期
       currentDate: new Date(),
-      // 自定义日期遮罩层
-      overlay_show: false,
-      loading: false,
-      finished: false,
       searchValue: null,
       // 是否有草稿
       draft: null,
@@ -88,14 +92,21 @@ export default {
       startTime: '',
       // 结束时间
       endTime: '',
-      // 订单编号
-      code: null,
       // 当前状态
-      state: null
+      state: null,
+      pageSize: null,
+      pageIndex: null,
+      name: null
     }
   },
   created () {
     this.initDate()
+  },
+  watch: {
+    searchValue: debounce(async function (newVal) {
+      this.name = this.searchValue
+      await this.getData()
+    }, 500)
   },
   methods: {
 
@@ -114,10 +125,39 @@ export default {
     // 调取订单查询接口
     async getData () {
       const { data } = await this.$Parse.Cloud.run("getOrder", {
-        startTime: this.startTime, endTime: this.endTime, code: this.code, state: this.state
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        name: this.name,
+        state: this.state
       })
       console.log(data[0]);
       this.allIndent = data[0]
+      for (let i = 0; i < this.pageSize; i++) {
+        
+        this.allIndent.push(this.allIndent.length + 1);
+      }
+      // 数据全部加载完成
+      if (this.allIndent.length >= this.pageSize) {
+        this.finished = true;
+      }
+      // 加载状态结束
+      this.loading = false;
+
+      // // 异步更新数据
+      // setTimeout(() => {
+      //   for (let i = 0; i < this.pageSize; i++) {
+      //     this.allIndent.push(this.allIndent.length + 1);
+      //   }
+      //   // 加载状态结束
+      //   this.loading = false;
+      //   // 数据全部加载完成
+      //   if (this.allIndent.length >= this.pageSize) {
+      //     this.finished = true;
+      //   }
+      // }, 500);
+
     },
     // 获取本季度开端月份
     getQuarterStartMonth () {
@@ -178,16 +218,8 @@ export default {
 
       this.startTime = dayjs(startTimeTmp).format('YYYY-MM-DD')
       this.endTime = dayjs(endTimeTmp).format('YYYY-MM-DD')
-      console.log(this.startTime, this.endTime);
       await this.getData()
-      console.log(this.allIndent);
     },
-    // 选择自定义的日期
-    // confirmPicker1 (value) {
-    //   this.overlay_show = false;
-    //   this.date_1 = dayjs(value).format("YYYY-MM-DD");
-
-    // },
     // 改变订单状态值进行筛选
     async changeState (orderState) {
       this.state = orderState

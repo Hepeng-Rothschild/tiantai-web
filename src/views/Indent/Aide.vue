@@ -1,13 +1,18 @@
 <template>
   <div>
     <div class="aide">
-      <ul v-for="state in status"
+      <!-- <ul v-for="state in status"
           :key="state.id" @click="details">
         <li class="state">{{state.title}}</li>
         <li>客户 {{state.client}}</li>
         <li>金额 ￥{{state.money}}</li>
         <li>订单号 {{state.orderNum}}</li>
-      </ul>
+      </ul> -->
+      <div>
+        <div><span>客户</span><span></span></div>
+        <div><span>金额</span><span></span></div>
+        <div><span></span><span></span></div>
+      </div>
     </div>
 
   </div>

@@ -62,7 +62,7 @@
                 class="cell-second">￥{{content.SA_SaleOrder_origTaxAmount}}</van-cell>
       <div class="parities">
         <span class="title">币种</span>
-        <span class="information">{{content.SA_SaleOrder_idcurrency}}</span>
+        <span class="information">{{content.AA_Currency_name}}</span>
       </div>
       <div class="parities">
         <span class="title">汇率</span>

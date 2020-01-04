@@ -24,7 +24,7 @@
     <!-- 筛选列表 -->
     <van-list v-model="loading"
               :finished="finished"
-              @load="getData">
+              @load="onLoad">
       <span class="date">{{this.endTime}}</span>
       <van-cell v-for="(indent,index) in allIndent"
                 :key="index"
@@ -109,7 +109,9 @@ export default {
     }, 500)
   },
   methods: {
-
+    onLoad () {
+      this.getData()
+    },
     // 跳转到详情页面
     toDetails (indent) {
       this.$router.push({ name: 'details' })
@@ -134,29 +136,13 @@ export default {
       })
       console.log(data[0]);
       this.allIndent = data[0]
-      for (let i = 0; i < this.pageSize; i++) {
-        
-        this.allIndent.push(this.allIndent.length + 1);
-      }
-      // 数据全部加载完成
-      if (this.allIndent.length >= this.pageSize) {
-        this.finished = true;
-      }
       // 加载状态结束
       this.loading = false;
-
-      // // 异步更新数据
-      // setTimeout(() => {
-      //   for (let i = 0; i < this.pageSize; i++) {
-      //     this.allIndent.push(this.allIndent.length + 1);
-      //   }
-      //   // 加载状态结束
-      //   this.loading = false;
-      //   // 数据全部加载完成
-      //   if (this.allIndent.length >= this.pageSize) {
-      //     this.finished = true;
-      //   }
-      // }, 500);
+      if (data[0].length) {  
+        this.pageIndex++
+      } else {
+        this.finished = true;
+      }
 
     },
     // 获取本季度开端月份

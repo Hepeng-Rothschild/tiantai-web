@@ -8,10 +8,13 @@
         <li>金额 ￥{{state.money}}</li>
         <li>订单号 {{state.orderNum}}</li>
       </ul> -->
-      <div>
-        <div><span>客户</span><span></span></div>
-        <div><span>金额</span><span></span></div>
-        <div><span></span><span></span></div>
+      <div v-for="state in status"
+           :key="state.id"
+           @click="details" class="aide_top">
+        <span class="state">{{state.title}}</span>
+        <div><span>客户</span> <span>{{state.client}}</span></div>
+        <div><span>金额</span> <span>￥{{state.money}}</span></div>
+        <div><span>订单号</span> <span>{{state.orderNum}}</span></div>
       </div>
     </div>
 
@@ -34,7 +37,7 @@ export default {
   methods: {
 
     details () {
-      this.$router.push ({name:'details'})
+      this.$router.push({ name: 'details' })
     }
   }
 }
@@ -43,20 +46,22 @@ export default {
 <style lang="less" scoped>
 .aide {
   margin: 59px 14px 0px 14px;
-  ul {
+  .aide_top {
     padding: 13px 0px 13px 16px;
     .state {
       margin-bottom: 8px;
       color: rgba(34, 34, 34, 1);
       font-size: 17px;
       text-align: left;
-      font-family: "PingFangSC-regular";
     }
-    li {
+    div {
+      height: auto;
+      overflow: auto;
+  }
+    span {
       color: rgba(16, 16, 16, 1);
       font-size: 13px;
       text-align: left;
-      font-family: "PingFangSC-regular";
     }
   }
 }

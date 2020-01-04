@@ -71,11 +71,11 @@ export default {
       }
       this.inventory = listData;
       this.loading = false;
-      if (!data.length || data.length < 10) {
+       if(data.length){
+        this.pageIndex++;
+      }else{
         this.finished = true;
-        return;
       }
-      this.pageIndex++;
       console.log("库存查询", this.inventory);
     }
   }

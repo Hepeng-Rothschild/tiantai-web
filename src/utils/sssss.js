@@ -573,3 +573,9 @@
 // AA_Partner_Pay_updated: null
 // AA_Partner_Pay_Creater: null
 // AA_Partner_Pay_createdTime: null
+
+
+
+
+
+// [{"Code":"1","Name":"国内","ParentCode":null},{"Code":"2","Name":"国外","ParentCode":null},{"Code":"3","Name":"其他","ParentCode":null},{"Code":"BX","Name":"报销","ParentCode":null}]

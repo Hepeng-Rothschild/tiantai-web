@@ -8,13 +8,13 @@
       @click-left="back"
       @click-right="toDoSomething()"
     >
-      <!-- <van-icon
+      <van-icon
         name="notes-o"
         slot="right"
         v-if="$route.meta.icon"
         class="icon"
         @click="doSomething()"
-      />-->
+      />
     </van-nav-bar>
     <router-view />
   </div>
@@ -23,13 +23,12 @@
 <script>
 export default {
   mounted() {
-    if (!this.$store.state.user) {
-      this.$store.dispatch("logout");
-      this.$store.dispatch("login");
-    }else {
-
+   
+      // this.$store.dispatch("logout");
+      // this.$store.dispatch("login");
+   
       this.$store.dispatch("keepLogin");
-    }
+    
   },
   methods: {
     back() {

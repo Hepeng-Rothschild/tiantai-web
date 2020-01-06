@@ -4,67 +4,68 @@
       <div class="spacing-two">
         <van-cell title="客户名称"
                   class="moveleft">
-          <van-field v-model="value.name"
+          <van-field v-model="Name"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="客户性质"
-                  :value="propertyName"
+                  :value="PartnerTypeName?PartnerTypeName:'请选择'"
                   is-link
                   @click="showProperty = true">
         </van-cell>
-        
+
         <van-popup v-model="showProperty"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="property in propertys"
-               :key="property.id"
-               @click="changePro(property.name)">{{property.name}}</div>
+          <div v-for="(property,index) in PartnerTypeArr"
+               :key="index"
+               @click="changePro(property)">{{property.Name}}</div>
         </van-popup>
         <van-cell title="所属类别"
-                  :value="categoryName"
+                  :value="PartnerClassName?PartnerClassName:'请选择'"
                   is-link
                   @click="showCategory = true">
         </van-cell>
         <van-popup v-model="showCategory"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="category in categorys"
-               :key="category.id"
-               @click="changeCate(category.name)">{{category.name}}</div>
+          <div v-for="(category,index) in this.PartnerClass"
+               :key="index"
+               @click="changeCateName(category)">{{category.Name}}</div>
+
         </van-popup>
       </div>
 
       <div class="spacing-two">
         <van-cell title="分管部门 选填"
-                  :value="departmentName"
+                  :value="SaleDepartmentName?SaleDepartmentName:'请选择'"
                   is-link
                   @click="showDepartment = true">
         </van-cell>
         <van-popup v-model="showDepartment"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="department in departments"
-               :key="department.id"
-               @click="changeDep(department.name)">{{department.name}}</div>
+          <div v-for="(department,index) in SaleDepartment"
+               :key="index"
+               @click="changeDep(department)">{{department.Name}}</div>
         </van-popup>
         <van-cell title="分管人员"
-                  :value="manageName"
+                  :value="SaleManName?SaleManName:'请选择'"
                   is-link
                   @click="showManages = true">
         </van-cell>
         <van-popup v-model="showManages"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="manage in manages"
-               :key="manage.id"
-               @click="changeMan(manage.name)">{{manage.name}}</div>
+          <div v-for="(manage,index) in SaleMan"
+               :key="index"
+               @click="changeMan(manage)">{{manage.Name}}</div>
         </van-popup>
       </div>
       <div class="spacing">
         <van-cell title="默认收款方式"
-                  value="请选择"
+                  :value="SaleSettleStyleName"
                   is-link
                   to="/defaultPay">
         </van-cell>
@@ -72,19 +73,19 @@
 
       <div class="spacing-two moveleft">
         <van-cell title="联系人">
-          <van-field v-model="value.linkman"
+          <van-field v-model="Contact"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="联系电话">
-          <van-field v-model="value.linkphone"
+          <van-field v-model="MobilePhone"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="到货地址">
-          <van-field v-model="value.address"
+          <van-field v-model="ShipmentAddress"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
@@ -92,13 +93,13 @@
       </div>
       <div class="spacing-two moveleft">
         <van-cell title="发货要求">
-          <van-field v-model="value.send"
+          <van-field v-model="yaoqiu"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="到货要求">
-          <van-field v-model="value.arrival"
+          <van-field v-model="beizhu"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
@@ -106,61 +107,129 @@
       </div>
 
     </van-cell-group>
-    <van-button type="info">保存</van-button>
+    <van-button type="info"
+                @click="createPartner">保存</van-button>
 
   </div>
 </template>
 
 <script>
+import { setItem, getItem } from "../../utils/Storage.js";
+import { log } from 'util';
 
 export default {
   data () {
     return {
+      //客户名称
+      Name: '',
+      // 默认收款方式
+      SaleSettleStyleName:'其它',
+      SaleSettleStyle: { Code: '00' },
+
+      Contact: '',
+      MobilePhone: '',
+      ShipmentAddress: '',
+      // 确定修改类型
+      Status: '1',
+      // 客户性质
+      PartnerType: { Code: null },
+      PartnerTypeName: null,
+
+      PartnerTypeArr: [{ Code: "01", Name: '客户' }, { Code: '00', Name: '供应商' }, { Code: '02', Name: '客户/供应商' }],
+      // 客户类别
+      PartnerClassName: null,
+      PartnerClassCode: { Code: null },
+      PartnerClass: null,
+      // 分管部门
+      SaleDepartmentName: null,
+      SaleDepartmentCode: { Code: null },
+      SaleDepartment: [{ Code: '01', Name: '555' }],
+      //分管人员
+      SaleManName: null,
+      SaleManCode: { Code: null },
+      SaleMan: [{ Code: '01', Name: '555' }],
+
+      yaoqiu: '',//发货要求
+      beizhu: '',// 发货备注
       showCategory: false,
       showProperty: false,
       showDepartment: false,
       showManages: false,
-      // showCollects: false,
-      // 单元格输入框内容
-      value: {
-        name: '',
-        linkman: '',
-        linkphone: '',
-        address: '',
-        send: '',
-        arrival: ''
-      },
-      // 客户性质
-      propertys: [{ id: 1, name: '爸爸级' }, { id: 2, name: '大哥级' }, { id: 3, name: '儿子级' }, { id: 4, name: '垃圾' }],
-      propertyName: '客户',
-      // 所属类别
-      categorys: [{ id: 1, name: '央企' }, { id: 2, name: '国企' }, { id: 3, name: '上市' }, { id: 4, name: '小屁' }],
-      categoryName: '请选择',
-      // 所属部门
-      departments: [{ id: 1, name: '国务院' }, { id: 2, name: '各部委' }, { id: 3, name: '纳斯达克' }, { id: 4, name: '孵化器' }],
-      departmentName: '请选择',
-      // 分管人员
-      manages: [{ id: 1, name: '国务委员' }, { id: 2, name: '正部级' }, { id: 3, name: '金主爸爸' }, { id: 4, name: '弱鸡' }],
-      manageName: '罗玉龙',
     }
   },
+  created () {
+    this.changeCate()
+  },
+  // mounted () {
+  //   getItem("selectPay") && this.selectPay();
+  // },
   methods: {
     changePro (propertyNew) {
-      this.propertyName = propertyNew
+      this.PartnerTypeName = propertyNew.Name
+      this.PartnerType.Code = propertyNew.Code
       this.showProperty = false
     },
-    changeCate (categoryNew) {
-      this.categoryName = categoryNew
+    // 选择类型
+    changeCateName (categoryNew) {
+      this.PartnerClassName = categoryNew.Name
+      this.PartnerClassCode.Code = categoryNew.Code
+      // console.log(this.PartnerClassCode);
+
       this.showCategory = false
     },
+    // 选择所属类别
+    async changeCate () {
+      const { data } = await this.$Parse.Cloud.run("getPartnerClass");
+      this.PartnerClass = JSON.parse(data)
+      // console.log(JSON.parse(data));
+    },
     changeDep (departmentNew) {
-      this.departmentName = departmentNew
+      this.SaleDepartmentName = departmentNew.Name
+      this.SaleDepartmentCode.Code = departmentNew.Code
+      // console.log(this.SaleDepartmentCode);
+
       this.showDepartment = false
     },
     changeMan (manageNew) {
-      this.manageName = manageNew
+      this.SaleManCode.Code = manageNew.Code
+      this.SaleManName = manageNew.Name
+      // console.log(this.SaleManCode);
+
       this.showManages = false
-    }
+    },
+    // 新增客户
+    async createPartner () {
+      console.log(this.Name);
+      console.log(this.PartnerType);
+      console.log(this.PartnerClassCode);
+      console.log(this.SaleDepartmentCode);
+      console.log(this.SaleManCode);
+      console.log(this.SaleSettleStyle);
+      console.log(this.Contact);
+      console.log(this.MobilePhone);
+      console.log(this.ShipmentAddress);
+      console.log(this.Status);
+      const { data } = await this.$Parse.Cloud.run("createPartner", {
+        Name: this.Name,
+        SaleSettleStyle: this.SaleSettleStyle,
+        Contact: this.Contact,
+        MobilePhone: this.MobilePhone,
+        ShipmentAddress: this.ShipmentAddress,
+        PartnerType: this.PartnerType,
+        PartnerClass: this.PartnerClassCode,
+        // SaleDepartment: this.SaleDepartmentCode,
+        // SaleMan: this.SaleManCode,
+        Status: this.Status
+      });
+
+
+      console.log(data);
+
+    },
+    // selectPay () {
+    //   this.SaleSettleStyle = getItem("selectPay");
+
+    // }
   }
 }
 </script>

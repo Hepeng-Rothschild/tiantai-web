@@ -94,8 +94,8 @@ export default {
       endTime: '',
       // 当前状态
       state: null,
-      pageSize: null,
-      pageIndex: null,
+      pageSize: 8,
+      pageIndex: 0,
       name: null
     }
   },
@@ -134,12 +134,18 @@ export default {
         name: this.name,
         state: this.state
       })
-      console.log(data[0]);
-      this.allIndent = data[0]
-      // 加载状态结束
+      console.log(data[0].length);
+      let indentData = this.allIndent || []
+      for (let i = 0; i < data[0].length; i++) {
+        indentData.push(data[0][i])
+      }
+      this.allIndent = indentData
+      // console.log(this.allindent);
       this.loading = false;
-      if (data[0].length) {  
+      if (data[0].length) {
         this.pageIndex++
+        console.log(this.pageIndex);
+        
       } else {
         this.finished = true;
       }

@@ -1,15 +1,14 @@
 <template>
-    <div>
-        
-    </div>
+  <div class="remind"></div>
 </template>
 
 <script>
-export default {
-    
-}
+export default {};
 </script>
 
 <style lang="less" scoped>
-    
+.remind {
+  height: 100%;
+  background-color: #fff;
+}
 </style>

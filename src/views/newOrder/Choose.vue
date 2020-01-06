@@ -20,7 +20,7 @@
           class="align_self_center"
           @click="showPopup()"
         />
-      </div> -->
+    </div>-->
     <!-- </div> -->
     <!-- 所有存货 -->
     <div class="title">所有存货</div>
@@ -30,14 +30,14 @@
         :finished="finished"
         finished-text="没有更多了"
         @load="onLoad"
-        :offset="100"
+        :offset="200"
       >
         <div v-for="(item,index) in inventory" :key="index" class="cell">
           <div>
-            <div class="fontSize_18">{{item.InventoryCode}}</div>
-            <div class="fontSize_14">{{item.InventoryName}}</div>
+            <div class="fontSize_18">{{item?item.code:''}}</div>
+            <div class="fontSize_14">{{item?item.name:''}}</div>
           </div>
-          <div class="fontSize_14 align_self_end">现存量 {{Number(item.ExistingQuantity).toFixed(2)}}</div>
+          <div class="fontSize_14 align_self_end">现存量 {{item?Number(item.ExistingQuantity).toFixed(2):''}}</div>
           <van-icon
             name="add-o"
             color="#0071f0"
@@ -80,11 +80,11 @@
       class="pop"
     >
       <div class="name">
-        <span>19D</span>
-        <span class="padding_left">滑石粉</span>
+        <span>{{popData?popData.code:''}}</span>
+        <span class="padding_left">{{popData?popData.name:''}}</span>
       </div>
       <div class="border_top">
-        <van-field v-model="popValue.number" label="数量" input-align="right" placeholder="请输入"/>
+        <van-field v-model="popValue.number" label="数量" input-align="right" placeholder="请输入" />
       </div>
       <div class="border_top">
         <van-cell title="单位" is-link :value="popValue.unity" @click="showSelect=true" />
@@ -95,7 +95,7 @@
       </div>
       <div class="pop_cell border_top">
         <span>税率</span>
-        <span class="gray">16%</span>
+        <span class="gray">{{popData?popData.rate:'0.0'}}%</span>
       </div>
       <div class="pop_cell border_top">
         <span>本币金额</span>
@@ -130,13 +130,14 @@ export default {
       },
       showSelect: false, // 底部弹框显示隐藏
       columns: ["T", "KG", "个", "袋"],
-      show: false,  // 中间弹框显示隐藏
-      inventory: [],
+      show: false, // 中间弹框显示隐藏
+      inventory: null,
       inventoryName: null,
       pageIndex: 1,
       pageSize: 10,
       loading: false,
-      finished: false
+      finished: false,
+      popData:null,
     };
   },
 
@@ -146,29 +147,35 @@ export default {
     },
     async getGoods() {
       var _this = this;
-      const { data } = await this.$Parse.Cloud.run("getStock", {
+      const { data } = await this.$Parse.Cloud.run("getInventory", {
         inventoryName: _this.inventoryName,
         pageSize: _this.pageSize,
         pageIndex: _this.pageIndex
       });
-      console.log(data);
-      this.inventory = data;
+      let listData = this.inventory || [];
+      for (let i = 0; i < data.length; i++) {
+        listData.push(data[i]);
+      }
+      this.inventory = listData;
+      console.log(this.inventory)
+      this.loading = false;
       if (data.length) {
-        this.loading = false
-      }else {
-        this.finished = true
+        this.pageIndex++;
+      } else {
+        this.finished = true;
       }
     },
     // 显示弹窗
     showPopup(item) {
       console.log(item);
+      this.popData = item
       this.show = true;
     },
     // 选择单位的 确认 和 取消
     onConfirm(value, index) {
       console.log(value, index);
       this.showSelect = false;
-      this.popValue.unity = value
+      this.popValue.unity = value;
     },
     onCancel() {
       this.showSelect = false;

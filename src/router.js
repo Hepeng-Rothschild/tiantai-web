@@ -127,12 +127,12 @@ const routes = [
     meta:{title:'库存查询'},
     component: () => import( '@/views/Inventory/DetailInfo.vue')
   },
-  // {
-  //   path: '/remind',
-  //   name: 'remind',
-  //   meta:{title:'应收账款',icon:true},
-  //   component: () => import( '@/views/Remind/Remind.vue')
-  // },
+  {
+    path: '/remind',
+    name: 'remind',
+    meta:{title:'应收账款',icon:true},
+    component: () => import( '@/views/Remind/Remind.vue')
+  },
 ]
 
 const router = new VueRouter({

@@ -1,24 +1,31 @@
 <template>
   <div>
     <van-radio-group v-model="radio">
-      <van-radio name="1">全额订金</van-radio>
-      <van-radio name="2">全额现结</van-radio>
-      <van-radio name="3">限期收款</van-radio>
-      <van-radio name="4">月结</van-radio>
-      <van-radio name="5">其它</van-radio>
+      <van-radio name="全额订金">全额订金</van-radio>
+      <van-radio name="全额现结">全额现结</van-radio>
+      <van-radio name="限期收款">限期收款</van-radio>
+      <van-radio name="月结">月结</van-radio>
+      <van-radio name="其它">其它</van-radio>
     </van-radio-group>
-    <van-button type="info">保存</van-button>
+    <van-button type="info"
+                @click="selectPay(radio)">保存</van-button>
   </div>
 </template>
 
 <script>
+import { setItem } from "../../utils/Storage.js";
+
 export default {
   data () {
     return {
-      radio: ''
+      radio: '其它'
     }
   },
   methods: {
+    selectPay (radio) {
+      this.$router.push({ name: "newly" });
+      setItem("selectPay", radio);
+    }
   }
 }
 </script>
@@ -30,7 +37,7 @@ export default {
   padding-left: 16px;
   
   .van-radio {
-    margin-bottom: 20px;
+    padding-bottom: 20px;
     .van-radio__label {
       color: rgba(0, 0, 0, 1);
       font-size: 17px;

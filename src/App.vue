@@ -23,14 +23,11 @@
 <script>
 export default {
   mounted() {
-    // if (!this.$store.state.user) {
 
       // this.$store.dispatch("logout");
       // this.$store.dispatch("login");
-    // }else {
-
       this.$store.dispatch("keepLogin");
-    //  }
+      
   },
   methods: {
     back() {

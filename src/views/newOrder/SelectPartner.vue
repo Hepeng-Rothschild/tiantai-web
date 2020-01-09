@@ -62,7 +62,7 @@ export default {
       for (let i = 0; i < data[0].length; i++) {
         listData.push(data[0][i]);
       }
-      this.partner = listData;
+      this.partner = listData.reverse();
 
       this.loading = false;
      

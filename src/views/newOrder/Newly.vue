@@ -4,13 +4,13 @@
       <div class="spacing-two">
         <van-cell title="客户名称"
                   class="moveleft">
-          <van-field v-model="Name"
+          <van-field v-model="cellnews.Name"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="客户性质"
-                  :value="PartnerTypeName?PartnerTypeName:'请选择'"
+                  :value="cellnews.PartnerTypeName?cellnews.PartnerTypeName:'请选择'"
                   is-link
                   @click="showProperty = true">
         </van-cell>
@@ -23,7 +23,7 @@
                @click="changePro(property)">{{property.Name}}</div>
         </van-popup>
         <van-cell title="所属类别"
-                  :value="PartnerClassName?PartnerClassName:'请选择'"
+                  :value="cellnews.PartnerClassName?cellnews.PartnerClassName:'请选择'"
                   is-link
                   @click="showCategory = true">
         </van-cell>
@@ -39,7 +39,7 @@
 
       <div class="spacing-two">
         <van-cell title="分管部门 选填"
-                  :value="SaleDepartmentName?SaleDepartmentName:'请选择'"
+                  :value="cellnews.SaleDepartmentName?cellnews.SaleDepartmentName:'请选择'"
                   is-link
                   @click="showDepartment = true">
         </van-cell>
@@ -48,10 +48,10 @@
                    :style="{ height: '30%' }">
           <div v-for="(department,index) in SaleDepartment"
                :key="index"
-               @click="changeDep(department)">{{department.Name}}</div>
+               @click="changeDep(department)">{{department.name}}</div>
         </van-popup>
         <van-cell title="分管人员"
-                  :value="SaleManName?SaleManName:'请选择'"
+                  :value="cellnews.SaleManName?cellnews.SaleManName:'请选择'"
                   is-link
                   @click="showManages = true">
         </van-cell>
@@ -60,32 +60,33 @@
                    :style="{ height: '30%' }">
           <div v-for="(manage,index) in SaleMan"
                :key="index"
-               @click="changeMan(manage)">{{manage.Name}}</div>
+               @click="changeMan(manage)">{{manage.name}}</div>
         </van-popup>
       </div>
       <div class="spacing">
         <van-cell title="默认收款方式"
-                  :value="SaleSettleStyleName"
+                  :value="SaleSettleStyleName?SaleSettleStyleName:'请选择'"
                   is-link
-                  to="/defaultPay">
+                  to="/defaultPay"
+                  @click="savenews">
         </van-cell>
       </div>
 
       <div class="spacing-two moveleft">
         <van-cell title="联系人">
-          <van-field v-model="Contact"
+          <van-field v-model="cellnews.Contact"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="联系电话">
-          <van-field v-model="MobilePhone"
+          <van-field v-model="cellnews.MobilePhone"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="到货地址">
-          <van-field v-model="ShipmentAddress"
+          <van-field v-model="cellnews.ShipmentAddress"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
@@ -93,13 +94,13 @@
       </div>
       <div class="spacing-two moveleft">
         <van-cell title="发货要求">
-          <van-field v-model="yaoqiu"
+          <van-field v-model="cellnews.sendgoodsAsk"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="到货要求">
-          <van-field v-model="beizhu"
+          <van-field v-model="cellnews.remarks"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
@@ -114,122 +115,208 @@
 </template>
 
 <script>
-import { setItem, getItem } from "../../utils/Storage.js";
-import { log } from 'util';
+import { setItem, getItem, remItem } from "../../utils/Storage.js";
 
 export default {
   data () {
     return {
-      //客户名称
-      Name: '',
-      // 默认收款方式
-      SaleSettleStyleName:'其它',
-      SaleSettleStyle: { Code: '00' },
-
-      Contact: '',
-      MobilePhone: '',
-      ShipmentAddress: '',
-      // 确定修改类型
-      Status: '1',
-      // 客户性质
-      PartnerType: { Code: null },
-      PartnerTypeName: null,
-
+      Code: this.uuidcode(),
+      // 数期
+      priuserdefnvc1: '5',
+      // 默认收款方式----开始
+      saleDate: null,
+      SaleSettleStyleName: getItem("selectPay") || null,
+      SaleSettleStyle: { Code: null },
+      SaleCreditDays: null,
+      SaleStartDate: null,
+      SaleSpaceMonth: null,
+      SaleCheckMonth: null,
+      SaleCheckDate: null,
+      // 默认收款方式----结束
       PartnerTypeArr: [{ Code: "01", Name: '客户' }, { Code: '00', Name: '供应商' }, { Code: '02', Name: '客户/供应商' }],
-      // 客户类别
-      PartnerClassName: null,
-      PartnerClassCode: { Code: null },
       PartnerClass: null,
-      // 分管部门
-      SaleDepartmentName: null,
-      SaleDepartmentCode: { Code: null },
-      SaleDepartment: [{ Code: '01', Name: '555' }],
-      //分管人员
-      SaleManName: null,
-      SaleManCode: { Code: null },
-      SaleMan: [{ Code: '01', Name: '555' }],
-
-      yaoqiu: '',//发货要求
-      beizhu: '',// 发货备注
+      SaleDepartment: null,
+      departmentCode: null,
+      SaleMan: null,
+      // 以下是遮罩层的开启名称
       showCategory: false,
       showProperty: false,
       showDepartment: false,
       showManages: false,
+      // 选择要储存的参数
+      cellnews: {
+        //客户名称
+        Name: '',
+        Contact: '',
+        MobilePhone: '',
+        ShipmentAddress: '',
+        // 确定修改类型
+        Status: '1',
+        // 客户性质
+        PartnerType: { Code: null },
+        PartnerTypeName: null,
+        // 客户类别
+        PartnerClassName: null,
+        PartnerClassCode: { Code: null },
+        // 分管部门
+        SaleDepartmentName: null,
+        SaleDepartmentCode: { Code: null },
+        //分管人员
+        SaleManName: null,
+        SaleManCode: { Code: null },
+        sendgoodsAsk: '',//发货要求
+        remarks: '',// 发货备注
+      }
     }
   },
   created () {
     this.changeCate()
+    this.change_dep()
+    if (this.SaleDepartmentCode) {
+      this.change_man()
+    } else {
+      // this.change_man()
+    }
+
+
   },
-  // mounted () {
-  //   getItem("selectPay") && this.selectPay();
-  // },
+  mounted () {
+    getItem("selectPay") && this.selectPay();
+    this.selectDate() && getItem("selectDate")
+    let date_0 = getItem('save_news')
+    if (date_0 = null) {
+      // this.getnews() && getItem('save_news')
+    } else {
+      return
+    }
+
+  },
   methods: {
+    savenews () {
+      setItem('save_news', this.cellnews)
+    },
+    getnews () {
+      this.cellnews = getItem('save_news')
+    },
     changePro (propertyNew) {
-      this.PartnerTypeName = propertyNew.Name
-      this.PartnerType.Code = propertyNew.Code
+      this.cellnews.PartnerTypeName = propertyNew.Name
+      this.cellnews.PartnerType.Code = propertyNew.Code
       this.showProperty = false
     },
     // 选择类型
     changeCateName (categoryNew) {
-      this.PartnerClassName = categoryNew.Name
-      this.PartnerClassCode.Code = categoryNew.Code
-      // console.log(this.PartnerClassCode);
-
+      this.cellnews.PartnerClassName = categoryNew.Name
+      this.cellnews.PartnerClassCode.Code = categoryNew.Code
       this.showCategory = false
     },
     // 选择所属类别
     async changeCate () {
       const { data } = await this.$Parse.Cloud.run("getPartnerClass");
       this.PartnerClass = JSON.parse(data)
-      // console.log(JSON.parse(data));
+    },
+    // 选择分管部门
+    async change_dep () {
+      const { data } = await this.$Parse.Cloud.run("department");
+      this.SaleDepartment = data
     },
     changeDep (departmentNew) {
-      this.SaleDepartmentName = departmentNew.Name
-      this.SaleDepartmentCode.Code = departmentNew.Code
-      // console.log(this.SaleDepartmentCode);
-
+      this.cellnews.SaleDepartmentName = departmentNew.name
+      this.cellnews.SaleDepartmentCode.Code = departmentNew.code
+      this.departmentCode = departmentNew.code
+      this.change_man()
       this.showDepartment = false
     },
+    // 选择分管人员
+    async change_man () {
+      const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", { departmentCode: this.departmentCode || null });
+      // console.log(data)
+      this.SaleMan = data
+    },
     changeMan (manageNew) {
-      this.SaleManCode.Code = manageNew.Code
-      this.SaleManName = manageNew.Name
-      // console.log(this.SaleManCode);
-
+      this.cellnews.SaleManCode.Code = manageNew.code
+      this.cellnews.SaleManName = manageNew.name
       this.showManages = false
+    },
+    // 编写UUID
+    uuidcode () {
+      let originStr = 'xxxxx',
+        originChar = '0123456789',
+        len = originChar.length;
+      return originStr.replace(/x/g, function (match) {
+        return originChar.charAt(Math.floor(Math.random() * len))
+      })
     },
     // 新增客户
     async createPartner () {
-      console.log(this.Name);
-      console.log(this.PartnerType);
-      console.log(this.PartnerClassCode);
-      console.log(this.SaleDepartmentCode);
-      console.log(this.SaleManCode);
-      console.log(this.SaleSettleStyle);
-      console.log(this.Contact);
-      console.log(this.MobilePhone);
-      console.log(this.ShipmentAddress);
-      console.log(this.Status);
+      // console.log(this.Code);
+      // console.log(this.cellnews.PartnerType);
+      // console.log(this.cellnews.PartnerClassCode);
+      // console.log(this.cellnews.SaleDepartmentCode);
+      // console.log(this.cellnews.SaleManCode);
+      // console.log(this.SaleSettleStyle);
+      // console.log(this.cellnews.Contact);
+      // console.log(this.cellnews.MobilePhone);
+      // console.log(this.cellnews.ShipmentAddress);
+      // console.log(this.cellnews.Status);
+      // console.log(this.SaleCreditDays);
+      // console.log(this.SaleStartDate);
+      // console.log(this.SaleSpaceMonth);
+      // console.log(this.SaleCheckMonth);
+      // console.log(this.SaleCheckDate);
+      // console.log(this.priuserdefnvc1);
+
       const { data } = await this.$Parse.Cloud.run("createPartner", {
-        Name: this.Name,
+        Code: this.Code,
+        Name: this.cellnews.Name,
         SaleSettleStyle: this.SaleSettleStyle,
-        Contact: this.Contact,
-        MobilePhone: this.MobilePhone,
-        ShipmentAddress: this.ShipmentAddress,
-        PartnerType: this.PartnerType,
-        PartnerClass: this.PartnerClassCode,
-        // SaleDepartment: this.SaleDepartmentCode,
-        // SaleMan: this.SaleManCode,
-        Status: this.Status
+        Contact: this.cellnews.Contact,
+        MobilePhone: this.cellnews.MobilePhone,
+        ShipmentAddress: this.cellnews.ShipmentAddress,
+        PartnerType: this.cellnews.PartnerType,
+        PartnerClass: this.cellnews.PartnerClassCode,
+        SaleDepartment: this.cellnews.SaleDepartmentCode,
+        SaleMan: this.cellnews.SaleManCode,
+        Status: this.cellnews.Status,
+        priuserdefnvc1: this.priuserdefnvc1,
+        SaleCreditDays: this.SaleCreditDays,
+        SaleStartDate: this.SaleStartDate || null,
+        SaleSpaceMonth: this.SaleSpaceMonth || null,
+        SaleCheckMonth: this.SaleCheckMonth || null,
+        SaleCheckDate: this.SaleCheckDate || null
       });
 
-
       console.log(data);
-
     },
-    // selectPay () {
-    //   this.SaleSettleStyle = getItem("selectPay");
-
-    // }
+    // 拿到临时存储的收款方式名称
+    selectPay () {
+      let name = this.SaleSettleStyleName
+      if (name == '限期收款') {
+        this.SaleSettleStyle.Code = '00'
+      } else if (name == '全额订金') {
+        this.SaleSettleStyle.Code = '01'
+      } else if (name == '全额现结') {
+        this.SaleSettleStyle.Code = '02'
+      } else if (name == '月结') {
+        this.SaleSettleStyle.Code = '03'
+      } else {
+        this.SaleSettleStyle.Code = '05'
+      }
+    },
+    // 拿到临时存储的收款方式天数
+    selectDate () {
+      this.saleDate = getItem("selectDate")
+      let sale_Date = this.saleDate
+      this.SaleCreditDays = sale_Date.date_0
+      this.SaleStartDate = sale_Date.date_1
+      this.SaleSpaceMonth = sale_Date.date_2
+      this.SaleCheckMonth = sale_Date.date_3
+      this.SaleCheckDate = sale_Date.date_4
+      //   console.log(this.SaleCreditDays);
+      // console.log(this.SaleStartDate);
+      // console.log(this.SaleSpaceMonth);
+      // console.log(this.SaleCheckMonth);
+      // console.log(this.SaleCheckDate);
+    }
   }
 }
 </script>

@@ -133,6 +133,11 @@ const routes = [
     meta:{title:'应收账款',icon:true},
     component: () => import( '@/views/Remind/Remind.vue')
   },
+  {
+    path: '/aaa',
+    name: 'aaa',
+    component: () => import( '@/views/aaa')
+  },
 ]
 
 const router = new VueRouter({

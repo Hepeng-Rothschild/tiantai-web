@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { setItem } from "../../utils/Storage.js";
+import { setItem, getItem } from "../../utils/Storage.js";
 import dayjs from "dayjs";
 
 export default {
@@ -80,12 +80,21 @@ export default {
 
     }
   },
+  mounted () {
+    if (this.params.date_0 != null) {
+      this.getpay() && getItem("selectDate")
+      this.getpay() && getItem('save_news')
+    } else {
+      return
+    }
+
+  },
   methods: {
     selectPay () {
       if (this.params.date_0) {
         this.$router.push({ name: "newly" });
         setItem("selectPay", this.radio);
-        setItem("selectDate",this.params)
+        setItem("selectDate", this.params)
       } else {
         this.$toast('带*号为必填项')
       }
@@ -94,6 +103,12 @@ export default {
     confirmPicker1 (value) {
       this.show_1 = false;
       this.params.date_1 = dayjs(value).format("YYYY-MM-DD");
+    },
+    // 对此页面的信息进行离开时存储
+    getpay () {
+      this.params = getItem("selectDate")
+      this.radio = getItem("selectPay")
+
     }
   }
 }

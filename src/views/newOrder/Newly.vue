@@ -67,7 +67,8 @@
         <van-cell title="默认收款方式"
                   :value="SaleSettleStyleName?SaleSettleStyleName:'请选择'"
                   is-link
-                  to="/defaultPay" @click="savenews">
+                  to="/defaultPay"
+                  @click="savenews">
         </van-cell>
       </div>
 
@@ -171,21 +172,31 @@ export default {
   created () {
     this.changeCate()
     this.change_dep()
-    this.change_man()
+    if (this.SaleDepartmentCode) {
+      this.change_man()
+    } else {
+      // this.change_man()
+    }
+
 
   },
   mounted () {
     getItem("selectPay") && this.selectPay();
     this.selectDate() && getItem("selectDate")
-    this.getnews() && getItem('save_news')
-    
+    let date_0 = getItem('save_news')
+    if (date_0 = null) {
+      // this.getnews() && getItem('save_news')
+    } else {
+      return
+    }
+
   },
   methods: {
     savenews () {
-      setItem('save_news',this.cellnews)
+      setItem('save_news', this.cellnews)
     },
-    getnews(){
-        this.cellnews = getItem('save_news')  
+    getnews () {
+      this.cellnews = getItem('save_news')
     },
     changePro (propertyNew) {
       this.cellnews.PartnerTypeName = propertyNew.Name
@@ -268,10 +279,10 @@ export default {
         Status: this.cellnews.Status,
         priuserdefnvc1: this.priuserdefnvc1,
         SaleCreditDays: this.SaleCreditDays,
-        SaleStartDate: this.SaleStartDate,
-        SaleSpaceMonth: this.SaleSpaceMonth,
-        SaleCheckMonth: this.SaleCheckMonth,
-        SaleCheckDate: this.SaleCheckDate
+        SaleStartDate: this.SaleStartDate || null,
+        SaleSpaceMonth: this.SaleSpaceMonth || null,
+        SaleCheckMonth: this.SaleCheckMonth || null,
+        SaleCheckDate: this.SaleCheckDate || null
       });
 
       console.log(data);

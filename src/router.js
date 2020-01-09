@@ -67,8 +67,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "Aide" */ '@/views/Indent/Aide.vue')
   },
   {
-    path: '/neworder',
-    name: 'neworder',
+    path: '/NewOrder',
+    name: 'NewOrder',
     meta:{title:'新增销售订单'},
     component: () => import(/* webpackChunkName: "Neworder" */ '@/views/NewOrder')
   },

@@ -16,7 +16,7 @@ export default new Vuex.Store({
   actions: {
     // 获取 token
     async login(context) {
-      const { data } = await Parse.Cloud.run("login");
+      const { data } = await Parse.Cloud.run("login",{username:'hhp',password:'123456'});
       console.log('登录')
       context.commit('changeUser',data)
       setItem('user',data)

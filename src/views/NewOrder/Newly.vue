@@ -67,8 +67,7 @@
         <van-cell title="默认收款方式"
                   :value="SaleSettleStyleName?SaleSettleStyleName:'请选择'"
                   is-link
-                  to="/defaultPay"
-                  @click="savenews">
+                  to="/defaultPay">
         </van-cell>
       </div>
 
@@ -116,7 +115,7 @@
 
 <script>
 import { setItem, getItem, remItem } from "../../utils/Storage.js";
-
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -125,7 +124,7 @@ export default {
       priuserdefnvc1: '5',
       // 默认收款方式----开始
       saleDate: null,
-      SaleSettleStyleName: getItem("selectPay") || null,
+      SaleSettleStyleName: this.$store.state.defaultPay.radio || null,
       SaleSettleStyle: { Code: null },
       SaleCreditDays: null,
       SaleStartDate: null,
@@ -133,10 +132,11 @@ export default {
       SaleCheckMonth: null,
       SaleCheckDate: null,
       // 默认收款方式----结束
+      // -------------------
       PartnerTypeArr: [{ Code: "01", Name: '客户' }, { Code: '00', Name: '供应商' }, { Code: '02', Name: '客户/供应商' }],
       PartnerClass: null,
       SaleDepartment: null,
-      departmentCode: null,
+
       SaleMan: null,
       // 以下是遮罩层的开启名称
       showCategory: false,
@@ -144,7 +144,7 @@ export default {
       showDepartment: false,
       showManages: false,
       // 选择要储存的参数
-      cellnews: {
+      cellnews: this.$store.state.cellNews || {
         //客户名称
         Name: '',
         Contact: '',
@@ -164,40 +164,33 @@ export default {
         //分管人员
         SaleManName: null,
         SaleManCode: { Code: null },
+        departmentCode: null,
         sendgoodsAsk: '',//发货要求
         remarks: '',// 发货备注
       }
     }
   },
+  watch: {
+    cellnews: {
+      handler (newVal, oldVal) {
+        this.$store.commit('savePartner', this.cellnews)
+      },
+      deep: true
+    }
+  },
+  computed: {
+    ...mapState(['cellNews', 'defaultPay'])
+  },
   created () {
     this.changeCate()
     this.change_dep()
-    if (this.SaleDepartmentCode) {
-      this.change_man()
-    } else {
-      // this.change_man()
-    }
-
-
+    this.change_man()
   },
   mounted () {
-    getItem("selectPay") && this.selectPay();
-    this.selectDate() && getItem("selectDate")
-    let date_0 = getItem('save_news')
-    if (date_0 = null) {
-      // this.getnews() && getItem('save_news')
-    } else {
-      return
-    }
-
+    this.selectPay()
+    this.selectDate()
   },
   methods: {
-    savenews () {
-      setItem('save_news', this.cellnews)
-    },
-    getnews () {
-      this.cellnews = getItem('save_news')
-    },
     changePro (propertyNew) {
       this.cellnews.PartnerTypeName = propertyNew.Name
       this.cellnews.PartnerType.Code = propertyNew.Code
@@ -222,14 +215,13 @@ export default {
     changeDep (departmentNew) {
       this.cellnews.SaleDepartmentName = departmentNew.name
       this.cellnews.SaleDepartmentCode.Code = departmentNew.code
-      this.departmentCode = departmentNew.code
+      this.cellnews.departmentCode = departmentNew.code
       this.change_man()
       this.showDepartment = false
     },
     // 选择分管人员
     async change_man () {
-      const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", { departmentCode: this.departmentCode || null });
-      // console.log(data)
+      const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", { departmentCode: this.cellnews.departmentCode || null });
       this.SaleMan = data
     },
     changeMan (manageNew) {
@@ -287,9 +279,10 @@ export default {
 
       console.log(data);
     },
-    // 拿到临时存储的收款方式名称
+    // 拿到vuex中的收款方式名称
     selectPay () {
-      let name = this.SaleSettleStyleName
+      let name = this.$store.state.defaultPay.radio
+
       if (name == '限期收款') {
         this.SaleSettleStyle.Code = '00'
       } else if (name == '全额订金') {
@@ -302,9 +295,9 @@ export default {
         this.SaleSettleStyle.Code = '05'
       }
     },
-    // 拿到临时存储的收款方式天数
+    // 拿到vuex中存储的收款方式限定天数
     selectDate () {
-      this.saleDate = getItem("selectDate")
+      this.saleDate = this.$store.state.defaultPay
       let sale_Date = this.saleDate
       this.SaleCreditDays = sale_Date.date_0
       this.SaleStartDate = sale_Date.date_1

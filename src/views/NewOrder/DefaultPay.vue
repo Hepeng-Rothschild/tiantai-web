@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-radio-group v-model="radio">
+    <van-radio-group v-model="params.radio">
       <van-radio name="全额订金">全额订金</van-radio>
       <van-radio name="全额现结">全额现结</van-radio>
       <van-radio name="限期收款">限期收款</van-radio>
@@ -63,14 +63,15 @@
 <script>
 import { setItem, getItem } from "../../utils/Storage.js";
 import dayjs from "dayjs";
-
+import {mapState} from 'vuex'
 export default {
   data () {
     return {
-      radio: '',
+
       show_1: false,
       currentDate: new Date(),
-      params: {
+      params: this.$store.state.defaultPay || {
+        radio: '',
         date_0: null,
         date_1: null,
         date_2: null,
@@ -80,21 +81,24 @@ export default {
 
     }
   },
-  mounted () {
-    if (this.params.date_0 != null) {
-      this.getpay() && getItem("selectDate")
-      this.getpay() && getItem('save_news')
-    } else {
-      return
+  computed:{
+    ...mapState(['defaultPay'])
+  },
+  watch: {
+    params: {
+      handler (newVal,oldVal) {        
+        this.$store.commit('savePay', this.params)
+      },
+      deep: true
     }
+  },
+  mounted () {
 
   },
   methods: {
     selectPay () {
       if (this.params.date_0) {
-        this.$router.push({ name: "newly" });
-        setItem("selectPay", this.radio);
-        setItem("selectDate", this.params)
+        this.$router.go(-1);
       } else {
         this.$toast('带*号为必填项')
       }
@@ -103,12 +107,6 @@ export default {
     confirmPicker1 (value) {
       this.show_1 = false;
       this.params.date_1 = dayjs(value).format("YYYY-MM-DD");
-    },
-    // 对此页面的信息进行离开时存储
-    getpay () {
-      this.params = getItem("selectDate")
-      this.radio = getItem("selectPay")
-
     }
   }
 }

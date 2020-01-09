@@ -1,29 +1,25 @@
 <template>
   <div id="app">
-    <van-nav-bar
-      :title="$route.meta.title"
-      :right-text="$route.meta.right"
-      left-arrow
-      fixed
-      @click-left="back"
-      @click-right="toDoSomething()"
-    >
-      <van-icon
-        name="notes-o"
-        slot="right"
-        v-if="$route.meta.icon"
-        class="icon"
-        @click="doSomething()"
-      />
+    <van-nav-bar :title="$route.meta.title"
+                 :right-text="$route.meta.right"
+                 left-arrow
+                 fixed
+                 @click-left="back"
+                 @click-right="toDoSomething()">
+      <van-icon name="notes-o"
+                slot="right"
+                v-if="$route.meta.icon"
+                class="icon"
+                @click="doSomething()" />
     </van-nav-bar>
     <router-view />
   </div>
 </template>
 
 <script>
-import {getItem,setItem} from './utils/Storage.js'
+import { getItem, setItem } from './utils/Storage.js'
 export default {
-  created() {
+  created () {
     if (sessionStorage.getItem("store")) {
       //页面加载前读取sessionStorage里的状态信息
       this.$store.replaceState(
@@ -42,23 +38,23 @@ export default {
       // setItem("store", JSON.stringify(this.$store.state));
     });
   },
-  mounted() {
+  mounted () {
     // this.$store.dispatch("logout");
-    // this.$store.dispatch("login");
-    this.$store.dispatch("keepLogin");
+    this.$store.dispatch("login");
   },
   methods: {
-    back() {
+    back () {
       this.$router.go(-1);
     },
-    doSomething() {
+    doSomething () {
       console.log("666");
     },
-    toDoSomething() {
+    toDoSomething () {
       if (this.$route.meta.url) {
         this.$router.push(this.$route.meta.url);
       }
-    }
+    },
+
   }
 };
 </script>

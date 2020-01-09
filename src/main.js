@@ -8,7 +8,7 @@ import './utils/rem'
 import 'amfe-flexible/index.js'
 import './styles/index.less'
 
-import Parse from './utils/Parse.js'
+import Parse from './utils/parse.js'
 Vue.prototype.$Parse = Parse
 
 Vue.use(Vant);

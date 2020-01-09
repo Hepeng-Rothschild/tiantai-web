@@ -21,13 +21,31 @@
 </template>
 
 <script>
+import {getItem,setItem} from './utils/Storage.js'
 export default {
-  mounted() {
+  created() {
+    if (sessionStorage.getItem("store")) {
+      //页面加载前读取sessionStorage里的状态信息
+      this.$store.replaceState(
+        Object.assign(
+          {},
+          this.$store.state,
+          getItem("store")
+          // JSON.parse(sessionStorage.getItem("store"))
+        )
+      );
+    }
 
-      // this.$store.dispatch("logout");
-      // this.$store.dispatch("login");
-      this.$store.dispatch("keepLogin");
-      
+    window.addEventListener("beforeunload", () => {
+      //在页面刷新前将vuex里的信息保存到sessionStorage里
+      setItem("store", this.$store.state);
+      // setItem("store", JSON.stringify(this.$store.state));
+    });
+  },
+  mounted() {
+    // this.$store.dispatch("logout");
+    // this.$store.dispatch("login");
+    this.$store.dispatch("keepLogin");
   },
   methods: {
     back() {

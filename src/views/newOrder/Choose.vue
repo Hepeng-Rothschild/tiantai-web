@@ -37,7 +37,9 @@
             <div class="fontSize_18">{{item?item.code:''}}</div>
             <div class="fontSize_14">{{item?item.name:''}}</div>
           </div>
-          <div class="fontSize_14 align_self_end">现存量 {{item?item.currentStock.baseQuantity:''}}</div>
+          <div
+            class="fontSize_14 align_self_end"
+          >现存量 {{item.currentStock?item.currentStock.baseQuantity:''}}</div>
           <van-icon
             name="add-o"
             color="#0071f0"
@@ -62,48 +64,48 @@
     </div>
 
     <!-- 弹出框 -->
-    <van-popup
-      v-model="show"
-      closeable
-      close-on-popstate
-      :overlay="false"
-      :style="{ width:'85%' }"
-      class="pop"
-    >
-      <div class="name">
-        <span>{{popData?popData.Inventory.Code:''}}</span>
-        <span class="padding_left">{{popData?popData.name:''}}</span>
-      </div>
-      <div class="border_top">
-        <van-field v-model="number" label="数量" input-align="right" placeholder="请输入" />
-      </div>
-      <div class="border_top">
-        <!-- <van-cell title="单位" is-link >{{popValue?popValue.currentStock.unit:''}}</van-cell> -->
-        <van-cell title="单位">KG</van-cell>
-      </div>
-      <div class="pop_cell border_top">
-        <span>含税单价</span>
-        <span class="gray">￥{{popData?popData.OrigTaxPrice:''}}</span>
-      </div>
-      <div class="pop_cell border_top">
-        <span>税率</span>
-        <span class="gray">{{popData?popData.rate:'0.0'}}%</span>
-      </div>
-      <div class="pop_cell border_top">
-        <span>本币金额</span>
-        <span
-          class="gray"
-        >￥{{popData?popData.OrigDiscountAmount:0.00}}</span>
-      </div>
-      <div class="pop_cell border_top">
-        <span>含税金额</span>
-        <span class="gray">￥{{popData?popData.OrigTaxAmount:0.00}}</span>
-      </div>
-      <div class="border_top">
-        <button class="button" @click="del()">删除</button>
-        <button class="button" @click="confirm()">确定</button>
-      </div>
-    </van-popup>
+    <div v-if="Object.keys(popData).length">
+      <van-popup
+        v-model="show"
+        closeable
+        close-on-popstate
+        :overlay="false"
+        :style="{ width:'85%' }"
+        class="pop"
+      >
+        <div class="name">
+          <span>{{popData?popData.Inventory.Code:''}}</span>
+          <span class="padding_left">{{popData?popData.name:''}}</span>
+        </div>
+        <div class="border_top">
+          <van-field v-model="popData.Quantity" label="数量" input-align="right" placeholder="请输入" />
+        </div>
+        <div class="border_top">
+          <!-- <van-cell title="单位" is-link >{{popValue?popValue.currentStock.unit:''}}</van-cell> -->
+          <van-cell title="单位">KG</van-cell>
+        </div>
+        <div class="pop_cell border_top">
+          <span>含税单价</span>
+          <span class="gray">￥{{popData?popData.OrigTaxPrice:''}}</span>
+        </div>
+        <div class="pop_cell border_top">
+          <span>税率</span>
+          <span class="gray">{{popData?popData.rate:'0.0'}}%</span>
+        </div>
+        <div class="pop_cell border_top">
+          <span>本币金额</span>
+          <span class="gray">￥{{popData?popData.OrigDiscountPrice * popData.Quantity:0.00}}</span>
+        </div>
+        <div class="pop_cell border_top">
+          <span>含税金额</span>
+          <span class="gray">￥{{popData?popData.OrigTaxPrice * popData.Quantity:0.00}}</span>
+        </div>
+        <div class="border_top">
+          <button class="button" @click="del()">删除</button>
+          <button class="button" @click="confirm()">确定</button>
+        </div>
+      </van-popup>
+    </div>
   </div>
 </template>
 
@@ -124,10 +126,10 @@ export default {
       finished: false,
 
       show: false, // 中间弹框显示隐藏
-      popData: null,
+      popData: {},
       number: null, // 数量
       totalPrice: 0,
-      SaleOrderDetails:[],
+      SaleOrderDetails: []
     };
   },
   watch: {
@@ -136,36 +138,38 @@ export default {
       this.pageIndex = 1;
       this.finished = false;
       this.getGoods();
-    },
-    number(newVal,oldVal) {
-      const number = Number(newVal)
-      this.popData.Quantity = newVal
-      this.popData.OrigDiscountAmount = (number*this.popData.OrigTaxPrice*(100-this.popData.rate)/100).toFixed(2)
-      this.popData.OrigTaxAmount = (number*this.popData.OrigTaxPrice).toFixed(2)
-      console.log(this.popData)
     }
   },
   methods: {
     async onLoad() {
-      // console.log('===============')
       await this.getGoods();
     },
     async getGoods() {
-      
       var _this = this;
-    
-
-      const { data } = await this.$Parse.Cloud.run("getInventory", {
+      let { data } = await this.$Parse.Cloud.run("getInventory", {
         inventoryName: _this.searchValue,
         pageSize: _this.pageSize,
         pageIndex: _this.pageIndex
       });
-      // console.log(data)
       let listData = this.inventory || [];
+      data = data.map(item => {
+        return {
+          code: item.code,
+          name: item.name,
+          rate: Number(item.rate),
+          Unit: { Name: item.currentStock.unit },
+          Quantity: null,
+          DiscountRate: 1, // 折扣率
+          IsPresent: false, // 是否赠品
+          Inventory: { Code: item.code }, // 系统存货编码Code
+          OrigDiscountPrice: item.retailPrice * ((100 - item.rate) / 100) || 1, // 单价
+          OrigTaxPrice: Number(item.retailPrice) || 2 // 含税单价
+        };
+      });
       for (let i = 0; i < data.length; i++) {
         listData.push(data[i]);
       }
-      
+
       this.loading = false;
       if (data.length) {
         this.pageIndex++;
@@ -174,79 +178,73 @@ export default {
       }
       this.inventory = listData;
     },
-    // Unit: { Name: "KG" },                                      currentStock.unit
-    // Quantity: 7,                                               currentStock.baseQuantity
-    // DiscountRate: 1, // 折扣率
-    // IsPresent: false, // 是否赠品
-    // Inventory: { Code: "DT18C" }, // 系统存货编码 Code          Code
-    // OrigDiscountPrice: 15, // 单价                             retailPrice*(1-税率)
-    // OrigTaxPrice: 18, // 含税单价                              retailPrice
-    // OrigDiscountAmount: 15, // 原币金额                        总价
-    // OrigTaxAmount: 18, // 原币含税金额                         含税总价
-    // OrigTax: 3, // 原币税额                                    含税总价-总价
     // 显示弹窗
     showPopup(item) {
-      
-        this.popData =  {
-        name:item.name,
-        rate:Number(item.rate),
-        Unit: { Name: item.currentStock.unit },
-        Quantity: null,
-        DiscountRate: 1, // 折扣率
-        IsPresent: false, // 是否赠品
-        Inventory: { Code: item.code }, // 系统存货编码Code
-        OrigDiscountPrice: (item.retailPrice*((100-item.rate)/100)), // 单价
-        OrigTaxPrice: Number(item.retailPrice).toFixed(2), // 含税单价
-        OrigDiscountAmount: (0).toFixed(2), // 原币金额
-        OrigTaxAmount: (0).toFixed(2), // 原币含税金额
-      };
-      
-      this.number = null;
-      this.totalPrice = 0
+      item = JSON.parse(JSON.stringify(item));
+      item.Quantity = 0;
+      item.OrigDiscountAmount = 0; // 总价
+      item.OrigTaxAmount = 0; // 含税总价
+      item.OrigTax = 0; // 税额
+      item.DiscountRate = 1;
+      item.IsPresent = false;
+      let itemInfo = this.SaleOrderDetails.filter(v => v.code == item.code)[0];
+      let popData = itemInfo ? itemInfo : item;
+      this.popData = popData;
       this.show = true;
     },
     onCancel() {
       this.showSelect = false;
     },
     confirm() {
-      if (!this.number || this.number == 0) {
+      if (this.popData.Quantity == 0) {
         this.$toast({
           message: "数量不能为空"
         });
         return;
       }
       this.show = false;
-      // 选择了几种
-      // for (let i = 0; i <= this.SaleOrderDetails.length; i++) {
-        
-      //     this.SaleOrderDetails.push(this.popData);
-        
-      // }
 
-      // const totalPrice = Number(number) * Number(popData.retailPrice);
-      // console.log('总价',totalPrice);
-      // this.totalPrice += totalPrice;
-
+      let index = this.SaleOrderDetails.findIndex(
+        v => v.code == this.popData.code
+      );
+      let popData = JSON.parse(JSON.stringify(this.popData));
+      // 判断B数组里有没有点击的那个商品  没有就加进去  否则就替换掉B数组里原来的商品信息
+      if (index == -1) {
+        this.SaleOrderDetails.push(popData);
+      } else {
+        this.SaleOrderDetails[index] = popData;
+      }
+      let totalPrice = 0;
+      for (let j = 0; j < this.SaleOrderDetails.length; j++) {
       
-
-      // this.SaleOrderDetails.push(obj)
-      console.log(this.SaleOrderDetails)
+        this.SaleOrderDetails[j].OrigDiscountAmount =  (this.SaleOrderDetails[j].OrigTaxPrice-0)*(100-this.SaleOrderDetails[j].rate)/100*this.SaleOrderDetails[j].Quantity// 总价
+        this.SaleOrderDetails[j].OrigTaxAmount = (this.SaleOrderDetails[j].OrigTaxPrice-0)*this.SaleOrderDetails[j].Quantity  // 含税总价
+        this.SaleOrderDetails[j].OrigTax =(this.SaleOrderDetails[j].OrigTaxPrice-0)*(this.SaleOrderDetails[j].rate/100) // 税额
+        totalPrice += Number(
+          this.SaleOrderDetails[j].OrigTaxPrice *
+            this.SaleOrderDetails[j].Quantity
+        );
+      }
+      this.totalPrice = totalPrice;
     },
     del() {
       this.show = false;
     },
     finish() {
-      const obj = {
-        Unit: { Name: popData.currentStock.unit },
-        Quantity: number,
-        DiscountRate: 1, // 折扣率
-        IsPresent: false, // 是否赠品
-        Inventory: { Code: popData.code }, // 系统存货编码Code
-        OrigDiscountPrice: (popData.retailPrice*((100-popData.rate)/100)), // 单价
-        OrigTaxPrice: popData.retailPrice, // 含税单价
-        OrigDiscountAmount: (Number(number)*Number(popData.retailPrice)*(100-popData.rate)/100).toFixed(2), // 原币金额
-        OrigTaxAmount: (Number(number)*Number(popData.retailPrice)).toFixed(2), // 原币含税金额
-      };
+      // Unit: { Name: "KG" },                                      currentStock.unit
+      // Quantity: 7,                                               currentStock.baseQuantity
+      // DiscountRate: 1, // 折扣率
+      // IsPresent: false, // 是否赠品
+      // Inventory: { Code: "DT18C" }, // 系统存货编码 Code          Code
+      // OrigDiscountPrice: 15, // 单价                             retailPrice*(1-税率)
+      // OrigTaxPrice: 18, // 含税单价                              retailPrice
+
+      // OrigDiscountAmount: 15, // 原币金额                        总价
+      // OrigTaxAmount: 18, // 原币含税金额                         含税总价
+      // OrigTax: 3, // 原币税额                                    含税总价-总价
+      console.log(this.SaleOrderDetails);
+      this.$store.commit('selectGoods',this.SaleOrderDetails)
+      this.$router.push('neworder')
     }
   }
 };

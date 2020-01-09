@@ -21,7 +21,6 @@
 
 <script>
 import MySearch from "../../components/Search.vue";
-import { setItem, getItem } from "../../utils/Storage.js";
 export default {
   components: {
     MySearch: MySearch
@@ -56,7 +55,6 @@ export default {
         pageIndex: _this.pageIndex,
         pageSize: _this.pageSize
       });
-      // console.log("业务员", data[0]);
       let listData = this.saleMan || [];
       for (let i = 0; i < data[0].length; i++) {
         listData.push(data[0][i]);
@@ -72,8 +70,8 @@ export default {
       }
     },
     selectSaleMan(saleMan) {
-      this.$router.push({ name: "neworder" });
-      setItem("selectSaleMan", saleMan);
+      this.$router.push('/neworder');
+      this.$store.commit('saveSelectedSaleMan',saleMan)
     }
   }
 };

@@ -110,6 +110,7 @@
 </template>
 
 <script>
+
 import MySearch from "../../components/Search.vue";
 
 export default {
@@ -242,9 +243,8 @@ export default {
       // OrigDiscountAmount: 15, // 原币金额                        总价
       // OrigTaxAmount: 18, // 原币含税金额                         含税总价
       // OrigTax: 3, // 原币税额                                    含税总价-总价
-      console.log(this.SaleOrderDetails);
       this.$store.commit('selectGoods',this.SaleOrderDetails)
-      this.$router.push('neworder')
+      this.$router.push('/neworder')
     }
   }
 };

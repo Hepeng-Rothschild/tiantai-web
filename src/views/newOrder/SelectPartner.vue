@@ -62,7 +62,7 @@ export default {
       for (let i = 0; i < data[0].length; i++) {
         listData.push(data[0][i]);
       }
-      this.partner = listData.reverse();
+      this.partner = listData;
 
       this.loading = false;
      
@@ -74,8 +74,10 @@ export default {
       
     },
     selectPartner(partner) {
-      this.$router.push({ name: "neworder" });
-      setItem("selectPartner", partner);
+      this.$router.push('/neworder');
+      this.$store.commit('saveSelectedPartner',partner)
+      // 清除上一次选择的销售员数据
+      this.$store.commit('saveSelectedSaleMan',null)
     }
   }
 };

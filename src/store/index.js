@@ -37,7 +37,7 @@ export default new Vuex.Store({
       await Parse.User.logOut();
       console.log("退出登录");
     },
-    
+
   },
-  
+
 })

@@ -134,9 +134,9 @@ const routes = [
     component: () => import( '@/views/Remind/Remind.vue')
   },
   {
-    path: '/aaa',
-    name: 'aaa',
-    component: () => import( '@/views/aaa')
+    path: '/AAA',
+    name: 'AAA',
+    component: () => import( '@/views/AAA')
   },
 ]
 

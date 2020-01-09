@@ -2,10 +2,10 @@
   <div class="neworder">
     <van-cell-group>
       <!-- 第一行 和 第一个日期控件 -->
-      <van-cell title="单据日期*" :value="date_1" is-link @click="show_1 = true"></van-cell>
+      <van-cell title="单据日期*" :value="VoucherDate" is-link @click="show_1 = true"></van-cell>
 
       <!-- 第二行 和 第二个日期控件-->
-      <van-cell title="预计交货日期*" :value="date_2" is-link @click="show_2=true"></van-cell>
+      <van-cell title="预计交货日期*" :value="DeliveryDate" is-link @click="show_2=true"></van-cell>
 
       <!-- 选择客户 -->
 
@@ -25,19 +25,26 @@
       >{{saleMan?saleMan.name:'请选择'}}</van-cell>
       <!-- 选择商品 -->
       <van-cell title="选择商品" value="请选择" is-link class="spacing" to="/choose"></van-cell>
-      <!-- <div class="goods">
-        <div class="left">
-          <div class="code">19D</div>
-          <div class="gray">滑石粉</div>
-          <div class="gray">￥3.00*300</div>
+      <div v-if="SaleOrderDetails">
+        <div v-for="item in SaleOrderDetails" :key="item.code" class="goods">
+          <div class="left">
+            <div class="code">{{item.code}}</div>
+            <div class="gray">{{item.name}}</div>
+            <div class="gray">￥{{item.OrigTaxPrice}}*{{item.Quantity}}</div>
+          </div>
+          <div class="right">
+            <div class="edit">编辑</div>
+            <div class="money">￥{{item.OrigTaxAmount}}</div>
+          </div>
         </div>
-        <div class="right">
-          <div class="edit">编辑</div>
-          <div class="money">￥750</div>
-        </div>
-      </div>-->
+      </div>
       <div class="spacing">
-        <van-cell title="币种" :value="moneyType" is-link @click="popupShowCoin = true"></van-cell>
+        <van-cell
+          title="币种"
+          :value="moneyType.name?moneyType.name:'人民币'"
+          is-link
+          @click="popupShowCoin = true"
+        ></van-cell>
 
         <van-cell title="汇率">
           <van-field
@@ -53,37 +60,36 @@
         <van-field v-model="deliveryRequire" placeholder="添加" style="border:0px;" />
       </div>
     </van-cell-group>
-    <van-overlay :show="show_2">
-      <!-- 日期控件 -->
+    <!-- 日期弹窗 -->
+    <van-popup v-model="show_2" position="bottom" :style="{ height: '45%' }">
       <van-datetime-picker
         v-model="currentDate"
         type="date"
         @confirm="confirmPicker2"
         @cancel="show_2=false"
       />
-    </van-overlay>
-    <van-overlay :show="show_1">
-      <!-- 日期控件 -->
+    </van-popup>
+    <!-- 日期弹窗 -->
+    <van-popup v-model="show_1" position="bottom" :style="{ height: '45%' }">
       <van-datetime-picker
         v-model="currentDate"
         type="date"
         @confirm="confirmPicker1"
         @cancel="show_1=false"
       />
-    </van-overlay>
-    <van-popup v-model="popupShowCoin" position="bottom" :style="{ height: '30%' }">
-      <!-- <div v-for="coin in coins" :key="coin.id" @click="changeMoneyType(coin.name)">{{coin.name}}</div> -->
-      <van-picker
-        :columns="coins"
-        :default-index="3"
-        show-toolbar
-        @cancel="popupShowCoin=false"
-        @confirm="confirmCoins"
-      />
+    </van-popup>
+    <!-- 币种弹窗 -->
+    <van-popup v-model="popupShowCoin" position="bottom" :style="{ height: '40%' }">
+      <div
+        v-for="item in currency"
+        :key="item.id"
+        class
+        @click="changeMoneyType(item)"
+      >{{item.name}}</div>
     </van-popup>
     <div class="buttonBox">
       <van-button plain type="primary">存入草稿</van-button>
-      <van-button type="info">提交订单</van-button>
+      <van-button type="info" @click="createOrder()">提交订单</van-button>
     </div>
   </div>
 </template>
@@ -95,9 +101,9 @@ import { getItem, setItem } from "../../utils/Storage.js";
 export default {
   data() {
     return {
-      moneyType: "人民币",
+      moneyType: { code: "RMB" },
       // 币种
-      coins: null,
+      currency: null,
       // 控制单元格内的输入框
       exchangeRate: (1.0).toFixed(1), // 汇率
       deliveryRequire: "", // 送货要求
@@ -108,19 +114,21 @@ export default {
       show_1: false,
       show_2: false,
       // 开始时间默认值
-      date_1: "请选择",
+      VoucherDate: "请选择",
       // 结束时间默认值
-      date_2: "请选择",
+      DeliveryDate: "请选择",
       saleMan: getItem("selectSaleMan"),
       partner: getItem("selectPartner")
     };
+  },
+  computed: {
+    ...mapState(["SaleOrderDetails"])
   },
   mounted() {
     !getItem("selectSaleMan") &&
       getItem("selectPartner") &&
       this.selectPartner();
     this.getCurrency();
-    // this.createOrder()
   },
   methods: {
     changeMoneyType(type) {
@@ -134,50 +142,31 @@ export default {
 
     confirmPicker1(value) {
       this.show_1 = false;
-      this.date_1 = dayjs(value).format("YYYY-MM-DD");
+      this.VoucherDate = dayjs(value).format("YYYY-MM-DD");
     },
     confirmPicker2(value) {
       this.show_2 = false;
-      this.date_2 = dayjs(value).format("YYYY-MM-DD");
+      this.DeliveryDate = dayjs(value).format("YYYY-MM-DD");
     },
-    confirmCoins(value) {
-      console.log(value);
-    },
+    // 提交订单
     async createOrder() {
       const data = await this.$Parse.Cloud.run("createOrder", {
-        VoucherDate: "2020-01-06", //1、单据日期。 2、此参数可不传，默认系统日期。
-        DeliveryDate: "2020-03-21", // 预计交货日期
-        Customer: { Code: "K025588" }, // AA_Partner_code
-        Clerk: { Code: "102" }, // 业务员
-        Currency: { Code: "RMB" }, // 币种
+        VoucherDate: this.VoucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
+        DeliveryDate: this.DeliveryDate, // 预计交货日期
+        Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
+        Clerk: { Code: this.saleMan.code }, // 业务员
+        Currency: { Code: this.moneyType.code }, // 币种
         // ExchangeRate // 汇率，decimal类型
-        // Memo:''
-        SaleOrderDetails: [
-          {
-            Unit: { Name: "KG" },
-            Quantity: 7,
-            DiscountRate: 1, // 折扣率
-            IsPresent: false, // 是否赠品
-            Inventory:{Code:'DT18C'}, // T+系统存货编码
-            OrigDiscountPrice:15, // 单价
-            OrigTaxPrice: 18, // 含税单价
-            OrigDiscountAmount:15, // 原币金额
-            OrigTaxAmount:18, // 原币含税金额
-            OrigTax:3, // 原币税额
-          }
-        ]
+        Memo: this.deliveryRequire,
+        SaleOrderDetails: this.SaleOrderDetails
       });
-      console.log(data);
     },
+    // 获取币种
     async getCurrency() {
       const { data } = await this.$Parse.Cloud.run("getCurrency");
-      let coins = [];
-      for (let i = 0; i < data[0].length; i++) {
-        coins.push(data[0][i].name);
-      }
-      this.coins = coins;
-      // console.log("---", data);
+      this.currency = data[0];
     },
+    // 选择客户
     async selectPartner() {
       const { data } = await this.$Parse.Cloud.run("getAllSaleMan");
       const saleMan = data.filter((item, index) => {
@@ -198,16 +187,6 @@ export default {
   border-top: 1px solid #c0c4cc;
   background-color: rgba(248, 248, 248, 1);
   margin-bottom: 16px;
-  // 底部弹框样式
-  .van-popup {
-    div {
-      height: 40px;
-      line-height: 40px;
-      text-align: center;
-      font-size: 17px;
-      color: rgba(16, 16, 16, 1);
-    }
-  }
   .van-cell {
     padding: 10px 15px 10px 15px;
     border-bottom: 1px solid #c0c4cc;
@@ -240,11 +219,14 @@ export default {
     }
   }
 }
-.van-overlay {
-  .van-picker {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
+// 底部弹框样式
+.van-popup {
+  div {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 17px;
+    color: rgba(16, 16, 16, 1);
   }
 }
 // 底部按钮
@@ -271,6 +253,7 @@ export default {
   padding: 6px 14px;
   font-size: 15px;
   border-bottom: 1px solid #c0c4cc;
+  background-color: #fff;
 
   .code {
     color: rgba(16, 16, 16, 1);

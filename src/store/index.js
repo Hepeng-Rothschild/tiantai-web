@@ -1,16 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {setItem,getItem} from '../utils/Storage.js'
-import Parse from '../utils/Parse.js'
+import Parse from '../utils/parse.js'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user:getItem('user') || null
+    user:getItem('user') || null,
+    SaleOrderDetails:null,
   },
   mutations: {
     changeUser(state,data) {
       state.user = data
+    },
+    selectGoods(state,data) {
+      console.log(state,data)
+      state.SaleOrderDetails = data
     }
   },
   actions: {
@@ -29,7 +34,8 @@ export default new Vuex.Store({
     async logout() {
       await Parse.User.logOut();
       console.log("退出登录");
-    }
+    },
+    
   },
   
 })

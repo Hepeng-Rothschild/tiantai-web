@@ -64,58 +64,23 @@
     </div>
 
     <!-- 弹出框 -->
-    <div v-if="Object.keys(popData).length">
-      <van-popup
-        v-model="show"
-        closeable
-        close-on-popstate
-        :overlay="false"
-        :style="{ width:'85%' }"
-        class="pop"
-      >
-        <div class="name">
-          <span>{{popData?popData.Inventory.Code:''}}</span>
-          <span class="padding_left">{{popData?popData.name:''}}</span>
-        </div>
-        <div class="border_top">
-          <van-field v-model="popData.Quantity" label="数量" input-align="right" placeholder="请输入" />
-        </div>
-        <div class="border_top">
-          <!-- <van-cell title="单位" is-link >{{popValue?popValue.currentStock.unit:''}}</van-cell> -->
-          <van-cell title="单位">KG</van-cell>
-        </div>
-        <div class="pop_cell border_top">
-          <span>含税单价</span>
-          <span class="gray">￥{{popData?popData.OrigTaxPrice:''}}</span>
-        </div>
-        <div class="pop_cell border_top">
-          <span>税率</span>
-          <span class="gray">{{popData?popData.rate:'0.0'}}%</span>
-        </div>
-        <div class="pop_cell border_top">
-          <span>本币金额</span>
-          <span class="gray">￥{{popData?popData.OrigDiscountPrice * popData.Quantity:0.00}}</span>
-        </div>
-        <div class="pop_cell border_top">
-          <span>含税金额</span>
-          <span class="gray">￥{{popData?popData.OrigTaxPrice * popData.Quantity:0.00}}</span>
-        </div>
-        <div class="border_top">
-          <button class="button" @click="del()">删除</button>
-          <button class="button" @click="confirm()">确定</button>
-        </div>
-      </van-popup>
-    </div>
+    <my-pop
+      :show="show"
+      :popData="popData"
+      @changeShow="changeShow"
+      @changePopData="changePopData"
+      @delete="deleteGoods"
+    ></my-pop>
   </div>
 </template>
 
 <script>
-
 import MySearch from "../../components/Search.vue";
-
+import MyPop from "../../components/Pop.vue";
 export default {
   components: {
-    MySearch: MySearch
+    MySearch: MySearch,
+    MyPop: MyPop
   },
   data() {
     return {
@@ -129,8 +94,8 @@ export default {
       show: false, // 中间弹框显示隐藏
       popData: {},
       number: null, // 数量
-      totalPrice: 0,
-      SaleOrderDetails: []
+      totalPrice: this.$store.state.TotalPrice || 0,
+      SaleOrderDetails: this.$store.state.SaleOrderDetails || []
     };
   },
   watch: {
@@ -181,6 +146,7 @@ export default {
     },
     // 显示弹窗
     showPopup(item) {
+      this.show = true;
       item = JSON.parse(JSON.stringify(item));
       item.Quantity = 0;
       item.OrigDiscountAmount = 0; // 总价
@@ -191,20 +157,38 @@ export default {
       let itemInfo = this.SaleOrderDetails.filter(v => v.code == item.code)[0];
       let popData = itemInfo ? itemInfo : item;
       this.popData = popData;
-      this.show = true;
+    },
+    deleteGoods() {
+      let index = this.SaleOrderDetails.findIndex(
+        v => v.code == this.popData.code
+      );
+      let popData = JSON.parse(JSON.stringify(this.popData));
+      // 判断B数组里有没有点击的那个商品  没有就加进去  否则就替换掉B数组里原来的商品信息
+      if (index == -1) {
+        this.$toast({
+          message: "您还未选择该商品，无法删除"
+        });
+      } else {
+        this.show = false;
+        this.SaleOrderDetails.splice(index, 1);
+        let totalPrice = 0;
+        for (let j = 0; j < this.SaleOrderDetails.length; j++) {
+          totalPrice += Number(
+            this.SaleOrderDetails[j].OrigTaxPrice *
+              this.SaleOrderDetails[j].Quantity
+          );
+        }
+        this.totalPrice = totalPrice;
+        this.$store.commit("saveTotalPrice", totalPrice);
+      }
     },
     onCancel() {
       this.showSelect = false;
     },
-    confirm() {
-      if (this.popData.Quantity == 0) {
-        this.$toast({
-          message: "数量不能为空"
-        });
-        return;
-      }
-      this.show = false;
-
+    changeShow(show) {
+      this.show = show;
+    },
+    changePopData() {
       let index = this.SaleOrderDetails.findIndex(
         v => v.code == this.popData.code
       );
@@ -217,20 +201,26 @@ export default {
       }
       let totalPrice = 0;
       for (let j = 0; j < this.SaleOrderDetails.length; j++) {
-      
-        this.SaleOrderDetails[j].OrigDiscountAmount =  (this.SaleOrderDetails[j].OrigTaxPrice-0)*(100-this.SaleOrderDetails[j].rate)/100*this.SaleOrderDetails[j].Quantity// 总价
-        this.SaleOrderDetails[j].OrigTaxAmount = (this.SaleOrderDetails[j].OrigTaxPrice-0)*this.SaleOrderDetails[j].Quantity  // 含税总价
-        this.SaleOrderDetails[j].OrigTax =(this.SaleOrderDetails[j].OrigTaxPrice-0)*(this.SaleOrderDetails[j].rate/100) // 税额
+        this.SaleOrderDetails[j].OrigDiscountAmount =
+          (((this.SaleOrderDetails[j].OrigTaxPrice - 0) *
+            (100 - this.SaleOrderDetails[j].rate)) /
+            100) *
+          this.SaleOrderDetails[j].Quantity; // 总价
+        this.SaleOrderDetails[j].OrigTaxAmount =
+          (this.SaleOrderDetails[j].OrigTaxPrice - 0) *
+          this.SaleOrderDetails[j].Quantity; // 含税总价
+        this.SaleOrderDetails[j].OrigTax =
+          (this.SaleOrderDetails[j].OrigTaxPrice - 0) *
+          (this.SaleOrderDetails[j].rate / 100); // 税额
         totalPrice += Number(
           this.SaleOrderDetails[j].OrigTaxPrice *
             this.SaleOrderDetails[j].Quantity
         );
       }
       this.totalPrice = totalPrice;
+      this.$store.commit("saveTotalPrice", totalPrice);
     },
-    del() {
-      this.show = false;
-    },
+
     finish() {
       // Unit: { Name: "KG" },                                      currentStock.unit
       // Quantity: 7,                                               currentStock.baseQuantity
@@ -243,8 +233,8 @@ export default {
       // OrigDiscountAmount: 15, // 原币金额                        总价
       // OrigTaxAmount: 18, // 原币含税金额                         含税总价
       // OrigTax: 3, // 原币税额                                    含税总价-总价
-      this.$store.commit('selectGoods',this.SaleOrderDetails)
-      this.$router.push('/neworder')
+      this.$store.commit("saveSelectGoods", this.SaleOrderDetails);
+      this.$router.back();
     }
   }
 };
@@ -325,47 +315,5 @@ export default {
   font-size: 18px;
   border-radius: 5px 5px 5px 5px;
   background-color: rgba(1, 113, 240, 1);
-}
-
-.pop {
-  border: 1px solid rgba(187, 187, 187, 1);
-  color: rgba(0, 0, 0, 1);
-  font-size: 17px;
-  box-sizing: border-box;
-  .name {
-    padding: 15px;
-  }
-  .gray {
-    color: #969799;
-  }
-  .padding_left {
-    padding-left: 8px;
-  }
-  /deep/ .van-field__control {
-    color: #969799;
-  }
-  .pop_cell {
-    display: flex;
-    justify-content: space-between;
-    padding: 9px 13px;
-  }
-  .border_top {
-    border-top: 1px solid rgba(229, 229, 229, 1);
-  }
-  .van-cell {
-    padding: 9px 13px;
-    color: rgba(0, 0, 0, 1);
-    font-size: 17px;
-  }
-  .button {
-    border: none;
-    width: 50%;
-    cursor: pointer;
-    background-color: #fff;
-    padding: 12px 13px 17px 13px;
-    &:first-child {
-      border-right: 1px solid rgba(229, 229, 229, 1);
-    }
-  }
 }
 </style>

@@ -70,7 +70,7 @@ export default {
       }
     },
     selectSaleMan(saleMan) {
-      this.$router.push('/neworder');
+      this.$router.back();
       this.$store.commit('saveSelectedSaleMan',saleMan)
     }
   }

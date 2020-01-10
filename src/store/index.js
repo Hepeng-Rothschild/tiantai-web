@@ -9,9 +9,10 @@ export default new Vuex.Store({
     OrderMessage:null,
     SelectedPartner:null,
     SelectedSaleMan:null,
+    TotalPrice:null,
   },
   mutations: {
-    selectGoods(state,data) {
+    saveSelectGoods(state,data) {
       state.SaleOrderDetails = data
     },
     saveOrderMessage(state,data) {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     saveSelectedSaleMan(state,data) {
       state.SelectedSaleMan = data
     },
+    saveTotalPrice(state,data) {
+      state.TotalPrice = data
+    }
   },
   actions: {
     // 获取 token

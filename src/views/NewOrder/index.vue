@@ -1,8 +1,8 @@
 <template>
   <div class="neworder">
     <van-cell-group>
-      <van-cell title="单据日期*" :value="orderMessage.voucherDate" is-link @click="show_1 = true"></van-cell>
-      <van-cell title="预计交货日期*" :value="orderMessage.deliveryDate" is-link @click="show_2=true"></van-cell>
+      <van-cell title="单据日期*" :value="orderMessage.voucherDate" is-link @click="showDate1 = true"></van-cell>
+      <van-cell title="预计交货日期*" :value="orderMessage.deliveryDate" is-link @click="showDate2=true"></van-cell>
       <!-- 选择客户 -->
       <van-cell
         title="客户*"
@@ -27,7 +27,7 @@
             <div class="gray">￥{{item.OrigTaxPrice}}*{{item.Quantity}}</div>
           </div>
           <div class="right">
-            <div class="edit">编辑</div>
+            <div class="edit" @click="showPopData(item)">编辑</div>
             <div class="money">￥{{item.OrigTaxAmount}}</div>
           </div>
         </div>
@@ -41,35 +41,34 @@
         ></van-cell>
 
         <van-cell title="汇率">
-          <van-field
-            v-model="orderMessage.exchangeRate"
-            placeholder="请输入"
-            input-align="right"
-            style="border:0px;color:#888888;"
-          />
+          <van-field v-model="orderMessage.exchangeRate" placeholder="请输入" input-align="right" />
         </van-cell>
       </div>
       <div class="remark spacing">
         <div class="remark-name">送货要求</div>
-        <van-field v-model="deliveryRequire" placeholder="添加" style="border:0px;" />
+        <van-field v-model="orderMessage.deliveryRequire" placeholder="添加" style="border:0px;" />
       </div>
     </van-cell-group>
+    <div class="buttonBox">
+      <van-button plain type="primary" @click="createDraft()">存入草稿</van-button>
+      <van-button type="info" @click="createOrder()">提交订单</van-button>
+    </div>
     <!-- 日期弹窗 -->
-    <van-popup v-model="show_2" position="bottom" :style="{ height: '45%' }">
+    <van-popup v-model="showDate2" position="bottom" :style="{ height: '45%' }">
       <van-datetime-picker
         v-model="currentDate"
         type="date"
         @confirm="confirmPicker2"
-        @cancel="show_2=false"
+        @cancel="showDate2=false"
       />
     </van-popup>
     <!-- 日期弹窗 -->
-    <van-popup v-model="show_1" position="bottom" :style="{ height: '45%' }">
+    <van-popup v-model="showDate1" position="bottom" :style="{ height: '45%' }">
       <van-datetime-picker
         v-model="currentDate"
         type="date"
         @confirm="confirmPicker1"
-        @cancel="show_1=false"
+        @cancel="showDate1=false"
       />
     </van-popup>
     <!-- 币种弹窗 -->
@@ -81,10 +80,14 @@
         @click="changeMoneyType(item)"
       >{{item.name}}</div>
     </van-popup>
-    <div class="buttonBox">
-      <van-button plain type="primary">存入草稿</van-button>
-      <van-button type="info" @click="createOrder()">提交订单</van-button>
-    </div>
+    <!-- 商品信息弹窗 -->
+    <my-pop
+      :show="showPop"
+      :popData="popData"
+      @changeShow="changeShow"
+      @changePopData="changePopData"
+      @delete="deleteGoods"
+    ></my-pop>
   </div>
 </template>
 
@@ -92,19 +95,21 @@
 import dayjs from "dayjs";
 import { mapState } from "vuex";
 import { getItem, setItem } from "../../utils/Storage.js";
+import MyPop from "../../components/Pop.vue";
 export default {
   data() {
     return {
       // 币种
       currency: null,
       // 控制单元格内的输入框
-      deliveryRequire: "", // 送货要求
       popupShowCoin: false,
       // 日期
       currentDate: new Date(),
       // 单据日期遮罩层
-      show_1: false,
-      show_2: false,
+      showDate1: false,
+      showDate2: false,
+      showPop: false,
+      popData: {},
 
       partner: this.$store.state.SelectedPartner,
       saleMan: this.$store.state.SelectedSaleMan,
@@ -112,9 +117,13 @@ export default {
         voucherDate: "请选择", // 单据日期
         deliveryDate: "请选择", // 交货日期
         moneyType: { code: "RMB", name: "人民币" },
-        exchangeRate: '1.0' // 汇率
+        exchangeRate: "1.0", // 汇率
+        deliveryRequire: "" // 送货要求
       }
     };
+  },
+  components: {
+    MyPop: MyPop
   },
   watch: {
     orderMessage: {
@@ -128,9 +137,12 @@ export default {
     ...mapState(["SaleOrderDetails"])
   },
   mounted() {
-    this.$store.state.SelectedPartner &&
-      !this.$store.state.SelectedSaleMan &&
+    if (
+      this.$store.state.SelectedPartner &&
+      !this.$store.state.SelectedSaleMan
+    ) {
       this.selectPartner();
+    }
     this.getCurrency();
   },
   methods: {
@@ -139,27 +151,122 @@ export default {
       this.popupShowCoin = false;
     },
     confirmPicker1(value) {
-      this.show_1 = false;
+      this.showDate1 = false;
       this.orderMessage.voucherDate = dayjs(value).format("YYYY-MM-DD");
     },
     confirmPicker2(value) {
-      this.show_2 = false;
+      this.showDate2 = false;
       this.orderMessage.deliveryDate = dayjs(value).format("YYYY-MM-DD");
+    },
+    // 子传父
+    changeShow(show) {
+      this.showPop = show;
+    },
+    deleteGoods() {
+      this.showPop = false;
+      let index = this.SaleOrderDetails.findIndex(
+        v => v.code == this.popData.code
+      );
+      let popData = JSON.parse(JSON.stringify(this.popData));
+      this.SaleOrderDetails.splice(index, 1);
+    },
+    // 修改弹窗的商品信息
+    changePopData() {
+      let index = this.SaleOrderDetails.findIndex(
+        v => v.code == this.popData.code
+      );
+      let popData = JSON.parse(JSON.stringify(this.popData));
+      // 判断B数组里有没有点击的那个商品  没有就加进去  否则就替换掉B数组里原来的商品信息
+      if (index == -1) {
+        this.SaleOrderDetails.push(popData);
+      } else {
+        this.SaleOrderDetails[index] = popData;
+      }
+      let totalPrice = 0;
+      for (let j = 0; j < this.SaleOrderDetails.length; j++) {
+        this.SaleOrderDetails[j].OrigDiscountAmount =
+          (((this.SaleOrderDetails[j].OrigTaxPrice - 0) *
+            (100 - this.SaleOrderDetails[j].rate)) /
+            100) *
+          this.SaleOrderDetails[j].Quantity; // 总价
+        this.SaleOrderDetails[j].OrigTaxAmount =
+          (this.SaleOrderDetails[j].OrigTaxPrice - 0) *
+          this.SaleOrderDetails[j].Quantity; // 含税总价
+        this.SaleOrderDetails[j].OrigTax =
+          (this.SaleOrderDetails[j].OrigTaxPrice - 0) *
+          (this.SaleOrderDetails[j].rate / 100); // 税额
+        totalPrice += Number(
+          this.SaleOrderDetails[j].OrigTaxPrice *
+            this.SaleOrderDetails[j].Quantity
+        );
+      }
+    },
+    showPopData(item) {
+      this.showPop = true;
+      this.popData = item;
+    },
+    validate() {
+      if (
+        this.orderMessage.voucherDate == "请选择" ||
+        this.orderMessage.deliveryDate == "请选择"
+      ) {
+        this.$toast({
+          message: "请选择日期"
+        });
+        return false;
+      }
+      if (!this.partner) {
+        this.$toast({
+          message: "请选择客户"
+        });
+        return false;
+      }
+      if (!this.SaleOrderDetails) {
+        this.$toast({
+          message: "请选择商品"
+        });
+        return false;
+      }
+      return true;
+    },
+    clearStore() {
+      this.$store.state.OrderMessage = null;
+      this.$store.state.SaleOrderDetails = null;
+      this.$store.state.TotalPrice = null;
+      this.$store.state.SelectedPartner = null;
+      this.$store.state.SelectedSaleMan = null;
     },
     // 提交订单
     async createOrder() {
+      if (!this.validate()) return;
       // const data = await this.$Parse.Cloud.run("createOrder", {
-      //   VoucherDate: this.VoucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
-      //   DeliveryDate: this.DeliveryDate, // 预计交货日期
+      //   VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
+      //   DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
       //   Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
       //   Clerk: { Code: this.saleMan.code }, // 业务员
-      //   Currency: { Code: this.moneyType.code }, // 币种
-      //   // ExchangeRate // 汇率，decimal类型
-      //   Memo: this.deliveryRequire,
+      //   Currency: { Code: this.orderMessage.moneyType.code }, // 币种
+      //   ExchangeRate:this.orderMessage.exchangeRate, // 汇率，decimal类型
+      //   Memo: this.orderMessage.deliveryRequire,
       //   SaleOrderDetails: this.SaleOrderDetails
       // });
-      this.$store.state.OrderMessage = null
-      this.$store.state.SaleOrderDetails = null
+      // console.log(data)
+      this.clearStore();
+    },
+    // 存入草稿
+    async createDraft() {
+      if (!this.validate()) return;
+      // const data = await this.$Parse.Cloud.run("createDraft", {
+      //   VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
+      //   DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
+      //   Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
+      //   Clerk: { Code: this.saleMan.code }, // 业务员
+      //   Currency: { Code: this.orderMessage.moneyType.code }, // 币种
+      //   ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
+      //   Memo: this.orderMessage.deliveryRequire,
+      //   SaleOrderDetails: this.SaleOrderDetails
+      // });
+      // console.log(data);
+      this.clearStore();
     },
     // 获取币种
     async getCurrency() {
@@ -173,7 +280,6 @@ export default {
         return item.id == this.partner.AA_Partner_idsaleman;
       });
       this.saleMan = saleMan[0];
-      console.log(this.saleMan)
     }
   }
 };
@@ -195,6 +301,7 @@ export default {
 
     // 单元格内输入框样式
     .van-field {
+      border: 0px;
       padding: 0px;
       padding-right: 20px;
     }
@@ -203,6 +310,11 @@ export default {
     }
     .van-cell__value {
       color: #888888;
+    }
+  }
+  /deep/ .van-cell__value {
+    input {
+      color: #888;
     }
   }
   // 带间距的单元格样式

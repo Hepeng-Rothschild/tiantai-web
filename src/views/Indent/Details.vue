@@ -11,7 +11,7 @@
       </div>
       <div class="order-information">
         <span class="title">业务员</span>
-        <span class="information">{{content.partnerInfo.AA_Person_name}}</span>
+        <span class="information">{{content.AA_Partner_Creater}}</span>
       </div>
       <div class="order-information">
         <span class="title">预计交货</span>

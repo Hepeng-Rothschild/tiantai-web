@@ -10,16 +10,23 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     saleOrderDetails: null,
-    cellNews: null,
-    defaultPay: null
+    savePartners: null,
+    defaultPay: {
+      radio: null,
+      saleCreditDays: null,
+      aleStartDate: null,
+      saleSpaceMonth: null,
+      saleCheckMonth: null,
+      saleCheckDate: null
+    }
   },
   mutations: {
     selectGoods(state, data) {
       console.log(state, data)
       state.saleOrderDetails = data
     },
-    savePartner(state, data) {
-      state.cellNews = data
+    savePartners(state, data) {
+      state.savePartners = data
     },
     savePay(state, data) {
       state.defaultPay = data

@@ -87,7 +87,7 @@ export default {
         { text: '已审', value: 189 }
       ],
       // 所有订单
-      allIndent: [],
+      allIndent: null,
       // 开始时间
       startTime: '',
       // 结束时间
@@ -134,17 +134,17 @@ export default {
         name: this.name,
         state: this.state
       })
-      console.log(data[0].length);
+      // console.log(data[0]);
       let indentData = this.allIndent || []
       for (let i = 0; i < data[0].length; i++) {
         indentData.push(data[0][i])
       }
       this.allIndent = indentData
-      // console.log(this.allindent);
+      console.log(this.allindent);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++
-        console.log(this.pageIndex);
+        // console.log(this.pageIndex);
         
       } else {
         this.finished = true;
@@ -215,7 +215,7 @@ export default {
     // 改变订单状态值进行筛选
     async changeState (orderState) {
       this.state = orderState
-      await this.getData()
+      await this.getData()      
     }
   }
 }

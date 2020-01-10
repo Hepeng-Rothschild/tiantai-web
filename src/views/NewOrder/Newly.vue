@@ -4,13 +4,13 @@
       <div class="spacing-two">
         <van-cell title="客户名称"
                   class="moveleft">
-          <van-field v-model="cellnews.Name"
+          <van-field v-model="savePartner.name"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="客户性质"
-                  :value="cellnews.PartnerTypeName?cellnews.PartnerTypeName:'请选择'"
+                  :value="savePartner.partnerTypeName?savePartner.partnerTypeName:'客户'"
                   is-link
                   @click="showProperty = true">
         </van-cell>
@@ -18,54 +18,54 @@
         <van-popup v-model="showProperty"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="(property,index) in PartnerTypeArr"
+          <div v-for="(property,index) in partnerTypeArr"
                :key="index"
-               @click="changePro(property)">{{property.Name}}</div>
+               @click="changePartnerType(property)">{{property.Name}}</div>
         </van-popup>
         <van-cell title="所属类别"
-                  :value="cellnews.PartnerClassName?cellnews.PartnerClassName:'请选择'"
+                  :value="savePartner.partnerClassName?savePartner.partnerClassName:'请选择'"
                   is-link
                   @click="showCategory = true">
         </van-cell>
         <van-popup v-model="showCategory"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="(category,index) in this.PartnerClass"
+          <div v-for="(category,index) in this.partnerClass"
                :key="index"
-               @click="changeCateName(category)">{{category.Name}}</div>
+               @click="changePartnerClass(category)">{{category.Name}}</div>
 
         </van-popup>
       </div>
 
       <div class="spacing-two">
         <van-cell title="分管部门 选填"
-                  :value="cellnews.SaleDepartmentName?cellnews.SaleDepartmentName:'请选择'"
+                  :value="savePartner.saleDepartmentName?savePartner.saleDepartmentName:'请选择'"
                   is-link
                   @click="showDepartment = true">
         </van-cell>
         <van-popup v-model="showDepartment"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="(department,index) in SaleDepartment"
+          <div v-for="(department,index) in saleDepartment"
                :key="index"
-               @click="changeDep(department)">{{department.name}}</div>
+               @click="changeManageName(department)">{{department.name}}</div>
         </van-popup>
         <van-cell title="分管人员"
-                  :value="cellnews.SaleManName?cellnews.SaleManName:'请选择'"
+                  :value="savePartner.saleManName?savePartner.saleManName:'请选择'"
                   is-link
                   @click="showManages = true">
         </van-cell>
         <van-popup v-model="showManages"
                    position="bottom"
                    :style="{ height: '30%' }">
-          <div v-for="(manage,index) in SaleMan"
+          <div v-for="(manage,index) in saleMan"
                :key="index"
-               @click="changeMan(manage)">{{manage.name}}</div>
+               @click="changeSalemanName(manage)">{{manage.name}}</div>
         </van-popup>
       </div>
       <div class="spacing">
         <van-cell title="默认收款方式"
-                  :value="SaleSettleStyleName?SaleSettleStyleName:'请选择'"
+                  :value="savePartner.saleSettleStyleName?savePartner.saleSettleStyleName:'请选择'"
                   is-link
                   to="/defaultPay">
         </van-cell>
@@ -73,19 +73,19 @@
 
       <div class="spacing-two moveleft">
         <van-cell title="联系人">
-          <van-field v-model="cellnews.Contact"
+          <van-field v-model="savePartner.contact"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="联系电话">
-          <van-field v-model="cellnews.MobilePhone"
+          <van-field v-model="savePartner.mobilePhone"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="到货地址">
-          <van-field v-model="cellnews.ShipmentAddress"
+          <van-field v-model="savePartner.shipmentAddress"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
@@ -93,13 +93,13 @@
       </div>
       <div class="spacing-two moveleft">
         <van-cell title="发货要求">
-          <van-field v-model="cellnews.sendgoodsAsk"
+          <van-field v-model="savePartner.sendgoodsAsk"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="到货要求">
-          <van-field v-model="cellnews.remarks"
+          <van-field v-model="savePartner.remarks"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
@@ -109,7 +109,6 @@
     </van-cell-group>
     <van-button type="info"
                 @click="createPartner">保存</van-button>
-
   </div>
 </template>
 
@@ -119,114 +118,118 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      Code: this.uuidcode(),
-      // 数期
+      // 唯一识别号uuid
+      code: this.uuidcode(),
+      // 数期----后期需要改动~~
       priuserdefnvc1: '5',
-      // 默认收款方式----开始
-      saleDate: null,
-      SaleSettleStyleName: this.$store.state.defaultPay.radio || null,
-      SaleSettleStyle: { Code: null },
-      SaleCreditDays: null,
-      SaleStartDate: null,
-      SaleSpaceMonth: null,
-      SaleCheckMonth: null,
-      SaleCheckDate: null,
-      // 默认收款方式----结束
-      // -------------------
-      PartnerTypeArr: [{ Code: "01", Name: '客户' }, { Code: '00', Name: '供应商' }, { Code: '02', Name: '客户/供应商' }],
-      PartnerClass: null,
-      SaleDepartment: null,
-
-      SaleMan: null,
+      // 客户性质----固定内容
+      partnerTypeArr: [{ Code: "01", Name: '客户' }, { Code: '00', Name: '供应商' }, { Code: '02', Name: '客户/供应商' }],
+      // 所属类别----需要遍历展示的数据
+      partnerClass: null,
+      // 分管部门----需要遍历展示的数据
+      saleDepartment: null,
+      // 分管部门下的销售员----需要遍历展示的数据
+      saleMan: null,
       // 以下是遮罩层的开启名称
       showCategory: false,
       showProperty: false,
       showDepartment: false,
       showManages: false,
-      // 选择要储存的参数
-      cellnews: this.$store.state.cellNews || {
+      //  收款方式的代号，不能放在对象里，会报错
+      saleSettleStyle: { Code: null },
+      // 选择要储存的参数，把它们包装成一个大数组
+      savePartner: this.$store.state.savePartners || {
         //客户名称
-        Name: '',
-        Contact: '',
-        MobilePhone: '',
-        ShipmentAddress: '',
+        name: '',
+        // 联系人
+        contact: '',
+        // 电话
+        mobilePhone: '',
+        // 地址
+        shipmentAddress: '',
         // 确定修改类型
-        Status: '1',
+        status: '1',
         // 客户性质
-        PartnerType: { Code: null },
-        PartnerTypeName: null,
+        partnerType: { Code: '01' },
+        partnerTypeName: null,
         // 客户类别
-        PartnerClassName: null,
-        PartnerClassCode: { Code: null },
+        partnerClassName: null,
+        partnerClassCode: { Code: null },
         // 分管部门
-        SaleDepartmentName: null,
-        SaleDepartmentCode: { Code: null },
+        saleDepartmentName: null,
+        saleDepartmentCode: { Code: null },
         //分管人员
-        SaleManName: null,
-        SaleManCode: { Code: null },
+        saleManName: null,
+        saleManCode: { Code: null },
         departmentCode: null,
         sendgoodsAsk: '',//发货要求
         remarks: '',// 发货备注
+        // 默认收款方式----开始
+        saleSettleStyleName: null,
+        saleStartDate: null,
+        saleSpaceMonth: null,
+        saleCheckMonth: null,
+        saleCheckDate: null,
+        // 默认收款方式----结束
       }
     }
   },
   watch: {
-    cellnews: {
+    savePartner: {
       handler (newVal, oldVal) {
-        this.$store.commit('savePartner', this.cellnews)
+        this.$store.commit('savePartners', this.savePartner)
       },
       deep: true
     }
   },
   computed: {
-    ...mapState(['cellNews', 'defaultPay'])
+    ...mapState(['savePartners', 'defaultPay'])
   },
   created () {
-    this.changeCate()
-    this.change_dep()
-    this.change_man()
+    this.changeCategory()
+    this.changeManage()
+    this.changeSaleman()
   },
   mounted () {
-    this.selectPay()
     this.selectDate()
   },
   methods: {
-    changePro (propertyNew) {
-      this.cellnews.PartnerTypeName = propertyNew.Name
-      this.cellnews.PartnerType.Code = propertyNew.Code
+    changePartnerType (propertyNew) {
+      this.savePartner.partnerTypeName = propertyNew.Name
+      this.savePartner.partnerType.Code = propertyNew.Code
       this.showProperty = false
     },
     // 选择类型
-    changeCateName (categoryNew) {
-      this.cellnews.PartnerClassName = categoryNew.Name
-      this.cellnews.PartnerClassCode.Code = categoryNew.Code
+    changePartnerClass (categoryNew) {
+      this.savePartner.partnerClassName = categoryNew.Name
+      this.savePartner.partnerClassCode.Code = categoryNew.Code
       this.showCategory = false
     },
     // 选择所属类别
-    async changeCate () {
+    async changeCategory () {
       const { data } = await this.$Parse.Cloud.run("getPartnerClass");
-      this.PartnerClass = JSON.parse(data)
+      this.partnerClass = JSON.parse(data)
     },
     // 选择分管部门
-    async change_dep () {
+    async changeManage () {
       const { data } = await this.$Parse.Cloud.run("department");
-      this.SaleDepartment = data
+      this.saleDepartment = data
     },
-    changeDep (departmentNew) {
-      this.cellnews.SaleDepartmentName = departmentNew.name
-      this.cellnews.SaleDepartmentCode.Code = departmentNew.code
-      this.cellnews.departmentCode = departmentNew.code
-      this.change_man()
+    changeManageName (departmentNew) {
+      this.savePartner.saleDepartmentName = departmentNew.name
+      this.savePartner.saleDepartmentCode.Code = departmentNew.code
+      this.savePartner.departmentCode = departmentNew.code
+      this.changeSaleman()
       this.showDepartment = false
     },
     // 选择分管人员
-    async change_man () {
-      const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", { departmentCode: this.cellnews.departmentCode || null });
-      this.SaleMan = data
+    async changeSaleman () {
+      const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", { departmentCode: this.savePartner.departmentCode || null });
+      this.saleMan = data
     },
-    changeMan (manageNew) {
-      this.cellnews.SaleManCode.Code = manageNew.code
-      this.cellnews.SaleManName = manageNew.name
+    changeSalemanName (manageNew) {
+      this.savePartner.saleManCode.Code = manageNew.code
+      this.savePartner.saleManName = manageNew.name
       this.showManages = false
     },
     // 编写UUID
@@ -241,74 +244,92 @@ export default {
     // 新增客户
     async createPartner () {
       // console.log(this.Code);
-      // console.log(this.cellnews.PartnerType);
-      // console.log(this.cellnews.PartnerClassCode);
-      // console.log(this.cellnews.SaleDepartmentCode);
-      // console.log(this.cellnews.SaleManCode);
-      // console.log(this.SaleSettleStyle);
-      // console.log(this.cellnews.Contact);
-      // console.log(this.cellnews.MobilePhone);
-      // console.log(this.cellnews.ShipmentAddress);
-      // console.log(this.cellnews.Status);
-      // console.log(this.SaleCreditDays);
-      // console.log(this.SaleStartDate);
-      // console.log(this.SaleSpaceMonth);
-      // console.log(this.SaleCheckMonth);
-      // console.log(this.SaleCheckDate);
+      // console.log(this.savePartner.partnerType);
+      // console.log(this.savePartner.partnerClassCode);
+      // console.log(this.savePartner.saleDepartmentCode);
+      // console.log(this.savePartner.saleManCode);
+      // console.log(this.saleSettleStyle);
+      // console.log(this.savePartner.contact);
+      // console.log(this.savePartner.mobilePhone);
+      // console.log(this.savePartner.shipmentAddress);
+      // console.log(this.savePartner.status);
+      // console.log(this.savePartner.saleStartDate);
+      // console.log(this.savePartner.saleSpaceMonth);
+      // console.log(this.savePartner.saleCheckMonth);
+      // console.log(this.savePartner.saleCheckDate);
       // console.log(this.priuserdefnvc1);
 
       const { data } = await this.$Parse.Cloud.run("createPartner", {
-        Code: this.Code,
-        Name: this.cellnews.Name,
-        SaleSettleStyle: this.SaleSettleStyle,
-        Contact: this.cellnews.Contact,
-        MobilePhone: this.cellnews.MobilePhone,
-        ShipmentAddress: this.cellnews.ShipmentAddress,
-        PartnerType: this.cellnews.PartnerType,
-        PartnerClass: this.cellnews.PartnerClassCode,
-        SaleDepartment: this.cellnews.SaleDepartmentCode,
-        SaleMan: this.cellnews.SaleManCode,
-        Status: this.cellnews.Status,
-        priuserdefnvc1: this.priuserdefnvc1,
-        SaleCreditDays: this.SaleCreditDays,
-        SaleStartDate: this.SaleStartDate || null,
-        SaleSpaceMonth: this.SaleSpaceMonth || null,
-        SaleCheckMonth: this.SaleCheckMonth || null,
-        SaleCheckDate: this.SaleCheckDate || null
+        Code: this.code,
+        Name: this.savePartner.name,
+        Contact: this.savePartner.contact,
+        MobilePhone: this.savePartner.mobilePhone,
+        ShipmentAddress: this.savePartner.shipmentAddress,
+        PartnerType: this.savePartner.partnerType,
+        PartnerClass: this.savePartner.partnerClassCode,
+        SaleDepartment: this.savePartner.saleDepartmentCode,
+        SaleMan: this.savePartner.saleManCode,
+        Status: this.savePartner.status,
+        Priuserdefnvc1: this.priuserdefnvc1,
+        SaleSettleStyle: this.saleSettleStyle,
+        SaleStartDate: this.savePartner.saleStartDate || null,
+        SaleSpaceMonth: this.savePartner.saleSpaceMonth || null,
+        SaleCheckMonth: this.savePartner.saleCheckMonth || null,
+        SaleCheckDate: this.savePartner.saleCheckDate || null
       });
 
+      // // 需要加一个判断，如果创建成功，则跳转页面，不成功则返回提示文字
+      // if (data) {
+      //   
+      // }else {
+      //   this.$toast('客户信息填写不完整')
+      // }
+      this.$store.state.savePartners = null
+      this.$store.state.defaultPay = {
+        radio: null,
+        saleCreditDays: null,
+        aleStartDate: null,
+        saleSpaceMonth: null,
+        saleCheckMonth: null,
+        saleCheckDate: null
+      }
+      if (this.$router.push({ name: 'selectpartner' })) {
+        this.$toast('新增客户成功')
+      }else {
+        this.$toast('客户信息填写不完整')
+      }
+      
       console.log(data);
     },
-    // 拿到vuex中的收款方式名称
-    selectPay () {
-      let name = this.$store.state.defaultPay.radio
-
-      if (name == '限期收款') {
-        this.SaleSettleStyle.Code = '00'
-      } else if (name == '全额订金') {
-        this.SaleSettleStyle.Code = '01'
-      } else if (name == '全额现结') {
-        this.SaleSettleStyle.Code = '02'
-      } else if (name == '月结') {
-        this.SaleSettleStyle.Code = '03'
-      } else {
-        this.SaleSettleStyle.Code = '05'
-      }
-    },
-    // 拿到vuex中存储的收款方式限定天数
+    // 拿到vuex中存储的收款方式限定天数/收款方式名称
     selectDate () {
-      this.saleDate = this.$store.state.defaultPay
-      let sale_Date = this.saleDate
-      this.SaleCreditDays = sale_Date.date_0
-      this.SaleStartDate = sale_Date.date_1
-      this.SaleSpaceMonth = sale_Date.date_2
-      this.SaleCheckMonth = sale_Date.date_3
-      this.SaleCheckDate = sale_Date.date_4
-      //   console.log(this.SaleCreditDays);
-      // console.log(this.SaleStartDate);
-      // console.log(this.SaleSpaceMonth);
-      // console.log(this.SaleCheckMonth);
-      // console.log(this.SaleCheckDate);
+      let sale_Date = this.$store.state.defaultPay
+      let name = this.$store.state.defaultPay.radio
+      if (name) {
+        this.savePartner.saleSettleStyleName = name
+      } else {
+        return this.savePartner.saleSettleStyleName
+      }
+      if (name == '限期收款') {
+        this.saleSettleStyle.Code = '00'
+      } else if (name == '全额订金') {
+        this.saleSettleStyle.Code = '01'
+      } else if (name == '全额现结') {
+        this.saleSettleStyle.Code = '02'
+      } else if (name == '月结') {
+        this.saleSettleStyle.Code = '03'
+      } else {
+        this.saleSettleStyle.Code = '05'
+      }
+      this.savePartner.saleStartDate = sale_Date.aleStartDate
+      this.savePartner.saleSpaceMonth = sale_Date.saleSpaceMonth
+      this.savePartner.saleCheckMonth = sale_Date.saleCheckMonth
+      this.savePartner.saleCheckDate = sale_Date.saleCheckDate
+      // console.log(this.saleSettleStyle);
+      // console.log(this.savePartner.saleStartDate);
+      // console.log(this.savePartner.saleSpaceMonth);
+      // console.log(this.savePartner.saleCheckMonth);
+      // console.log(this.savePartner.saleCheckDate);
     }
   }
 }

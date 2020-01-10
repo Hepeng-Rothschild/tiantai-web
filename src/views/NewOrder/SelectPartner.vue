@@ -23,6 +23,8 @@
 import MySearch from "../../components/Search.vue";
 import { setItem, getItem } from "../../utils/Storage.js";
 import { mapState } from "vuex";
+import { debounce } from 'loadsh'
+
 export default {
   components: {
     MySearch: MySearch
@@ -38,12 +40,12 @@ export default {
     };
   },
   watch: {
-    async searchValue(newValue, oldValue) {
+     searchValue: debounce(async function(newValue, oldValue) {
       this.finished = false
       this.pageIndex = 0;
       this.partner = [];
       this.getPartner();
-    }
+    },500)
   },
   methods: {
     onLoad() {
@@ -62,7 +64,7 @@ export default {
       for (let i = 0; i < data[0].length; i++) {
         listData.push(data[0][i]);
       }
-      this.partner = listData;
+      this.partner = listData
 
       this.loading = false;
      

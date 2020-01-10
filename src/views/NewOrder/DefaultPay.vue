@@ -6,17 +6,17 @@
       <van-radio name="限期收款">限期收款</van-radio>
       <div class="decimal">
         <div class="right-input"><span class="icon">*</span><span class="title">销货/开票后x天内进行收款</span><input type="text"
-                 v-model="params.date_0"
+                 v-model="params.saleCreditDays"
                  oninput="value=value.replace(/[^\d]/g,'')"></div>
-
       </div>
       <van-radio name="月结"><span>月结</span> </van-radio>
       <div class="decimal">
         <div class="right-input">
-          <span>账期起始日期</span>
+          <span class="icon">*</span>
+          <span>账单起始日：</span>
           <div class="date-input">
             <input type="text"
-                   v-model="params.date_1"
+                   v-model="params.aleStartDate"
                    oninput="value=value.replace(/[^\d]/g,'')">
             <van-icon name="clock"
                       @click="show_1 = true" />
@@ -31,8 +31,8 @@
         </div>
       </div>
       <div class="decimal">
-        <div class="right-input"><span>每x个月为一个账期</span><input type="text"
-                 v-model="params.date_2"
+        <div class="right-input"><span class="icon">*</span><span>每x个月为一个账期</span><input type="text"
+                 v-model="params.saleSpaceMonth"
                  oninput="value=value.replace(/[^\d]/g,'')"></div>
       </div>
       <div class="decimal">
@@ -40,14 +40,15 @@
       </div>
       <div class="decimal">
         <div class="right-input">
+          <span class="icon">*</span>
           <span>月： </span><input type="text"
-                 v-model="params.date_3"
+                 v-model="params.saleCheckMonth"
                  oninput="value=value.replace(/[^\d]/g,'')">
         </div>
       </div>
       <div class="decimal">
-        <div class="right-input"> <span>日： </span><input type="text"
-                 v-model="params.date_4"
+        <div class="right-input"><span class="icon">*</span> <span>日： </span><input type="text"
+                 v-model="params.saleCheckDate"
                  oninput="value=value.replace(/[^\d]/g,'')">
         </div>
       </div>
@@ -59,45 +60,44 @@
     </div>
   </div>
 </template>
-
 <script>
 import { setItem, getItem } from "../../utils/Storage.js";
 import dayjs from "dayjs";
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
-
       show_1: false,
       currentDate: new Date(),
       params: this.$store.state.defaultPay || {
         radio: '',
-        date_0: null,
-        date_1: null,
-        date_2: null,
-        date_3: null,
-        date_4: null
+        saleCreditDays: null,
+        aleStartDate: null,
+        saleSpaceMonth: null,
+        saleCheckMonth: null,
+        saleCheckDate: null
       }
-
     }
   },
-  computed:{
+  computed: {
     ...mapState(['defaultPay'])
   },
   watch: {
     params: {
-      handler (newVal,oldVal) {        
+      handler (newVal, oldVal) {
         this.$store.commit('savePay', this.params)
       },
       deep: true
     }
   },
-  mounted () {
-
-  },
   methods: {
     selectPay () {
-      if (this.params.date_0) {
+      let params = this.params
+      if (params.saleCreditDays &&
+        params.aleStartDate &&
+        params.saleSpaceMonth &&
+        params.saleCheckMonth &&
+        params.saleCheckDate) {
         this.$router.go(-1);
       } else {
         this.$toast('带*号为必填项')
@@ -106,7 +106,7 @@ export default {
     },
     confirmPicker1 (value) {
       this.show_1 = false;
-      this.params.date_1 = dayjs(value).format("YYYY-MM-DD");
+      this.params.aleStartDate = dayjs(value).format("YYYY-MM-DD");
     }
   }
 }

@@ -76,8 +76,10 @@ export default {
       
     },
     selectPartner(partner) {
-      this.$router.push({ name: "neworder" });
-      setItem("selectPartner", partner);
+      this.$router.push('/neworder');
+      this.$store.commit('saveSelectedPartner',partner)
+      // 清除上一次选择的销售员数据
+      this.$store.commit('saveSelectedSaleMan',null)
     }
   }
 };

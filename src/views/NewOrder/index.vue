@@ -1,21 +1,15 @@
 <template>
   <div class="neworder">
     <van-cell-group>
-      <!-- 第一行 和 第一个日期控件 -->
-      <van-cell title="单据日期*" :value="VoucherDate" is-link @click="show_1 = true"></van-cell>
-
-      <!-- 第二行 和 第二个日期控件-->
-      <van-cell title="预计交货日期*" :value="DeliveryDate" is-link @click="show_2=true"></van-cell>
-
+      <van-cell title="单据日期*" :value="orderMessage.voucherDate" is-link @click="show_1 = true"></van-cell>
+      <van-cell title="预计交货日期*" :value="orderMessage.deliveryDate" is-link @click="show_2=true"></van-cell>
       <!-- 选择客户 -->
-
       <van-cell
         title="客户*"
         is-link
         class="spacing"
         to="/selectpartner"
       >{{ partner?partner.AA_Partner_Contact:'请选择客户' }}</van-cell>
-
       <!-- 选择业务员 -->
       <van-cell
         title="业务员"
@@ -41,17 +35,17 @@
       <div class="spacing">
         <van-cell
           title="币种"
-          :value="moneyType.name?moneyType.name:'人民币'"
+          :value="orderMessage.moneyType.name"
           is-link
           @click="popupShowCoin = true"
         ></van-cell>
 
         <van-cell title="汇率">
           <van-field
-            v-model="exchangeRate"
+            v-model="orderMessage.exchangeRate"
             placeholder="请输入"
             input-align="right"
-            style="border:0px;"
+            style="border:0px;color:#888888;"
           />
         </van-cell>
       </div>
@@ -101,11 +95,9 @@ import { getItem, setItem } from "../../utils/Storage.js";
 export default {
   data() {
     return {
-      moneyType: { code: "RMB" },
       // 币种
       currency: null,
       // 控制单元格内的输入框
-      exchangeRate: (1.0).toFixed(1), // 汇率
       deliveryRequire: "", // 送货要求
       popupShowCoin: false,
       // 日期
@@ -113,53 +105,61 @@ export default {
       // 单据日期遮罩层
       show_1: false,
       show_2: false,
-      // 开始时间默认值
-      VoucherDate: "请选择",
-      // 结束时间默认值
-      DeliveryDate: "请选择",
-      saleMan: getItem("selectSaleMan"),
-      partner: getItem("selectPartner")
+
+      partner: this.$store.state.SelectedPartner,
+      saleMan: this.$store.state.SelectedSaleMan,
+      orderMessage: this.$store.state.OrderMessage || {
+        voucherDate: "请选择", // 单据日期
+        deliveryDate: "请选择", // 交货日期
+        moneyType: { code: "RMB", name: "人民币" },
+        exchangeRate: '1.0' // 汇率
+      }
     };
+  },
+  watch: {
+    orderMessage: {
+      handler() {
+        this.$store.commit("saveOrderMessage", this.orderMessage);
+      },
+      deep: true
+    }
   },
   computed: {
     ...mapState(["SaleOrderDetails"])
   },
   mounted() {
-    !getItem("selectSaleMan") &&
-      getItem("selectPartner") &&
+    this.$store.state.SelectedPartner &&
+      !this.$store.state.SelectedSaleMan &&
       this.selectPartner();
     this.getCurrency();
   },
   methods: {
     changeMoneyType(type) {
-      this.moneyType = type;
+      this.orderMessage.moneyType = type;
       this.popupShowCoin = false;
     },
-
-    changeDate(dateNew) {
-      this.datePicker = dateNew;
-    },
-
     confirmPicker1(value) {
       this.show_1 = false;
-      this.VoucherDate = dayjs(value).format("YYYY-MM-DD");
+      this.orderMessage.voucherDate = dayjs(value).format("YYYY-MM-DD");
     },
     confirmPicker2(value) {
       this.show_2 = false;
-      this.DeliveryDate = dayjs(value).format("YYYY-MM-DD");
+      this.orderMessage.deliveryDate = dayjs(value).format("YYYY-MM-DD");
     },
     // 提交订单
     async createOrder() {
-      const data = await this.$Parse.Cloud.run("createOrder", {
-        VoucherDate: this.VoucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
-        DeliveryDate: this.DeliveryDate, // 预计交货日期
-        Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
-        Clerk: { Code: this.saleMan.code }, // 业务员
-        Currency: { Code: this.moneyType.code }, // 币种
-        // ExchangeRate // 汇率，decimal类型
-        Memo: this.deliveryRequire,
-        SaleOrderDetails: this.SaleOrderDetails
-      });
+      // const data = await this.$Parse.Cloud.run("createOrder", {
+      //   VoucherDate: this.VoucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
+      //   DeliveryDate: this.DeliveryDate, // 预计交货日期
+      //   Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
+      //   Clerk: { Code: this.saleMan.code }, // 业务员
+      //   Currency: { Code: this.moneyType.code }, // 币种
+      //   // ExchangeRate // 汇率，decimal类型
+      //   Memo: this.deliveryRequire,
+      //   SaleOrderDetails: this.SaleOrderDetails
+      // });
+      this.$store.state.OrderMessage = null
+      this.$store.state.SaleOrderDetails = null
     },
     // 获取币种
     async getCurrency() {
@@ -169,10 +169,11 @@ export default {
     // 选择客户
     async selectPartner() {
       const { data } = await this.$Parse.Cloud.run("getAllSaleMan");
-      const saleMan = data.filter((item, index) => {
+      const saleMan = data.filter(item => {
         return item.id == this.partner.AA_Partner_idsaleman;
       });
       this.saleMan = saleMan[0];
+      console.log(this.saleMan)
     }
   }
 };

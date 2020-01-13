@@ -10,7 +10,6 @@ import './styles/index.less'
 
 import Parse from './utils/parse.js'
 Vue.prototype.$Parse = Parse
-
 Vue.use(Vant);
 Vue.config.productionTip = false
 Vue.prototype.$Parse = Parse

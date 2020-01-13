@@ -78,7 +78,6 @@ export default {
         { text: '上月', value: 2 },
         { text: '本季度', value: 3 },
         { text: '本年', value: 4 },
-        { text: '自定义', value: 5 },
       ],
       orderIndex: null,
       orderStatus: [

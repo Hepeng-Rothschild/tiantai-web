@@ -21,7 +21,10 @@ export default new Vuex.Store({
     SelectedSaleMan: null,
   },
   mutations: {
-    selectGoods(state, data) {
+    savePay(state,data) {
+      state.defaultPay = data
+    },
+    saveSelectGoods(state, data) {
       state.SaleOrderDetails = data
     },
     savePartners(state, data) {

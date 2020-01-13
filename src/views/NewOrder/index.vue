@@ -239,17 +239,17 @@ export default {
     // 提交订单
     async createOrder() {
       if (!this.validate()) return;
-      // const data = await this.$Parse.Cloud.run("createOrder", {
-      //   VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
-      //   DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
-      //   Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
-      //   Clerk: { Code: this.saleMan.code }, // 业务员
-      //   Currency: { Code: this.orderMessage.moneyType.code }, // 币种
-      //   ExchangeRate:this.orderMessage.exchangeRate, // 汇率，decimal类型
-      //   Memo: this.orderMessage.deliveryRequire,
-      //   SaleOrderDetails: this.SaleOrderDetails
-      // });
-      // console.log(data)
+      const data = await this.$Parse.Cloud.run("createOrder", {
+        VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
+        DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
+        Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
+        Clerk: { Code: this.saleMan.code }, // 业务员
+        Currency: { Code: this.orderMessage.moneyType.code }, // 币种
+        ExchangeRate:this.orderMessage.exchangeRate, // 汇率，decimal类型
+        Memo: this.orderMessage.deliveryRequire,
+        SaleOrderDetails: this.SaleOrderDetails
+      });
+      console.log(data)
       this.clearStore();
     },
     // 存入草稿

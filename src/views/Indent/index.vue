@@ -138,8 +138,8 @@ export default {
       for (let i = 0; i < data[0].length; i++) {
         indentData.push(data[0][i])
       }
-      this.allIndent = indentData
-      console.log(this.allindent);
+      this.allIndent = indentData.reverse()
+      // console.log(this.allIndent);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++
@@ -209,12 +209,16 @@ export default {
 
       this.startTime = dayjs(startTimeTmp).format('YYYY-MM-DD')
       this.endTime = dayjs(endTimeTmp).format('YYYY-MM-DD')
+      console.log(this.startTime);
+      console.log(this.endTime);    
       await this.getData()
     },
     // 改变订单状态值进行筛选
     async changeState (orderState) {
       this.state = orderState
       await this.getData()      
+      console.log(this.state);
+      
     }
   }
 }

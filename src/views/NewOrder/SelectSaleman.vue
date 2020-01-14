@@ -21,6 +21,8 @@
 
 <script>
 import MySearch from "../../components/Search.vue";
+import { debounce } from 'loadsh'
+
 export default {
   components: {
     MySearch: MySearch
@@ -28,7 +30,7 @@ export default {
   data() {
     return {
       searchValue: null,
-      saleMan: null,
+      saleMan: [],
       loading: false,
       finished: false,
       pageIndex: 0,
@@ -36,12 +38,11 @@ export default {
     };
   },
   watch: {
-    searchValue(newValue, oldValue) {
-      this.finished = false;
+     searchValue: debounce(async function(newValue, oldValue) {
       this.pageIndex = 0;
       this.saleMan = [];
       this.getSaleMan();
-    }
+    },500)
   },
   methods: {
     onLoad() {
@@ -49,29 +50,26 @@ export default {
     },
     // getSaleMan 获取业务员
     async getSaleMan() {
-      var _this = this;
+      
       const { data } = await this.$Parse.Cloud.run("getSaleMan", {
-        name: _this.searchValue,
-        pageIndex: _this.pageIndex,
-        pageSize: _this.pageSize
+        name: this.searchValue,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize
       });
-      let listData = this.saleMan || [];
-      for (let i = 0; i < data[0].length; i++) {
-        listData.push(data[0][i]);
-      }
-      this.saleMan = listData;
-      console.log("saleMan", this.saleMan);
-      console.log(this.pageIndex)
+      this.saleMan.push(...data[0]);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++;
-      } else {
+        //为了配合搜索框 finished = false 会继续触发 onLoad 事件
+        this.finished = false
+      } 
+      if (!data[0].length ||data[0].length<this.pageSize) {
         this.finished = true;
       }
     },
     selectSaleMan(saleMan) {
       this.$router.back();
-      this.$store.commit('saveSelectedSaleMan',saleMan)
+      this.$store.commit("saveSelectedSaleMan", saleMan);
     }
   }
 };
@@ -79,7 +77,7 @@ export default {
 
 <style lang="less" scoped>
 .search {
-  padding: 59px 10px 10px 10px;
+  padding: 10px;
   border-bottom: 1px solid #c0c4cc;
 }
 .van-cell {

@@ -2,7 +2,7 @@
   <div class="choose">
     <div class="header">
       <!-- 搜索栏 -->
-      <my-search v-model="searchValue"></my-search>
+      <my-search v-model="searchValue" placeholder="请输入商品名称"></my-search>
     </div>
     <!-- 交易历史记录 -->
     <!-- <div class="title">{{}}的历史购买</div>
@@ -35,11 +35,11 @@
         <div v-for="(item,index) in inventory" :key="index" class="cell">
           <div>
             <div class="fontSize_18">{{item?item.code:''}}</div>
-            <div class="fontSize_14">{{item?item.name:''}}</div>
+            <div class="fontSize_14 name">{{item?item.name:''}}</div>
           </div>
           <div
             class="fontSize_14 align_self_end"
-          >现存量 {{item.currentStock?item.currentStock.baseQuantity:''}}</div>
+          >现存量：{{item.currentStock.baseQuantity?item.currentStock.baseQuantity :'无'}}</div>
           <van-icon
             name="add-o"
             color="#0071f0"
@@ -77,6 +77,8 @@
 <script>
 import MySearch from "../../components/Search.vue";
 import MyPop from "../../components/Pop.vue";
+import { debounce } from "loadsh";
+
 export default {
   components: {
     MySearch: MySearch,
@@ -85,7 +87,7 @@ export default {
   data() {
     return {
       searchValue: null,
-      inventory: null,
+      inventory: [],
       pageIndex: 1,
       pageSize: 10,
       loading: false,
@@ -99,16 +101,15 @@ export default {
     };
   },
   watch: {
-    searchValue(newValue, oldValue) {
-      this.inventory = [];
+    searchValue: debounce(async function(newValue, oldValue) {
       this.pageIndex = 1;
-      this.finished = false;
+      this.inventory = [];
       this.getGoods();
-    }
+    }, 500)
   },
   methods: {
-    async onLoad() {
-      await this.getGoods();
+    onLoad() {
+      this.getGoods();
     },
     async getGoods() {
       var _this = this;
@@ -117,32 +118,34 @@ export default {
         pageSize: _this.pageSize,
         pageIndex: _this.pageIndex
       });
-      let listData = this.inventory || [];
-      data = data.map(item => {
+      let listData = data.map(item => {
         return {
+          id: item.id,
           code: item.code,
           name: item.name,
           rate: Number(item.rate),
           Unit: { Name: item.currentStock.unit },
+          currentStock: item.currentStock,
           Quantity: null,
           DiscountRate: 1, // 折扣率
           IsPresent: false, // 是否赠品
           Inventory: { Code: item.code }, // 系统存货编码Code
-          OrigDiscountPrice: item.retailPrice * ((100 - item.rate) / 100) || 1, // 单价
-          OrigTaxPrice: Number(item.retailPrice) || 2 // 含税单价
+          // OrigDiscountPrice: item.retailPrice * ((100 - item.rate) / 100) || 1, // 单价
+          OrigDiscountPrice: null, // 单价
+          // OrigTaxPrice: Number(item.retailPrice) || 2 // 含税单价
+          OrigTaxPrice: null // 含税单价
         };
       });
-      for (let i = 0; i < data.length; i++) {
-        listData.push(data[i]);
-      }
 
+      this.inventory.push(...listData);
       this.loading = false;
       if (data.length) {
         this.pageIndex++;
-      } else {
+        this.finished = false;
+      }
+      if (!data.length || data.length < this.pageSize) {
         this.finished = true;
       }
-      this.inventory = listData;
     },
     // 显示弹窗
     showPopup(item) {
@@ -157,6 +160,18 @@ export default {
       let itemInfo = this.SaleOrderDetails.filter(v => v.code == item.code)[0];
       let popData = itemInfo ? itemInfo : item;
       this.popData = popData;
+      this.getInventorySaleDelList(this.popData); // 获取单价
+    },
+    async getInventorySaleDelList(popData) {
+      const { data } = await this.$Parse.Cloud.run("getInventorySaleDelList", {
+        // id:popData.id,
+        id: 331
+      });
+      console.log(data[0]);
+      // SA_SaleDelivery_b_origDiscountPrice  单价
+      // SA_SaleDelivery_b_origTaxPrice  含税单价
+      this.popData.OrigDiscountPrice = data[0][0].SA_SaleDelivery_b_origDiscountPrice
+      this.popData.OrigTaxPrice = data[0][0].SA_SaleDelivery_b_origTaxPrice;
     },
     deleteGoods() {
       let index = this.SaleOrderDetails.findIndex(
@@ -244,8 +259,14 @@ export default {
 .choose {
   height: 100%;
   .header {
-    padding: 50px 10px 12px 10px;
+    padding: 10px 10px 12px 10px;
   }
+}
+.pop {
+  border: none;
+  height: 1px;
+  background-color: #bbb;
+  margin-bottom: 80px;
 }
 .title {
   color: rgba(144, 147, 153, 1);
@@ -274,6 +295,9 @@ export default {
     justify-content: space-between;
     padding: 11px 16px 11px 0;
     border-bottom: 1px solid rgba(144, 147, 153, 1);
+    .name {
+      width: 120px;
+    }
   }
 }
 .fontSize_18 {

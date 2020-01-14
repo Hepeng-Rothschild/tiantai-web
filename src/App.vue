@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <van-nav-bar :title="$route.meta.title"
+    <!-- <van-nav-bar :title="$route.meta.title"
                  :right-text="$route.meta.right"
                  left-arrow
                  fixed
@@ -11,45 +11,33 @@
                 v-if="$route.meta.icon"
                 class="icon"
                 @click="doSomething()" />
-    </van-nav-bar>
+    </van-nav-bar>-->
     <router-view />
   </div>
 </template>
 
 <script>
-import { getItem, setItem } from './utils/Storage.js'
+import { getItem, setItem } from "./utils/Storage.js";
 export default {
-  created () {
-    if (sessionStorage.getItem("store")) {
-      this.$store.replaceState(
-        Object.assign(
-          {},
-          this.$store.state,
-          getItem("store")
-        )
-      );
-    }
-    window.addEventListener("beforeunload", () => {
-      setItem("store", this.$store.state);
-    });
+  created() {
+    this.listenBeforeUnload();
   },
-  mounted () {
-    // this.$store.dispatch("logout");
+  mounted() {
+    this.$store.dispatch("logout");
     this.$store.dispatch("login");
   },
   methods: {
-    back () {
-      this.$router.go(-1);
-    },
-    doSomething () {
-      console.log("666");
-    },
-    toDoSomething () {
-      if (this.$route.meta.url) {
-        this.$router.push(this.$route.meta.url);
+    // 监听浏览器关闭 保存 vuex 的数据
+    listenBeforeUnload() {
+      if (sessionStorage.getItem("store")) {
+        this.$store.replaceState(
+          Object.assign({}, this.$store.state, getItem("store"))
+        );
       }
-    },
-
+      window.addEventListener("beforeunload", () => {
+        setItem("store", this.$store.state);
+      });
+    }
   }
 };
 </script>

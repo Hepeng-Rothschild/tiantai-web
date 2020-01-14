@@ -28,7 +28,7 @@
           </div>
           <div class="right">
             <div class="edit" @click="showPopData(item)">编辑</div>
-            <div class="money">￥{{item.OrigTaxAmount}}</div>
+            <div class="money">￥{{item.OrigTaxAmount.toFixed(2)}}</div>
           </div>
         </div>
       </div>
@@ -287,7 +287,7 @@ export default {
 
 <style lang="less" scoped>
 .neworder {
-  padding-top: 59px;
+  padding-top: 20px;
   background-color: rgba(248, 248, 248, 1);
 }
 .van-cell-group {

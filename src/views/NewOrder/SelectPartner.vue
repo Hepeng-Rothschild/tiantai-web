@@ -1,7 +1,13 @@
 <template>
   <div>
     <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="200" @load="onLoad">
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :offset="200"
+      @load="onLoad"
+    >
       <van-cell-group
         v-for="(partner,index) in partner"
         :key="index"
@@ -23,7 +29,7 @@
 import MySearch from "../../components/Search.vue";
 import { setItem, getItem } from "../../utils/Storage.js";
 import { mapState } from "vuex";
-import { debounce } from 'loadsh'
+import { debounce } from "loadsh";
 
 export default {
   components: {
@@ -32,7 +38,7 @@ export default {
   data() {
     return {
       searchValue: null,
-      partner: null,
+      partner: [],
       loading: false,
       finished: false,
       pageIndex: 0,
@@ -40,12 +46,11 @@ export default {
     };
   },
   watch: {
-     searchValue: debounce(async function(newValue, oldValue) {
-      this.finished = false
+    searchValue: debounce(async function(newValue, oldValue) {
       this.pageIndex = 0;
       this.partner = [];
       this.getPartner();
-    },500)
+    }, 500)
   },
   methods: {
     onLoad() {
@@ -53,33 +58,28 @@ export default {
     },
     // 获取客户
     async getPartner() {
-      var _this = this;
       const { data } = await this.$Parse.Cloud.run("getPartner", {
-        name: _this.searchValue,
-        pageIndex: _this.pageIndex,
-        pageSize: _this.pageSize
+        name: this.searchValue,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize
       });
-      console.log(data[0])
-      let listData = this.partner || [];
-      for (let i = 0; i < data[0].length; i++) {
-        listData.push(data[0][i]);
-      }
-      this.partner = listData
-
+      this.partner.push(...data[0]);
       this.loading = false;
-     
-      if(data[0].length){
+      if (data[0].length) {
         this.pageIndex++;
-      }else{
+        //为了配合搜索框 finished = false 会继续触发 onLoad 事件
+        this.finished = false
+      } 
+      if (!data[0].length ||data[0].length<this.pageSize) {
         this.finished = true;
       }
-      
+     
     },
     selectPartner(partner) {
       this.$router.back();
-      this.$store.commit('saveSelectedPartner',partner)
+      this.$store.commit("saveSelectedPartner", partner);
       // 清除上一次选择的销售员数据
-      this.$store.commit('saveSelectedSaleMan',null)
+      this.$store.commit("saveSelectedSaleMan", null);
     }
   }
 };
@@ -87,7 +87,7 @@ export default {
 
 <style lang="less" scoped>
 .search {
-  padding: 59px 10px 10px 10px;
+  padding: 10px;
   border-bottom: 1px solid #c0c4cc;
 }
 .van-cell {

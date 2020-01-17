@@ -17,11 +17,12 @@
           <van-field v-model="popData.Quantity" label="数量" input-align="right" placeholder="请输入" />
         </div>
         <div class="border_top">
-          <van-cell title="单位">{{popData.currentStock?popData.currentStock.unit:'KG'}}</van-cell>
+          <van-cell title="单位">{{popData.currentStock.unit?popData.currentStock.unit:'KG'}}</van-cell>
         </div>
         <div class="pop_cell border_top">
           <span>含税单价</span>
           <span class="gray">￥{{popData?popData.OrigTaxPrice:''}}</span>
+          <!-- <van-field v-model="value" placeholder="请输入用户名" /> -->
         </div>
         <div class="pop_cell border_top">
           <span>税率</span>
@@ -29,11 +30,11 @@
         </div>
         <div class="pop_cell border_top">
           <span>本币金额</span>
-          <span class="gray">￥{{popData?popData.OrigDiscountPrice * popData.Quantity:0.00}}</span>
+          <span class="gray">￥{{popData?(popData.OrigDiscountPrice * popData.Quantity).toFixed(2):0.00}}</span>
         </div>
         <div class="pop_cell border_top">
           <span>含税金额</span>
-          <span class="gray">￥{{popData?popData.OrigTaxPrice * popData.Quantity:0.00}}</span>
+          <span class="gray">￥{{popData?(popData.OrigTaxPrice * popData.Quantity).toFixed(2):0.00}}</span>
         </div>
         <div class="border_top">
           <button class="button" @click="del()">删除</button>
@@ -46,7 +47,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      singlePrice:null,
+    };
   },
   props: {
     show: {
@@ -69,6 +72,19 @@ export default {
         });
         return;
       }
+      if (this.popData.Quantity < 0) {
+        this.$toast({
+          message: "数量不能为负"
+        });
+        return;
+      }
+      if (!Number.isInteger(this.popData.Quantity-0)) {
+        this.$toast({
+          message: "数量不能为小数"
+        });
+        return;
+      }
+     
       this.$emit("changeShow", false);
       this.$emit('changePopData')
     }

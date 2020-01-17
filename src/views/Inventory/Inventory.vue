@@ -11,10 +11,10 @@
     >
       <div class="cell" v-for="(item,index) in inventory" :key="index" @click="goToDtail(item)">
         <div class="text">
-          <div class="text_title">{{item.InventoryName}}</div>
+          <div class="text_title">{{item.name}}</div>
           <div class="text_txt">
-            <span>批号 {{item.Specification}}</span>
-            <span>库存 {{item.TotalCount}}{{item.UnitName}}</span>
+            <span>批号 {{item.specification}}</span>
+            <span>库存 {{item.currentStock?item.currentStock.baseQuantity:'无'}}{{item.unit}}</span>
           </div>
         </div>
         <div class="arrow">
@@ -28,12 +28,14 @@
 <script>
 import MySearch from "../../components/Search.vue";
 import { setItem, getItem } from "../../utils/Storage.js";
+import { debounce } from "loadsh";
+
 export default {
   data() {
     return {
       searchValue: null,
       shopName: null,
-      inventory: null,
+      inventory: [],
       loading: false,
       finished: false,
       pageIndex: 1,
@@ -44,39 +46,35 @@ export default {
     MySearch: MySearch
   },
   watch: {
-    searchValue(newValue, oldValue) {
+     searchValue: debounce(async function(newValue, oldValue) {
       this.pageIndex = 1;
-      this.getData(newValue);
-    }
+      this.inventory = [];
+      this.getData();
+    }, 500)
   },
   methods: {
     onLoad() {
-      // console.log(this.pageIndex);
       this.getData();
     },
     goToDtail(item) {
       this.$router.push({ name: "detailinfo" });
       setItem("inventory", item);
     },
-    async getData(inventoryName) {
-      var _this = this;
-      const { data } = await this.$Parse.Cloud.run("getStock", {
-        inventoryName,
-        pageSize: _this.pageSize,
-        pageIndex: _this.pageIndex
+    async getData() {
+      const { data } = await this.$Parse.Cloud.run("getInventory", {
+        inventoryName:this.searchValue,
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
       });
-      let listData = this.inventory || [];
-      for (let i = 0; i < data.length; i++) {
-        listData.push(data[i]);
-      }
-      this.inventory = listData;
+      this.inventory.push(...data)
       this.loading = false;
-       if(data.length){
+      if(data.length){
         this.pageIndex++;
-      }else{
+        this.finished = false
+      }
+      if(!data.length||data.length<this.pageSize){
         this.finished = true;
       }
-      console.log("库存查询", this.inventory);
     }
   }
 };
@@ -84,7 +82,7 @@ export default {
 
 <style lang="less" scoped>
 .inventory {
-  padding: 60px 10px 10px 10px;
+  padding: 10px;
   .search {
     margin-bottom: 15px;
   }

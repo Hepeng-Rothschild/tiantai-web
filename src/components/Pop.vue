@@ -11,7 +11,7 @@
         <div class="name">
           <span>{{popData?popData.Inventory.Code:''}}</span>
           <span class="padding_left">{{popData?popData.name:''}}</span>
-          <img src="../assets/close.png" @click="$emit('changeShow',false)"/>
+          <img src="../assets/close.png" @click="$emit('changeShow',false)" />
         </div>
         <div class="border_top">
           <van-field v-model="popData.Quantity" label="数量" input-align="right" placeholder="请输入" />
@@ -21,8 +21,7 @@
         </div>
         <div class="pop_cell border_top">
           <span>含税单价</span>
-          <span class="gray">￥{{popData?popData.OrigTaxPrice:''}}</span>
-          <!-- <van-field v-model="value" placeholder="请输入用户名" /> -->
+          <input type="text" v-model="popData.OrigTaxPrice" class="my_input">
         </div>
         <div class="pop_cell border_top">
           <span>税率</span>
@@ -30,7 +29,9 @@
         </div>
         <div class="pop_cell border_top">
           <span>本币金额</span>
-          <span class="gray">￥{{popData?(popData.OrigDiscountPrice * popData.Quantity).toFixed(2):0.00}}</span>
+          <span
+            class="gray"
+          >￥{{popData?(popData.OrigTaxPrice * popData.Quantity*(1-popData.rate/100)).toFixed(2):0.00}}</span>
         </div>
         <div class="pop_cell border_top">
           <span>含税金额</span>
@@ -48,7 +49,7 @@
 export default {
   data() {
     return {
-      singlePrice:null,
+      singlePrice: null
     };
   },
   props: {
@@ -63,7 +64,7 @@ export default {
   },
   methods: {
     del() {
-      this.$emit('delete')
+      this.$emit("delete");
     },
     confirm() {
       if (this.popData.Quantity == 0) {
@@ -78,15 +79,15 @@ export default {
         });
         return;
       }
-      if (!Number.isInteger(this.popData.Quantity-0)) {
+      if (!Number.isInteger(this.popData.Quantity - 0)) {
         this.$toast({
           message: "数量不能为小数"
         });
         return;
       }
-     
+
       this.$emit("changeShow", false);
-      this.$emit('changePopData')
+      this.$emit("changePopData");
     }
   }
 };
@@ -129,6 +130,12 @@ export default {
     padding: 9px 13px;
     color: rgba(0, 0, 0, 1);
     font-size: 17px;
+  }
+  .my_input {
+    width: 150px;
+    border: none;
+    color: #888;
+    text-align: right;
   }
   .button {
     border: none;

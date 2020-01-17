@@ -11,8 +11,8 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
-    // this.$store.dispatch("logout");
-    // this.$store.dispatch("login");
+    this.$store.dispatch("logout");
+    this.$store.dispatch("login");
     // this.current()
   },
   methods: {
@@ -27,10 +27,10 @@ export default {
         setItem("store", this.$store.state);
       });
     },
-    async current() {
-      const data = await this.$Parse.User.getSessionToken();
-      console.log('--------',data);
-    },
+    // async current() {
+    //   const data = await this.$Parse.User.getSessionToken();
+    //   console.log('--------',data);
+    // },
   }
 };
 </script>

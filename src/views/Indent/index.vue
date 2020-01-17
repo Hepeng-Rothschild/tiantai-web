@@ -9,22 +9,27 @@
                          :options="dateStatus"
                          @change="changeDate">
       </van-dropdown-item>
-      <!-- <van-popup v-model="overlay_show"
+      <van-popup v-model="overlay_show"
                  position="bottom">
-        <van-datetime-picker v-model="currentDate"
+        <van-cell title="开始日期"
+                  :value="startDate"></van-cell>
+        <van-cell title="结束日期"
+                  :value="endDate"></van-cell>
+        <van-datetime-picker v-model="currentDate2"
                              type="date"
-                             @confirm="confirmPicker1"
-                             @cancel="overlay_show=false" />
-      </van-popup> -->
+                             :item-height=44
+                             @confirm="confirmPicker2"
+                             @cancel="overlay_show=false">
+
+        </van-datetime-picker>
+      </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
                          @change="changeState" />
     </van-dropdown-menu>
-
     <!-- 筛选列表 -->
     <van-list v-model="loading"
-              :finished="finished"
-              @load="onLoad">
+              :finished="finished">
       <span class="date">{{this.endTime}}</span>
       <van-cell v-for="(indent,index) in allIndent"
                 :key="index"
@@ -61,12 +66,16 @@ export default {
   },
   data () {
     return {
+      startDate: null,
+      endDate: null,
+      overlay_show: false,
       // 列表加载
       loading: false,
       // 全部加载完成
       finished: false,
       // 日期
       currentDate: new Date(),
+      currentDate2: new Date(),
       searchValue: null,
       // 是否有草稿
       draft: null,
@@ -78,6 +87,7 @@ export default {
         { text: '上月', value: 2 },
         { text: '本季度', value: 3 },
         { text: '本年', value: 4 },
+        { text: '自定义', value: 5 }
       ],
       orderIndex: null,
       orderStatus: [
@@ -86,14 +96,14 @@ export default {
         { text: '已审', value: 189 }
       ],
       // 所有订单
-      allIndent: null,
+      allIndent: [],
       // 开始时间
       startTime: '',
       // 结束时间
       endTime: '',
       // 当前状态
       state: null,
-      pageSize: 8,
+      pageSize: 10,
       pageIndex: 0,
       name: null
     }
@@ -108,9 +118,6 @@ export default {
     }, 500)
   },
   methods: {
-    onLoad () {
-      this.getData()
-    },
     // 跳转到详情页面
     toDetails (indent) {
       this.$router.push({ name: 'details' })
@@ -133,22 +140,18 @@ export default {
         name: this.name,
         state: this.state
       })
-      // console.log(data[0]);
-      let indentData = this.allIndent || []
-      for (let i = 0; i < data[0].length; i++) {
-        indentData.push(data[0][i])
-      }
-      this.allIndent = indentData.reverse()
-      // console.log(this.allIndent);
-      this.loading = false;
-      if (data[0].length) {
-        this.pageIndex++
-        // console.log(this.pageIndex);
-        
+      console.log(data[0]);
+      this.allIndent = data[0]
+      if (data[0].length < this.pageSize || !data[0].length) {
+        this.allIndent = data[0]
+        this.finished = true
       } else {
-        this.finished = true;
+        this.allIndent.push(...data[0]);
+        this.pageIndex++
+        this.finished = false
       }
-
+      this.loading = false;
+      console.log(this.allIndent);
     },
     // 获取本季度开端月份
     getQuarterStartMonth () {
@@ -203,22 +206,33 @@ export default {
           break;
         default:
           this.overlay_show = true
-          // this.confirmPicker1()
           break;
       }
-
       this.startTime = dayjs(startTimeTmp).format('YYYY-MM-DD')
       this.endTime = dayjs(endTimeTmp).format('YYYY-MM-DD')
       console.log(this.startTime);
-      console.log(this.endTime);    
+      console.log(this.endTime);
       await this.getData()
+    },
+    confirmPicker1 (value) {
+      this.startDate = dayjs(value).format("YYYY-MM-DD");
+      // this.startTime = this.startDate
+      // console.log(this.startTime);
+      // this.startDate = value
+    },
+    confirmPicker2 (value) {
+      this.endDate = dayjs(value).format("YYYY-MM-DD");
+      // this.endTime = this.endDate
+      // console.log(this.endTime);
+      // this.endDate = value
+      this.overlay_show = false
     },
     // 改变订单状态值进行筛选
     async changeState (orderState) {
       this.state = orderState
-      await this.getData()      
+      await this.getData()
       console.log(this.state);
-      
+
     }
   }
 }

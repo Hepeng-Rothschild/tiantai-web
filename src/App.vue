@@ -11,8 +11,11 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
-    this.$store.dispatch("logout");
-    this.$store.dispatch("login");
+    // if(!this.$Parse.User.current()){
+    //   window.location.href = process.env.loginURl
+    // }
+    // this.$store.dispatch("logout");
+    // this.$store.dispatch("login");
     // this.current()
   },
   methods: {

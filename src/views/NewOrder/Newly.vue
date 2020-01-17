@@ -209,11 +209,14 @@ export default {
     async changeCategory () {
       const { data } = await this.$Parse.Cloud.run("getPartnerClass");
       this.partnerClass = JSON.parse(data)
+      console.log(data);
+      
     },
     // 选择分管部门
     async changeManage () {
       const { data } = await this.$Parse.Cloud.run("department");
       this.saleDepartment = data
+      console.log(data);
     },
     changeManageName (departmentNew) {
       this.savePartner.saleDepartmentName = departmentNew.name
@@ -226,6 +229,7 @@ export default {
     async changeSaleman () {
       const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", { departmentCode: this.savePartner.departmentCode || null });
       this.saleMan = data
+      console.log(data);
     },
     changeSalemanName (manageNew) {
       this.savePartner.saleManCode.Code = manageNew.code
@@ -243,21 +247,7 @@ export default {
     },
     // 新增客户
     async createPartner () {
-      // console.log(this.Code);
-      // console.log(this.savePartner.partnerType);
-      // console.log(this.savePartner.partnerClassCode);
-      // console.log(this.savePartner.saleDepartmentCode);
-      // console.log(this.savePartner.saleManCode);
-      // console.log(this.saleSettleStyle);
-      // console.log(this.savePartner.contact);
-      // console.log(this.savePartner.mobilePhone);
-      // console.log(this.savePartner.shipmentAddress);
-      // console.log(this.savePartner.status);
-      // console.log(this.savePartner.saleStartDate);
-      // console.log(this.savePartner.saleSpaceMonth);
-      // console.log(this.savePartner.saleCheckMonth);
-      // console.log(this.savePartner.saleCheckDate);
-      // console.log(this.priuserdefnvc1);
+
 
       const { data } = await this.$Parse.Cloud.run("createPartner", {
         Code: this.code,
@@ -283,12 +273,6 @@ export default {
         SaleCheckDate: this.savePartner.saleCheckDate || null
       });
 
-      // // 需要加一个判断，如果创建成功，则跳转页面，不成功则返回提示文字
-      // if (data) {
-      //   
-      // }else {
-      //   this.$toast('客户信息填写不完整')
-      // }
       this.$store.state.savePartners = null
       this.$store.state.defaultPay = {
         radio: null,
@@ -330,11 +314,7 @@ export default {
       this.savePartner.saleSpaceMonth = sale_Date.saleSpaceMonth
       this.savePartner.saleCheckMonth = sale_Date.saleCheckMonth
       this.savePartner.saleCheckDate = sale_Date.saleCheckDate
-      // console.log(this.saleSettleStyle);
-      // console.log(this.savePartner.saleStartDate);
-      // console.log(this.savePartner.saleSpaceMonth);
-      // console.log(this.savePartner.saleCheckMonth);
-      // console.log(this.savePartner.saleCheckDate);
+
     }
   }
 }

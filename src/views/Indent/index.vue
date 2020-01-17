@@ -29,7 +29,8 @@
     </van-dropdown-menu>
     <!-- 筛选列表 -->
     <van-list v-model="loading"
-              :finished="finished">
+              :finished="finished"
+              @load="onLoad">
       <span class="date">{{this.endTime}}</span>
       <van-cell v-for="(indent,index) in allIndent"
                 :key="index"
@@ -114,11 +115,16 @@ export default {
   },
   watch: {
     searchValue: debounce(async function (newVal) {
+      this.pageIndex = 0;
+      this.allIndent = []
       this.name = this.searchValue
       await this.getData()
     }, 500)
   },
   methods: {
+    onLoad () {
+      this.getData()
+    },
     // 跳转到详情页面
     toDetails (indent) {
       this.$router.push({ name: 'details' })
@@ -142,17 +148,27 @@ export default {
         state: this.state
       })
       console.log(data[0]);
-      this.allIndent = data[0]
-      if (data[0].length < this.pageSize || !data[0].length) {
-        this.allIndent = data[0]
-        this.finished = true
-      } else {
-        this.allIndent.push(...data[0]);
-        this.pageIndex++
+      
+      this.allIndent.push(...data[0]);
+      this.loading = false;
+      if (data[0].length) {
+        this.pageIndex++;
+        //为了配合搜索框 finished = false 会继续触发 onLoad 事件
         this.finished = false
       }
-      this.loading = false;
-      console.log(this.allIndent);
+      if (!data[0].length || data[0].length < this.pageSize) {
+        this.finished = true;
+      }
+
+      // if (data[0].length < this.pageSize || !data[0].length) {
+      //   this.allIndent = data[0]
+      //   this.finished = true
+      // } else {
+      //   this.allIndent.push(...data[0]);
+      //   this.pageIndex++
+      //   this.finished = false
+      // }
+      // this.loading = false;
     },
     // 获取本季度开端月份
     getQuarterStartMonth () {
@@ -211,8 +227,8 @@ export default {
       }
       this.startTime = dayjs(startTimeTmp).format('YYYY-MM-DD')
       this.endTime = dayjs(endTimeTmp).format('YYYY-MM-DD')
-      console.log(this.startTime);
-      console.log(this.endTime);
+      this.pageIndex = 0
+      this.allIndent = []
       await this.getData()
     },
     confirmPicker1 (value) {
@@ -231,9 +247,9 @@ export default {
     // 改变订单状态值进行筛选
     async changeState (orderState) {
       this.state = orderState
+      this.pageIndex = 0
+      this.allIndent = []
       await this.getData()
-      console.log(this.state);
-
     }
   }
 }

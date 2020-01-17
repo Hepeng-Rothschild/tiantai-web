@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     onLoad () {
-      // this.getData()
+      this.getData()
     },
     // 跳转到详情页面
     toDetails (indent) {
@@ -147,6 +147,8 @@ export default {
         name: this.name,
         state: this.state
       })
+      console.log(data[0]);
+      
       this.allIndent.push(...data[0]);
       this.loading = false;
       if (data[0].length) {
@@ -227,8 +229,6 @@ export default {
       this.endTime = dayjs(endTimeTmp).format('YYYY-MM-DD')
       this.pageIndex = 0
       this.allIndent = []
-      console.log(this.startTime);
-      console.log(this.endTime);
       await this.getData()
     },
     confirmPicker1 (value) {
@@ -250,8 +250,6 @@ export default {
       this.pageIndex = 0
       this.allIndent = []
       await this.getData()
-      console.log(this.state);
-
     }
   }
 }

@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="price">
-      <span>{{content.AA_Inventory_shorthand}}</span>
+      <span>{{content.AA_Inventory_code}}</span>
       <div class="order-information">
         <div class="product-name">
           <span class="name-left">名称</span>
@@ -43,17 +43,17 @@
         </div>
         <div class="product-price">
           <span class="name-left">含税单价</span>
-          <span class="name-right">￥{{content.SA_SaleOrder_b_origTaxPrice}}</span>
+          <span class="name-right">￥{{content.SA_SaleOrder_b_taxPrice}}</span>
         </div>
       </div>
       <div class="order-information">
         <div class="product-name">
           <span class="name-left">数量</span>
-          <span class="name-right">{{content.SA_SaleOrder_b_quantity}}</span>
+          <span class="name-right">{{content.SA_SaleOrder_b_compositionQuantity}}</span>
         </div>
         <div class="product-price">
           <span class="name-left">含税金额</span>
-          <span class="name-right">￥{{content.SA_SaleOrder_origTaxAmount}}</span>
+          <span class="name-right">￥{{content.SA_SaleOrder_taxAmount}}</span>
         </div>
       </div>
       <van-cell title="本币金额"

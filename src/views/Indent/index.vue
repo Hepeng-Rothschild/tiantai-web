@@ -317,6 +317,8 @@ export default {
 
 .add {
   display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   width: 57px;
   height: 57px;
@@ -324,10 +326,8 @@ export default {
   bottom: 75px;
   border-radius: 50%;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
-  .van-button__text {
+  /deep/ .van-button__text {
     font-size: 36px;
-    align-items: center;
-    justify-content: center;
     color: rgba(1, 113, 240, 1);
   }
 }

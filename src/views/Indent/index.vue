@@ -49,7 +49,8 @@
     <van-button round
                 type="default"
                 class="add"
-                @click="$router.push('/neworder')">+</van-button>
+                text="+"
+                @click="$router.push('/neworder')"></van-button>
   </div>
 </template>
 
@@ -87,7 +88,7 @@ export default {
         { text: '上月', value: 2 },
         { text: '本季度', value: 3 },
         { text: '本年', value: 4 },
-        { text: '自定义', value: 5 }
+        // { text: '自定义', value: 5 }
       ],
       orderIndex: null,
       orderStatus: [
@@ -240,7 +241,7 @@ export default {
 
 <style lang="less" scoped>
 .search {
-  margin: 0px 10px 10px 10px;
+  margin: 13px 10px 10px 10px;
   width: 94%;
 }
 .customize {
@@ -315,16 +316,18 @@ export default {
 }
 
 .add {
+  display: flex;
   position: fixed;
   width: 57px;
-  height: 50px;
+  height: 57px;
   right: 26px;
   bottom: 75px;
-  text-align: center;
   border-radius: 50%;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
   .van-button__text {
-    font-size: 35px;
+    font-size: 36px;
+    align-items: center;
+    justify-content: center;
     color: rgba(1, 113, 240, 1);
   }
 }

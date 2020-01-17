@@ -1,5 +1,5 @@
 import Parse from 'parse'
-Parse.initialize(process.env.VUE_APP_ID);
-Parse.serverURL = process.env.VUE_APP_URL
-export default Parse
+Parse.initialize("myAppId","unused");
+Parse.serverURL = 'http://192.168.124.104:1338/api/1'
 
+export default Parse

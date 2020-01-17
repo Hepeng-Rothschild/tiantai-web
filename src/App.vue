@@ -23,7 +23,7 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
-    // this.$store.dispatch("logout");
+    this.$store.dispatch("logout");
     this.$store.dispatch("login");
   },
   methods: {

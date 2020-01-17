@@ -30,10 +30,10 @@ export default {
         setItem("store", this.$store.state);
       });
     },
-    async current() {
-      const data = await this.$Parse.User.getSessionToken();
-      console.log('--------',data);
-    },
+    // async current() {
+    //   const data = await this.$Parse.User.getSessionToken();
+    //   console.log('--------',data);
+    // },
   }
 };
 </script>

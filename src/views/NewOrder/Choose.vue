@@ -164,14 +164,16 @@ export default {
     },
     async getInventorySaleDelList(popData) {
       const { data } = await this.$Parse.Cloud.run("getInventorySaleDelList", {
-        // id:popData.id,
-        id: 331
+        id: popData.id
+        // id: 331
       });
-      console.log(data[0]);
-      // SA_SaleDelivery_b_origDiscountPrice  单价
-      // SA_SaleDelivery_b_origTaxPrice  含税单价
-      this.popData.OrigDiscountPrice = data[0][0].SA_SaleDelivery_b_origDiscountPrice
-      this.popData.OrigTaxPrice = data[0][0].SA_SaleDelivery_b_origTaxPrice;
+      console.log(data[0], "---");
+      if (data[0].length) {
+        // SA_SaleDelivery_b_origTaxPrice  含税单价
+        this.popData.OrigTaxPrice = data[0][0].SA_SaleDelivery_b_origTaxPrice;
+      } else {
+        this.popData.OrigTaxPrice = 0;
+      }
     },
     deleteGoods() {
       let index = this.SaleOrderDetails.findIndex(
@@ -299,8 +301,7 @@ export default {
       width: 40%;
     }
     .right {
-            width: 40%;
-
+      width: 40%;
     }
   }
 }

@@ -380,12 +380,11 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 19%;
 
     .edit {
       color: rgba(40, 142, 248, 1);
-      font-size: 14px;
-      margin-left: 20px;
+      font-size: 16px;
+      text-align: right;
     }
     .money {
       color: rgba(51, 51, 51, 1);

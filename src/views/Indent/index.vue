@@ -304,7 +304,7 @@ export default {
       }
     }
     .van-icon {
-      margin-top: 14px;
+      align-self: center;
     }
   }
 }

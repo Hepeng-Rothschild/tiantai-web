@@ -383,8 +383,7 @@ export default {
     }
     // 右边的标签
     .van-icon {
-      align-items: center;
-      justify-content: center;
+      align-self: center;
     }
   }
 

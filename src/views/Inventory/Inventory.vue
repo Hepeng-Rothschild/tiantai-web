@@ -13,7 +13,7 @@
         <div class="text">
           <div class="text_title">{{item.name}}</div>
           <div class="text_txt">
-            <span>批号 {{item.specification}}</span>
+            <span>型号 {{item.specification}}</span>
             <span>库存 {{item.currentStock?item.currentStock.baseQuantity:'无'}}{{item.unit}}</span>
           </div>
         </div>

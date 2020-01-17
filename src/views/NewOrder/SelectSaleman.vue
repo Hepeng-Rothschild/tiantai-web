@@ -10,7 +10,7 @@
       @load="onLoad"
     >
       <van-cell-group v-for="item in saleMan" :key="item.id" @click="selectSaleMan(item)">
-        <van-cell :title="item.name" :label="item.id" is-link />
+        <van-cell :title="item.name" is-link />
       </van-cell-group>
     </van-list>
 

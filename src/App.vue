@@ -1,17 +1,5 @@
 <template>
   <div id="app">
-    <!-- <van-nav-bar :title="$route.meta.title"
-                 :right-text="$route.meta.right"
-                 left-arrow
-                 fixed
-                 @click-left="back"
-                 @click-right="toDoSomething()">
-      <van-icon name="notes-o"
-                slot="right"
-                v-if="$route.meta.icon"
-                class="icon"
-                @click="doSomething()" />
-    </van-nav-bar> -->
     <router-view />
   </div>
 </template>
@@ -37,7 +25,11 @@ export default {
       window.addEventListener("beforeunload", () => {
         setItem("store", this.$store.state);
       });
-    }
+    },
+    async current() {
+      const data = await this.$Parse.User.getSessionToken();
+      console.log('--------',data);
+    },
   }
 };
 </script>

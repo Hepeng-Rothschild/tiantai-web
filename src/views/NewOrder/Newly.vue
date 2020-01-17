@@ -262,6 +262,11 @@ export default {
       const { data } = await this.$Parse.Cloud.run("createPartner", {
         Code: this.code,
         Name: this.savePartner.name,
+        PartnerAddresDTOs: [{
+          Contact: this.savePartner.contact,
+          TelephoneNo: this.savePartner.mobilePhone,
+          ShipmentAddress: this.savePartner.shipmentAddress
+        }],
         Contact: this.savePartner.contact,
         MobilePhone: this.savePartner.mobilePhone,
         ShipmentAddress: this.savePartner.shipmentAddress,
@@ -295,10 +300,10 @@ export default {
       }
       if (this.$router.push({ name: 'selectpartner' })) {
         this.$toast('新增客户成功')
-      }else {
+      } else {
         this.$toast('客户信息填写不完整')
       }
-      
+
       console.log(data);
     },
     // 拿到vuex中存储的收款方式限定天数/收款方式名称
@@ -337,7 +342,6 @@ export default {
 
 <style lang="less" scoped>
 .van-cell-group {
-  margin-top: 59px;
   border-top: 1px solid #c0c4cc;
   margin-bottom: 16px;
   // 底部弹框样式

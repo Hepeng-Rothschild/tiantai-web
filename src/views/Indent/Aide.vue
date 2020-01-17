@@ -45,7 +45,7 @@ export default {
 
 <style lang="less" scoped>
 .aide {
-  margin: 59px 14px 0px 14px;
+  margin: 0px 14px 0px 14px;
   .aide_top {
     padding: 13px 0px 13px 16px;
     .state {

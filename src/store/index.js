@@ -21,7 +21,7 @@ export default new Vuex.Store({
     SelectedSaleMan: null,
   },
   mutations: {
-    savePay(state,data) {
+    savePay(state, data) {
       state.defaultPay = data
     },
     saveSelectGoods(state, data) {
@@ -39,7 +39,7 @@ export default new Vuex.Store({
     saveSelectedSaleMan(state, data) {
       state.SelectedSaleMan = data
     },
-    saveTotalPrice(state,data) {
+    saveTotalPrice(state, data) {
       state.TotalPrice = data
     }
   },
@@ -49,7 +49,7 @@ export default new Vuex.Store({
       const {
         data
       } = await Parse.Cloud.run("login", {
-        username: 'wca',
+        username: 'hhp',
         password: '123456'
       });
       console.log('登录')

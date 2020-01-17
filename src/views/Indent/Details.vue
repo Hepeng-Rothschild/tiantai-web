@@ -57,9 +57,9 @@
         </div>
       </div>
       <van-cell title="本币金额"
-                class="cell-first">￥{{content.SA_SaleOrder_origAmount}}</van-cell>
+                class="cell-first">￥{{content.SA_SaleOrder_amount}}</van-cell>
       <van-cell title="含税金额"
-                class="cell-second">￥{{content.SA_SaleOrder_origTaxAmount}}</van-cell>
+                class="cell-second">￥{{content.SA_SaleOrder_taxAmount}}</van-cell>
       <div class="parities">
         <span class="title">币种</span>
         <span class="information">{{content.AA_Currency_name}}</span>
@@ -117,6 +117,7 @@ export default {
 
 <style lang="less" scoped>
 .content {
+  margin-top: 13px;
   border-bottom: 1px solid rgba(153, 153, 153, 1);
   padding-bottom: 7px;
   .order-information {
@@ -230,13 +231,11 @@ export default {
       display: inline-block;
       flex: 3;
       font-size: 15px;
-      // margin-bottom: 5px;
       color: #101010;
     }
     input {
       flex: 3;
       font-size: 15px;
-      // margin-bottom: 5px;
       color: #101010;
       border: 0px;
       margin-bottom: 10px;
@@ -245,7 +244,7 @@ export default {
 }
 //修改按钮
 .menu {
-  padding: 34px 20px 53px 20px;
+  padding: 34px 20px 19px 20px;
   .van-button {
     width: 100%;
     border-radius: 5px 5px 5px 5px;

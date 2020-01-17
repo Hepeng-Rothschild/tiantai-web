@@ -39,7 +39,7 @@
                 is-link
                 @click="toDetails(indent)"
                 :class="draft?'draft':''">
-        ￥{{indent.SA_SaleOrder_origTaxAmount}}
+        ￥{{indent.SA_SaleOrder_taxAmount}}
         <div>
           <van-tag type="primary">{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
         </div>
@@ -147,7 +147,7 @@ export default {
         name: this.name,
         state: this.state
       })
-      console.log(data[0]);
+      // console.log(data[0]);
       
       this.allIndent.push(...data[0]);
       this.loading = false;

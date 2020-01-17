@@ -108,7 +108,7 @@
 
     </van-cell-group>
     <van-button type="info"
-                @click="createPartner">保存</van-button>
+                @click="inputMessage">保存</van-button>
   </div>
 </template>
 
@@ -120,8 +120,6 @@ export default {
     return {
       // 唯一识别号uuid
       code: this.uuidcode(),
-      // 数期----后期需要改动~~
-      priuserdefnvc1: '5',
       // 客户性质----固定内容
       partnerTypeArr: [{ Code: "01", Name: '客户' }, { Code: '00', Name: '供应商' }, { Code: '02', Name: '客户/供应商' }],
       // 所属类别----需要遍历展示的数据
@@ -140,13 +138,13 @@ export default {
       // 选择要储存的参数，把它们包装成一个大数组
       savePartner: this.$store.state.savePartners || {
         //客户名称
-        name: '',
+        name: null,
         // 联系人
-        contact: '',
+        contact: null,
         // 电话
-        mobilePhone: '',
+        mobilePhone: null,
         // 地址
-        shipmentAddress: '',
+        shipmentAddress: null,
         // 确定修改类型
         status: '1',
         // 客户性质
@@ -209,27 +207,24 @@ export default {
     async changeCategory () {
       const { data } = await this.$Parse.Cloud.run("getPartnerClass");
       this.partnerClass = JSON.parse(data)
-      console.log(data);
-      
     },
     // 选择分管部门
     async changeManage () {
       const { data } = await this.$Parse.Cloud.run("department");
       this.saleDepartment = data
-      console.log(data);
     },
     changeManageName (departmentNew) {
       this.savePartner.saleDepartmentName = departmentNew.name
       this.savePartner.saleDepartmentCode.Code = departmentNew.code
       this.savePartner.departmentCode = departmentNew.code
+      this.savePartner.saleManName = null
       this.changeSaleman()
       this.showDepartment = false
     },
     // 选择分管人员
     async changeSaleman () {
       const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", { departmentCode: this.savePartner.departmentCode || null });
-      this.saleMan = data
-      console.log(data);
+      this.saleMan = data.filter(obj => obj.isSaleman == true)
     },
     changeSalemanName (manageNew) {
       this.savePartner.saleManCode.Code = manageNew.code
@@ -247,8 +242,6 @@ export default {
     },
     // 新增客户
     async createPartner () {
-
-
       const { data } = await this.$Parse.Cloud.run("createPartner", {
         Code: this.code,
         Name: this.savePartner.name,
@@ -265,7 +258,9 @@ export default {
         SaleDepartment: this.savePartner.saleDepartmentCode,
         SaleMan: this.savePartner.saleManCode,
         Status: this.savePartner.status,
-        Priuserdefnvc1: this.priuserdefnvc1,
+        DynamicPropertyKeys: {
+          pubuserdefnvc1: '5'
+        },
         SaleSettleStyle: this.saleSettleStyle,
         SaleStartDate: this.savePartner.saleStartDate || null,
         SaleSpaceMonth: this.savePartner.saleSpaceMonth || null,
@@ -282,13 +277,44 @@ export default {
         saleCheckMonth: null,
         saleCheckDate: null
       }
-      if (this.$router.push({ name: 'selectpartner' })) {
-        this.$toast('新增客户成功')
-      } else {
-        this.$toast('客户信息填写不完整')
-      }
-
       console.log(data);
+    },
+    // 判断页面中的内容进行提示
+    inputMessage () {
+      let inputPartner = this.savePartner
+      if (!inputPartner.name) {
+        this.$toast.fail('客户名称不能为空')
+        return
+      }
+      else if (!inputPartner.partnerClassCode.Code) {
+        this.$toast.fail('所属类别不能为空')
+        return
+      }
+      else if (!inputPartner.saleDepartmentCode.Code) {
+        this.$toast.fail('分管部门不能为空')
+        return
+      } else if (!inputPartner.saleManCode.Code) {
+        this.$toast.fail('分管人员不能为空')
+        return
+      }
+      else if (!inputPartner.saleSettleStyleName) {
+        this.$toast.fail('默认收款方式不能为空')
+        return
+      }
+      else if (!inputPartner.contact) {
+        this.$toast.fail('联系人不能为空')
+        return
+      } else if (!inputPartner.mobilePhone) {
+        this.$toast.fail('联系电话不能为空')
+        return
+      } else if (!inputPartner.shipmentAddress) {
+        this.$toast.fail('到货地址不能为空')
+        return
+      } else {
+        this.createPartner()
+        this.$router.push({ name: 'selectpartner' })
+        this.$toast.success('新增客户成功')
+      }
     },
     // 拿到vuex中存储的收款方式限定天数/收款方式名称
     selectDate () {
@@ -355,6 +381,11 @@ export default {
       text-align: right;
       font-family: "PingFangSC-regular";
     }
+    // 右边的标签
+    .van-icon {
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   .van-overlay {
@@ -379,7 +410,7 @@ export default {
 }
 // 按钮样式
 .van-button {
-  margin: 10px 20px 53px 20px;
+  margin: 10px 20px 19px 20px;
   width: 87%;
   border-radius: 5px 5px 5px 5px;
   text-align: center;

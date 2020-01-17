@@ -100,7 +100,7 @@ export default {
         params.saleCheckDate) {
         this.$router.go(-1);
       } else {
-        this.$toast('带*号为必填项')
+        this.$toast.fail('带*号为必填项')
       }
 
     },

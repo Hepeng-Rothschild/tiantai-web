@@ -240,7 +240,7 @@ export default {
 
 <style lang="less" scoped>
 .search {
-  margin: 59px 10px 10px 10px;
+  margin: 0px 10px 10px 10px;
   width: 94%;
 }
 .customize {

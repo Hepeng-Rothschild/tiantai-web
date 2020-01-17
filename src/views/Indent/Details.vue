@@ -117,7 +117,6 @@ export default {
 
 <style lang="less" scoped>
 .content {
-  margin-top: 59px;
   border-bottom: 1px solid rgba(153, 153, 153, 1);
   padding-bottom: 7px;
   .order-information {

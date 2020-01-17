@@ -47,7 +47,6 @@ export default {
 
 <style lang = "less" scoped>
 .plan {
-  margin-top: 59px;
   position: relative;
   .order-record {
     display: flex;

@@ -11,7 +11,7 @@
                 v-if="$route.meta.icon"
                 class="icon"
                 @click="doSomething()" />
-    </van-nav-bar>-->
+    </van-nav-bar> -->
     <router-view />
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
-    this.$store.dispatch("logout");
+    // this.$store.dispatch("logout");
     this.$store.dispatch("login");
   },
   methods: {

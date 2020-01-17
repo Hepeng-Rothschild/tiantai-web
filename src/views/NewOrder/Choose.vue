@@ -33,12 +33,12 @@
         :offset="200"
       >
         <div v-for="(item,index) in inventory" :key="index" class="cell">
-          <div>
+          <div class="left">
             <div class="fontSize_18">{{item?item.code:''}}</div>
-            <div class="fontSize_14 name">{{item?item.name:''}}</div>
+            <div class="fontSize_14">{{item?item.name:''}}</div>
           </div>
           <div
-            class="fontSize_14 align_self_end"
+            class="fontSize_14 align_self_end right"
           >现存量：{{item.currentStock.baseQuantity?item.currentStock.baseQuantity :'无'}}</div>
           <van-icon
             name="add-o"
@@ -295,8 +295,12 @@ export default {
     justify-content: space-between;
     padding: 11px 16px 11px 0;
     border-bottom: 1px solid rgba(144, 147, 153, 1);
-    .name {
-      width: 120px;
+    .left {
+      width: 40%;
+    }
+    .right {
+            width: 40%;
+
     }
   }
 }
@@ -321,10 +325,10 @@ export default {
   bottom: 0;
   width: 100%;
   background-color: #fff;
-  padding-bottom: 10px;
   .footer {
     display: flex;
     justify-content: space-between;
+    height: 100%;
     border-top: 1.3px solid rgba(229, 229, 229, 1);
     .left {
       padding: 7px 0 0 12px;
@@ -335,9 +339,10 @@ export default {
 }
 .van-button {
   width: 104px;
-  height: 52px;
+  height: 100%;
+  line-height: 56px;
   font-size: 18px;
-  border-radius: 5px 5px 5px 5px;
+  border-radius: 5px;
   background-color: rgba(1, 113, 240, 1);
 }
 </style>

@@ -1,21 +1,21 @@
 <template>
   <div class="detail">
-    <div class="name">{{detail.InventoryName}}</div>
+    <div class="name">{{detail.name}}</div>
     <div class="type">
       <span>型号</span>
-      <span>{{detail.Specification}}</span>
+      <span>{{detail.specification}}</span>
     </div>
     <div class="text">
       <span>仓库</span>
-      <span>{{detail.WarehouseName}}</span>
+      <span>{{detail.currentStock.warehouse_name?detail.currentStock.warehouse_name:'无'}}</span>
     </div>
     <div class="text">
       <span>现存量</span>
-      <span>{{parseInt(detail.ExistingQuantity)}} {{detail.UnitName}}</span>
+      <span>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}} {{detail.unit}}</span>
     </div>
     <div class="text">
       <span>可用量</span>
-      <span>{{parseInt(detail.AvailableQuantity)}} {{detail.UnitName}}</span>
+      <span>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}} {{detail.unit}}</span>
     </div>
   </div>
 </template>

@@ -21,7 +21,7 @@
         </div>
         <div class="pop_cell border_top">
           <span>含税单价</span>
-          <input type="text" v-model="popData.OrigTaxPrice" class="my_input">
+          <input type="text" v-model="popData.OrigTaxPrice" placeholder="请输入" class="my_input">
         </div>
         <div class="pop_cell border_top">
           <span>税率</span>

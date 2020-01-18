@@ -348,6 +348,7 @@ export default {
 
 <style lang="less" scoped>
 .van-cell-group {
+  margin-top: 13px;
   border-top: 1px solid #c0c4cc;
   margin-bottom: 16px;
   // 底部弹框样式

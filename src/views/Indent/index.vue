@@ -11,16 +11,32 @@
       </van-dropdown-item>
       <van-popup v-model="overlay_show"
                  position="bottom">
-        <van-cell title="开始日期"
-                  :value="startDate"></van-cell>
-        <van-cell title="结束日期"
-                  :value="endDate"></van-cell>
+        <div class="dete_title">
+          <span>取消</span>
+          <span>确定</span>
+        </div>
+        <div>
+          <span>开始日期</span>
+          <div>{{this.startDate}}</div>
+          <span>结束日期</span>
+          <div>{{this.endDate}}</div>
+        </div>
+
+        <!-- <van-field v-model="startDate"
+                   label="开始日期"
+                   input-align="right"
+                   @click="startDate = null" />
+        <van-field v-model="endDate"
+                   label="结束日期"
+                   input-align="right"
+                   @click="endDate = null" /> -->
         <van-datetime-picker v-model="currentDate2"
                              type="date"
                              :item-height=44
-                             @confirm="confirmPicker2"
-                             @cancel="overlay_show=false">
-
+                             confirm-button-text=' '
+                             cancel-button-text=' '>
+          <!-- @cancel="overlay_show=false"
+@confirm="confirmPicker2" -->
         </van-datetime-picker>
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
@@ -100,9 +116,9 @@ export default {
       // 所有订单
       allIndent: [],
       // 开始时间
-      startTime: '',
+      startTime: null,
       // 结束时间
-      endTime: '',
+      endTime: null,
       // 当前状态
       state: null,
       pageSize: 10,
@@ -148,7 +164,7 @@ export default {
         state: this.state
       })
       // console.log(data[0]);
-      
+
       this.allIndent.push(...data[0]);
       this.loading = false;
       if (data[0].length) {
@@ -159,16 +175,6 @@ export default {
       if (!data[0].length || data[0].length < this.pageSize) {
         this.finished = true;
       }
-
-      // if (data[0].length < this.pageSize || !data[0].length) {
-      //   this.allIndent = data[0]
-      //   this.finished = true
-      // } else {
-      //   this.allIndent.push(...data[0]);
-      //   this.pageIndex++
-      //   this.finished = false
-      // }
-      // this.loading = false;
     },
     // 获取本季度开端月份
     getQuarterStartMonth () {
@@ -231,18 +237,29 @@ export default {
       this.allIndent = []
       await this.getData()
     },
-    confirmPicker1 (value) {
-      this.startDate = dayjs(value).format("YYYY-MM-DD");
-      // this.startTime = this.startDate
-      // console.log(this.startTime);
-      // this.startDate = value
-    },
-    confirmPicker2 (value) {
-      this.endDate = dayjs(value).format("YYYY-MM-DD");
+    async confirmPicker2 (value) {
+      if (!this.startDate) {
+        this.startDate = dayjs(value).format("YYYY/MM/DD");
+        return
+      }
+      if (!this.endDate) {
+        this.endDate = dayjs(value).format("YYYY/MM/DD");
+        return
+      }
+      if (this.startDate && this.endDate) {
+        this.overlay_show = false
+        this.startTime = this.startDate
+        this.endTime = this.endDate
+        this.pageIndex = 0
+        this.allIndent = []
+        await this.getData()
+      } else {
+        this.$toast.fail('日期信息不完整')
+      }
       // this.endTime = this.endDate
       // console.log(this.endTime);
       // this.endDate = value
-      this.overlay_show = false
+
     },
     // 改变订单状态值进行筛选
     async changeState (orderState) {
@@ -330,11 +347,18 @@ export default {
     }
   }
 }
-
+// 自定义日期的遮罩层弹出，，，日期格式的样式
+.dete_title {
+  display: flex;
+  padding: 10px 20px 10px 20px;
+  justify-content: space-between;
+  span {
+    font-size: 17px;
+    color: #388ded;
+  }
+}
 .add {
   display: flex;
-  align-items: center;
-  justify-content: center;
   position: fixed;
   width: 57px;
   height: 57px;
@@ -342,8 +366,10 @@ export default {
   bottom: 75px;
   border-radius: 50%;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
-  /deep/ .van-button__text {
+  .van-button__text {
     font-size: 36px;
+    align-self: center;
+    justify-self: center;
     color: rgba(1, 113, 240, 1);
   }
 }

@@ -114,7 +114,7 @@ export default {
 
 <style lang = "less" scoped>
 .van-radio-group {
-  margin-top: 12px;
+  margin-top: 13px;
   border-bottom: 1px solid #c0c4cc;
   padding-left: 16px;
   padding-right: 16px;

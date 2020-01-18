@@ -44,9 +44,19 @@
           <van-field v-model="orderMessage.exchangeRate" placeholder="请输入" input-align="right" />
         </van-cell>
       </div>
+      <div class="spacing">
+        <div class="my_cell">
+          <span class>发货要求</span>
+          <input type="text" class="my_input" placeholder="请输入"/>
+        </div>
+        <div class="my_cell">
+          <span class>送货要求</span>
+          <input type="text" class="my_input" placeholder="请输入"/>
+        </div>
+      </div>
       <div class="remark spacing">
-        <div class="remark-name">送货要求</div>
-        <van-field v-model="orderMessage.deliveryRequire" placeholder="添加" style="border:0px;" />
+        <div class="remark-name">备注</div>
+        <van-field v-model="orderMessage.memo" placeholder="添加备注" style="border:0px;" />
       </div>
     </van-cell-group>
     <div class="buttonBox">
@@ -118,7 +128,8 @@ export default {
         deliveryDate: "请选择", // 交货日期
         moneyType: { code: "RMB", name: "人民币" },
         exchangeRate: "1.0", // 汇率
-        deliveryRequire: "" // 送货要求
+        deliveryRequire: "", // 送货要求
+        memo: "" // 备注
       }
     };
   },
@@ -238,19 +249,33 @@ export default {
     },
     // 提交订单
     async createOrder() {
-      if (!this.validate()) return;
-      const data = await this.$Parse.Cloud.run("createOrder", {
-        VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
-        DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
-        Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
-        Clerk: { Code: this.saleMan.code }, // 业务员
-        Currency: { Code: this.orderMessage.moneyType.code }, // 币种
-        ExchangeRate:this.orderMessage.exchangeRate, // 汇率，decimal类型
-        Memo: this.orderMessage.deliveryRequire,
-        SaleOrderDetails: this.SaleOrderDetails
-      });
-      console.log(data)
-      this.clearStore();
+      // if (!this.validate()) return;
+      // const data = await this.$Parse.Cloud.run("createOrder", {
+      //   VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
+      //   DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
+      //   Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
+      //   Clerk: { Code: this.saleMan.code }, // 业务员
+      //   Currency: { Code: this.orderMessage.moneyType.code }, // 币种
+      //   ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
+      //   Memo: this.orderMessage.deliveryRequire, // 备注
+      //   DynamicPropertyKeys: {priuserdefnvc1:'abc',priuserdefnvc2:'bcd'},
+      //   DynamicPropertyValues: {freeitem0:'123',freeitem1:'456'},
+      //   SaleOrderDetails: this.SaleOrderDetails
+      // });
+      // console.log(data);
+      // if (false) {
+      //   this.$toast.success({
+      //     message: "创建订单成功",
+      //     onClose: () => {
+      //       this.$router.push("/indent");
+      //     }
+      //   });
+      // } else {
+      //   this.$toast.fail({
+      //     message: "创建订单失败",
+      //   });
+      // }
+      // this.clearStore();
     },
     // 存入草稿
     async createDraft() {
@@ -295,7 +320,7 @@ export default {
   background-color: rgba(248, 248, 248, 1);
   margin-bottom: 16px;
   .van-cell {
-    padding: 10px 15px 10px 15px;
+    padding: 10px 15px;
     border-bottom: 1px solid #c0c4cc;
     font-size: 17px;
 
@@ -321,6 +346,23 @@ export default {
   .spacing {
     margin-top: 17px;
     border-top: 1px solid #c0c4cc;
+  }
+  .my_cell {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 35px 10px 15px;
+    font-size: 17px;
+    background-color: #fff;
+    &:last-child {
+      border-top: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+    }
+    .my_input {
+      width: 180px;
+      text-align: right;
+      color: #888;
+      border: none;
+    }
   }
   .remark {
     border-bottom: 1px solid #c0c4cc;

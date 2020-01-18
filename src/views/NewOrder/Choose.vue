@@ -39,7 +39,7 @@
           </div>
           <div
             class="fontSize_14 align_self_end right"
-          >现存量：{{item.currentStock.baseQuantity?item.currentStock.baseQuantity :'无'}}</div>
+          >现存量：{{item.currentStock.baseQuantity?item.currentStock.baseQuantity :'无'}}{{item.currentStock.unit}}</div>
           <van-icon
             name="add-o"
             color="#0071f0"
@@ -158,8 +158,7 @@ export default {
       item.DiscountRate = 1;
       item.IsPresent = false;
       let itemInfo = this.SaleOrderDetails.filter(v => v.code == item.code)[0];
-      let popData = itemInfo ? itemInfo : item;
-      this.popData = popData;
+      this.popData = itemInfo ? itemInfo : item;
       this.getInventorySaleDelList(this.popData); // 获取单价
     },
     async getInventorySaleDelList(popData) {
@@ -167,13 +166,10 @@ export default {
         id: popData.id
         // id: 331
       });
-      console.log(data[0], "---");
       if (data[0].length) {
         // SA_SaleDelivery_b_origTaxPrice  含税单价
         this.popData.OrigTaxPrice = data[0][0].SA_SaleDelivery_b_origTaxPrice;
-      } else {
-        this.popData.OrigTaxPrice = 0;
-      }
+      } 
     },
     deleteGoods() {
       let index = this.SaleOrderDetails.findIndex(
@@ -214,6 +210,7 @@ export default {
       if (index == -1) {
         this.SaleOrderDetails.push(popData);
       } else {
+        
         this.SaleOrderDetails[index] = popData;
       }
       let totalPrice = 0;
@@ -301,7 +298,7 @@ export default {
       width: 40%;
     }
     .right {
-      width: 40%;
+      width: 45%;
     }
   }
 }

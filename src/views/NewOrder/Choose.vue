@@ -62,7 +62,6 @@
         </div>
       </div>
     </div>
-
     <!-- 弹出框 -->
     <my-pop
       :show="show"
@@ -92,7 +91,6 @@ export default {
       pageSize: 10,
       loading: false,
       finished: false,
-
       show: false, // 中间弹框显示隐藏
       popData: {},
       number: null, // 数量
@@ -130,13 +128,10 @@ export default {
           DiscountRate: 1, // 折扣率
           IsPresent: false, // 是否赠品
           Inventory: { Code: item.code }, // 系统存货编码Code
-          // OrigDiscountPrice: item.retailPrice * ((100 - item.rate) / 100) || 1, // 单价
           OrigDiscountPrice: null, // 单价
-          // OrigTaxPrice: Number(item.retailPrice) || 2 // 含税单价
           OrigTaxPrice: null // 含税单价
         };
       });
-
       this.inventory.push(...listData);
       this.loading = false;
       if (data.length) {
@@ -169,7 +164,7 @@ export default {
       if (data[0].length) {
         // SA_SaleDelivery_b_origTaxPrice  含税单价
         this.popData.OrigTaxPrice = data[0][0].SA_SaleDelivery_b_origTaxPrice;
-      } 
+      }
     },
     deleteGoods() {
       let index = this.SaleOrderDetails.findIndex(
@@ -195,9 +190,6 @@ export default {
         this.$store.commit("saveTotalPrice", totalPrice);
       }
     },
-    onCancel() {
-      this.showSelect = false;
-    },
     changeShow(show) {
       this.show = show;
     },
@@ -210,7 +202,6 @@ export default {
       if (index == -1) {
         this.SaleOrderDetails.push(popData);
       } else {
-        
         this.SaleOrderDetails[index] = popData;
       }
       let totalPrice = 0;
@@ -236,17 +227,6 @@ export default {
     },
 
     finish() {
-      // Unit: { Name: "KG" },                                      currentStock.unit
-      // Quantity: 7,                                               currentStock.baseQuantity
-      // DiscountRate: 1, // 折扣率
-      // IsPresent: false, // 是否赠品
-      // Inventory: { Code: "DT18C" }, // 系统存货编码 Code          Code
-      // OrigDiscountPrice: 15, // 单价                             retailPrice*(1-税率)
-      // OrigTaxPrice: 18, // 含税单价                              retailPrice
-
-      // OrigDiscountAmount: 15, // 原币金额                        总价
-      // OrigTaxAmount: 18, // 原币含税金额                         含税总价
-      // OrigTax: 3, // 原币税额                                    含税总价-总价
       this.$store.commit("saveSelectGoods", this.SaleOrderDetails);
       this.$router.back();
     }

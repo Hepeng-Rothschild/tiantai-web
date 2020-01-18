@@ -47,11 +47,11 @@
       <div class="spacing">
         <div class="my_cell">
           <span class>发货要求</span>
-          <input type="text" class="my_input" placeholder="请输入"/>
+          <input type="text" class="my_input" placeholder="请输入" />
         </div>
         <div class="my_cell">
           <span class>送货要求</span>
-          <input type="text" class="my_input" placeholder="请输入"/>
+          <input type="text" class="my_input" placeholder="请输入" />
         </div>
       </div>
       <div class="remark spacing">
@@ -180,6 +180,15 @@ export default {
       );
       let popData = JSON.parse(JSON.stringify(this.popData));
       this.SaleOrderDetails.splice(index, 1);
+      let totalPrice = 0;
+      for (let j = 0; j < this.SaleOrderDetails.length; j++) {
+        totalPrice += Number(
+          this.SaleOrderDetails[j].OrigTaxPrice *
+            this.SaleOrderDetails[j].Quantity
+        );
+      }
+      this.totalPrice = totalPrice;
+      this.$store.commit("saveTotalPrice", totalPrice);
     },
     // 修改弹窗的商品信息
     changePopData() {
@@ -211,6 +220,8 @@ export default {
             this.SaleOrderDetails[j].Quantity
         );
       }
+      this.totalPrice = totalPrice;
+      this.$store.commit("saveTotalPrice", totalPrice);
     },
     showPopData(item) {
       this.showPop = true;

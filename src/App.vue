@@ -16,7 +16,6 @@ export default {
     // }
     // this.$store.dispatch("logout");
     // this.$store.dispatch("login");
-    // this.current()
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据
@@ -30,10 +29,6 @@ export default {
         setItem("store", this.$store.state);
       });
     },
-    // async current() {
-    //   const data = await this.$Parse.User.getSessionToken();
-    //   console.log('--------',data);
-    // },
   }
 };
 </script>

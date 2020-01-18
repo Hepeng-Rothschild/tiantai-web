@@ -11,32 +11,28 @@
       </van-dropdown-item>
       <van-popup v-model="overlay_show"
                  position="bottom">
-        <div class="dete_title">
-          <span>取消</span>
-          <span>确定</span>
+        <div class="date_title">
+          <div class="box1"></div>
         </div>
-        <div>
-          <span>开始日期</span>
-          <div>{{this.startDate}}</div>
-          <span>结束日期</span>
-          <div>{{this.endDate}}</div>
+        <div class="dete_middle">
+          <div @click="isActiveTrue">
+            <div class="span">开始日期</div>
+            <!-- <span></span> -->
+            <div class="date_change"
+                 :class="isActive1?'border':''">{{this.startDate}}</div>
+          </div>
+          <div @click="isActiveFalse">
+            <div class="span">结束日期</div>
+            <!-- <span></span> -->
+            <div class="date_change"
+                 :class="isActive2?'border':''">{{this.endDate}}</div>
+          </div>
         </div>
-
-        <!-- <van-field v-model="startDate"
-                   label="开始日期"
-                   input-align="right"
-                   @click="startDate = null" />
-        <van-field v-model="endDate"
-                   label="结束日期"
-                   input-align="right"
-                   @click="endDate = null" /> -->
         <van-datetime-picker v-model="currentDate2"
                              type="date"
                              :item-height=44
-                             confirm-button-text=' '
-                             cancel-button-text=' '>
-          <!-- @cancel="overlay_show=false"
-@confirm="confirmPicker2" -->
+                             :formatter="formatter"
+                             @confirm="confirmPicker2">
         </van-datetime-picker>
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
@@ -84,8 +80,10 @@ export default {
   },
   data () {
     return {
-      startDate: null,
-      endDate: null,
+      isActive1: false,
+      isActive2: false,
+      startDate: '请选择',
+      endDate: '请选择',
       overlay_show: false,
       // 列表加载
       loading: false,
@@ -105,7 +103,7 @@ export default {
         { text: '上月', value: 2 },
         { text: '本季度', value: 3 },
         { text: '本年', value: 4 },
-        // { text: '自定义', value: 5 }
+        { text: '自定义', value: 5 }
       ],
       orderIndex: null,
       orderStatus: [
@@ -140,6 +138,16 @@ export default {
   methods: {
     onLoad () {
       this.getData()
+    },
+    isActiveTrue () {
+      this.isActive1 = true
+      this.isActive2 = false
+      this.startDate = null
+    },
+    isActiveFalse () {
+      this.isActive2 = true
+      this.isActive1 = false
+      this.endDate = null
     },
     // 跳转到详情页面
     toDetails (indent) {
@@ -237,16 +245,28 @@ export default {
       this.allIndent = []
       await this.getData()
     },
+    formatter (type, value) {
+      if (type === 'year') {
+        return `${value}年`;
+      } else if (type === 'month') {
+        return `${value}月`
+      } else if (type === 'day') {
+        return `${value}日`
+      }
+      return value;
+    },
     async confirmPicker2 (value) {
+      console.log(value);
+
       if (!this.startDate) {
-        this.startDate = dayjs(value).format("YYYY/MM/DD");
+        this.startDate = dayjs(value).format("YYYY-MM-DD");
         return
       }
       if (!this.endDate) {
-        this.endDate = dayjs(value).format("YYYY/MM/DD");
+        this.endDate = dayjs(value).format("YYYY-MM-DD");
         return
       }
-      if (this.startDate && this.endDate) {
+      if (this.startDate && this.endDate && this.startDate != '请选择' && this.endDate != '请选择') {
         this.overlay_show = false
         this.startTime = this.startDate
         this.endTime = this.endDate
@@ -256,9 +276,6 @@ export default {
       } else {
         this.$toast.fail('日期信息不完整')
       }
-      // this.endTime = this.endDate
-      // console.log(this.endTime);
-      // this.endDate = value
 
     },
     // 改变订单状态值进行筛选
@@ -348,13 +365,49 @@ export default {
   }
 }
 // 自定义日期的遮罩层弹出，，，日期格式的样式
-.dete_title {
-  display: flex;
-  padding: 10px 20px 10px 20px;
-  justify-content: space-between;
-  span {
-    font-size: 17px;
-    color: #388ded;
+.van-popup {
+  .date_title {
+    position: relative;
+    display: flex;
+    padding: 10px 20px 10px 20px;
+    justify-content: space-between;
+    .box1 {
+      height: 20px;
+    }
+  }
+  .dete_middle {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 40px 0px 40px;
+    div {
+      .span {
+        text-align: center;
+        font-size: 15px;
+        color: #606266;
+      }
+      .date_change {
+        text-align: center;
+        font-size: 17px;
+        color: #000000;
+      }
+    }
+  }
+  .border {
+    border-bottom: 1px solid #388ded;
+  }
+  /deep/ .van-picker {
+    /deep/ .van-hairline--top-bottom {
+      /deep/ .van-picker__cancel {
+        position: absolute;
+        top: -90px;
+        left: 0;
+      }
+      /deep/ .van-picker__confirm {
+        position: absolute;
+        top: -90px;
+        right: 0;
+      }
+    }
   }
 }
 .add {

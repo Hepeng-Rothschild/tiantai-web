@@ -124,7 +124,7 @@ export default {
     };
   },
   created () {
-    this.initDate();
+    
   },
   watch: {
     searchValue: debounce(async function (newVal) {
@@ -136,6 +136,7 @@ export default {
   },
   methods: {
     onLoad () {
+      this.initDate();
       this.getData();
     },
     isActiveTrue () {
@@ -162,7 +163,6 @@ export default {
       const nowMonth = new Date().setDate(1);
       this.startTime = dayjs(new Date(nowMonth)).format("YYYY-MM-DD");
       this.endTime = dayjs(new Date()).format("YYYY-MM-DD");
-      this.getData();
     },
     // 调取订单查询接口
     async getData () {
@@ -290,11 +290,11 @@ export default {
     },
     async confirmPicker2 (value) {
       if (!this.startDate) {
-        this.startDate = dayjs(value).format("YYYY-MM-DD");
+        this.startDate = dayjs(value).format("YYYY/MM/DD");
         return
       }
       if (!this.endDate) {
-        this.endDate = dayjs(value).format("YYYY-MM-DD");
+        this.endDate = dayjs(value).format("YYYY/MM/DD");
         return
       }
       if (this.startDate && this.endDate && this.startDate != '请选择' && this.endDate != '请选择') {
@@ -321,8 +321,7 @@ export default {
 
 <style lang="less" scoped>
 .search {
-  margin: 13px 10px 10px 10px;
-  width: 94%;
+  padding: 13px 10px 10px 10px;
 }
 .customize {
   display: flex;

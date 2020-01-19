@@ -1,65 +1,61 @@
 <template>
-  <div>
+  <van-list>
     <!-- 搜索栏 -->
-    <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+    <div class="my_search">
+      <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+    </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex"
-                         :options="dateStatus"
-                         @change="changeDate">
-      </van-dropdown-item>
-      <van-popup v-model="overlay_show"
-                 position="bottom">
+      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
+      <van-popup v-model="overlay_show" position="bottom">
         <div class="date_title">
           <div class="box1"></div>
         </div>
         <div class="dete_middle">
           <div @click="isActiveTrue">
             <div class="span">开始日期</div>
-            <!-- <span></span> -->
-            <div class="date_change"
-                 :class="isActive1?'border':''">{{this.startDate}}</div>
+            <div class="date_change" :class="isActive1?'border':''">{{this.startDate}}</div>
           </div>
           <div @click="isActiveFalse">
             <div class="span">结束日期</div>
-            <!-- <span></span> -->
-            <div class="date_change"
-                 :class="isActive2?'border':''">{{this.endDate}}</div>
+            <div class="date_change" :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
-        <van-datetime-picker v-model="currentDate2"
-                             type="date"
-                             :item-height=44
-                             :formatter="formatter"
-                             @confirm="confirmPicker2">
-        </van-datetime-picker>
+        <van-datetime-picker
+          v-model="currentDate2"
+          type="date"
+          :item-height="44"
+          :formatter="formatter"
+          @confirm="confirmPicker2"
+        ></van-datetime-picker>
       </van-popup>
       <van-dropdown-item v-model="orderIndex" :options="orderStatus" @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
     <van-list v-model="loading" :finished="finished" @load="onLoad">
-      <span class="date">{{this.endTime}}</span>
-      <van-cell
-        v-for="(indent,index) in allIndent"
-        :key="index"
-        :title="indent.AA_Partner_name"
-        :label="indent.SA_SaleOrder_code"
-        is-link
-        @click="toDetails(indent)"
-        :class="draft?'draft':''"
-      >
-        ￥{{indent.SA_SaleOrder_taxAmount}}
-        <div>
-          <van-tag type="primary">{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
-        </div>
-      </van-cell>
-      <span class="date">{{this.startTime}}</span>
+      <div v-for="(indent,i) in allIndent" :key="i">
+        <div class="date">{{allIndent[i][0].SA_SaleOrder_deliveryDate}}</div>
+        <van-cell
+          v-for="(indent,index) in allIndent[i]"
+          :key="index"
+          :title="indent.AA_Partner_name"
+          :label="indent.SA_SaleOrder_code"
+          is-link
+          @click="toDetails(indent)"
+          :class="draft?'draft':''"
+        >
+          ￥{{indent.SA_SaleOrder_taxAmount}}
+          <div>
+            <van-tag type="primary">{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
+          </div>
+        </van-cell>
+      </div>
     </van-list>
     <!-- 添加订单按钮 -->
     <div @click="$router.push('/neworder')" class="my_button">
       <span>+</span>
     </div>
-  </div>
+  </van-list>
 </template>
 
 <script>
@@ -68,7 +64,7 @@ import MySearch from "../../components/Search.vue";
 import { debounce } from "loadsh";
 
 export default {
-  name: "IndentIndex",
+  name: "indentIndex",
   components: {
     MySearch: MySearch
   },
@@ -76,8 +72,8 @@ export default {
     return {
       isActive1: false,
       isActive2: false,
-      startDate: '请选择',
-      endDate: '请选择',
+      startDate: "请选择",
+      endDate: "请选择",
       overlay_show: false,
       // 列表加载
       loading: false,
@@ -92,12 +88,12 @@ export default {
       // 下拉框信息
       dateIndex: 1,
       dateStatus: [
-        { text: '近7天', value: 0 },
-        { text: '本月', value: 1 },
-        { text: '上月', value: 2 },
-        { text: '本季度', value: 3 },
-        { text: '本年', value: 4 },
-        { text: '自定义', value: 5 }
+        { text: "近7天", value: 0 },
+        { text: "本月", value: 1 },
+        { text: "上月", value: 2 },
+        { text: "本季度", value: 3 },
+        { text: "本年", value: 4 },
+        { text: "自定义", value: 5 }
       ],
       orderIndex: null,
       orderStatus: [
@@ -118,9 +114,6 @@ export default {
       name: null
     };
   },
-  created() {
-    this.initDate();
-  },
   watch: {
     searchValue: debounce(async function(newVal) {
       this.pageIndex = 0;
@@ -131,24 +124,27 @@ export default {
   },
   methods: {
     onLoad() {
+      this.initDate();
       this.getData();
     },
-    isActiveTrue () {
-      this.isActive1 = true
-      this.isActive2 = false
-      this.startDate = null
+    isActiveTrue() {
+      this.isActive1 = true;
+      this.isActive2 = false;
+      this.startDate = null;
     },
-    isActiveFalse () {
-      this.isActive2 = true
-      this.isActive1 = false
-      this.endDate = null
+    isActiveFalse() {
+      this.isActive2 = true;
+      this.isActive1 = false;
+      this.endDate = null;
     },
     // 跳转到详情页面
     toDetails(indent) {
       this.$store.commit("saveIndentDetails", indent);
-      if (1) { // 如果是订单就去展示页
+      if (1) {
+        // 如果是订单就去展示页
         this.$router.push("/details");
-      } else { // 是草稿就去编辑页
+      } else {
+        // 是草稿就去编辑页
         this.$router.push("/editindent");
       }
     },
@@ -157,7 +153,6 @@ export default {
       const nowMonth = new Date().setDate(1);
       this.startTime = dayjs(new Date(nowMonth)).format("YYYY-MM-DD");
       this.endTime = dayjs(new Date()).format("YYYY-MM-DD");
-      this.getData();
     },
     // 调取订单查询接口
     async getData() {
@@ -169,8 +164,15 @@ export default {
         name: this.name,
         state: this.state
       });
-      this.allIndent.push(...data[0]);
-      console.log(this.allIndent);
+      let allIndent = data[0];
+      let duration = allIndent.map(item => item.SA_SaleOrder_deliveryDate); //存放时间段的数组
+      let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
+        .sort()
+        .reverse();
+      allIndent = newDuration.map(duration =>
+        allIndent.filter(indent => indent.SA_SaleOrder_deliveryDate == duration)
+      );
+      this.allIndent.push(...allIndent);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++;
@@ -260,34 +262,37 @@ export default {
       this.allIndent = [];
       await this.getData();
     },
-    formatter (type, value) {
-      if (type === 'year') {
+    formatter(type, value) {
+      if (type === "year") {
         return `${value}年`;
-      } else if (type === 'month') {
-        return `${value}月`
-      } else if (type === 'day') {
-        return `${value}日`
+      } else if (type === "month") {
+        return `${value}月`;
+      } else if (type === "day") {
+        return `${value}日`;
       }
       return value;
     },
-    async confirmPicker2 (value) {
-      console.log(value);
-
+    async confirmPicker2(value) {
       if (!this.startDate) {
         this.startDate = dayjs(value).format("YYYY-MM-DD");
-        return
+        return;
       }
       if (!this.endDate) {
         this.endDate = dayjs(value).format("YYYY-MM-DD");
-        return
+        return;
       }
-      if (this.startDate && this.endDate && this.startDate != '请选择' && this.endDate != '请选择') {
-        this.overlay_show = false
-        this.startTime = this.startDate
-        this.endTime = this.endDate
-        this.pageIndex = 0
-        this.allIndent = []
-        await this.getData()
+      if (
+        this.startDate &&
+        this.endDate &&
+        this.startDate != "请选择" &&
+        this.endDate != "请选择"
+      ) {
+        this.overlay_show = false;
+        this.startTime = this.startDate;
+        this.endTime = this.endDate;
+        this.pageIndex = 0;
+        this.allIndent = [];
+        await this.getData();
       } else {
         this.$toast.fail("日期信息不完整");
       }
@@ -304,9 +309,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.search {
-  margin: 13px 10px 10px 10px;
-  width: 94%;
+.my_search {
+  padding: 13px 10px 10px 10px;
+  background-color: rgba(248,248,248,1);
 }
 .customize {
   display: flex;
@@ -321,10 +326,12 @@ export default {
 }
 .van-list {
   .date {
-    margin-left: 14px;
-    margin-top: 12px;
-    color: rgba(144, 147, 153, 1);
+    height: 30px;
+    line-height: 30px;
     font-size: 13px;
+    padding-left: 14px;
+    color: rgba(144, 147, 153, 1);
+    background-color: rgba(248,248,248,1);
   }
   // 设置常规状态下单元格内容样式
   .van-cell--clickable:nth-of-type(1) {

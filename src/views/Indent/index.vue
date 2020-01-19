@@ -140,11 +140,13 @@ export default {
       this.initDate();
       await this.getData();
     },
+    // 开关自定义开始时间
     isActiveTrue () {
       this.isActive1 = true;
       this.isActive2 = false;
       this.startDate = null;
     },
+    // 开关自定义结束时间
     isActiveFalse () {
       this.isActive2 = true;
       this.isActive1 = false;
@@ -226,7 +228,6 @@ export default {
     },
     // 改变时间进行筛选
     async changeDate (orderDate) {
-      // 近7天
       let startTimeTmp = new Date();
       let endTimeTmp = new Date();
       switch (orderDate) {
@@ -275,6 +276,7 @@ export default {
       this.allIndent = [];
       await this.getData();
     },
+    // 自定义时间的年月日文字
     formatter (type, value) {
       if (type === "year") {
         return `${value}年`;
@@ -285,10 +287,12 @@ export default {
       }
       return value;
     },
+    // 转换成正常时间戳用的
     formatday (time) {
       let day = dayjs(time).format("YYYY-MM-DD");
       return day
     },
+    // 自定义时间的确定转换
     async confirmPicker2 (value) {
       if (!this.startDate) {
         this.startDate = dayjs(value).format("YYYY/MM/DD");

@@ -134,7 +134,6 @@ export default {
       display: inline-block;
       flex: 3;
       font-size: 15px;
-      // margin-bottom: 5px;
       color: #101010;
     }
   }
@@ -226,7 +225,6 @@ export default {
       margin-bottom: 10px;
       color: rgba(153, 153, 153, 1);
     }
-
     .information {
       display: inline-block;
       flex: 3;

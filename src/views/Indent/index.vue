@@ -1,14 +1,9 @@
 <template>
   <van-list>
     <!-- 搜索栏 -->
-<<<<<<< HEAD
     <div class="my_search">
       <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
     </div>
-=======
-    <my-search v-model="searchValue"
-               placeholder="输入客户名称进行查找"></my-search>
->>>>>>> refs/remotes/origin/master
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
@@ -26,7 +21,6 @@
             <div class="date_change" :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
-<<<<<<< HEAD
         <van-datetime-picker
           v-model="currentDate2"
           type="date"
@@ -34,22 +28,12 @@
           :formatter="formatter"
           @confirm="confirmPicker2"
         ></van-datetime-picker>
-=======
-        <van-datetime-picker v-model="currentDate2"
-                             type="date"
-                             :item-height=44
-                             :formatter="formatter"
-                             @confirm="confirmPicker2"
-                             @cancel="overlay_show = false">
-        </van-datetime-picker>
->>>>>>> refs/remotes/origin/master
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
                          @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
-<<<<<<< HEAD
     <van-list v-model="loading" :finished="finished" @load="onLoad">
       <div v-for="(indent,i) in allIndent" :key="i">
         <div class="date">{{allIndent[i][0].SA_SaleOrder_deliveryDate}}</div>
@@ -68,26 +52,6 @@
           </div>
         </van-cell>
       </div>
-=======
-    <van-list v-model="loading"
-              :finished="finished"
-              @load="onLoad">
-      <span class="date">{{formatday(allIndent.SA_SaleOrder_deliveryDate)}}</span>
-      <van-cell v-for="(indent,index) in allIndent"
-                :key="index"
-                :title="indent.AA_Partner_name"
-                :label="indent.SA_SaleOrder_code"
-                is-link
-                @click="toDetails(indent)"
-                :class="[isActive?'draft':'']">
-        <!-- class="draft" -->
-        ￥{{indent.SA_SaleOrder_taxAmount}}
-        <div>
-          <van-tag type="primary" v-if="indent.SA_SaleOrder_voucherState == 190">草稿</van-tag>
-          <van-tag type="primary" v-else>{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
-        </div>
-      </van-cell>
->>>>>>> refs/remotes/origin/master
     </van-list>
     <!-- 添加订单按钮 -->
     <div @click="$router.push('/neworder')"

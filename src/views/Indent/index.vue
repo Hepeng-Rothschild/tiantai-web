@@ -1,9 +1,14 @@
 <template>
   <van-list>
     <!-- 搜索栏 -->
+<<<<<<< HEAD
     <div class="my_search">
       <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
     </div>
+=======
+    <my-search v-model="searchValue"
+               placeholder="输入客户名称进行查找"></my-search>
+>>>>>>> refs/remotes/origin/master
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
@@ -21,6 +26,7 @@
             <div class="date_change" :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
+<<<<<<< HEAD
         <van-datetime-picker
           v-model="currentDate2"
           type="date"
@@ -28,10 +34,22 @@
           :formatter="formatter"
           @confirm="confirmPicker2"
         ></van-datetime-picker>
+=======
+        <van-datetime-picker v-model="currentDate2"
+                             type="date"
+                             :item-height=44
+                             :formatter="formatter"
+                             @confirm="confirmPicker2"
+                             @cancel="overlay_show = false">
+        </van-datetime-picker>
+>>>>>>> refs/remotes/origin/master
       </van-popup>
-      <van-dropdown-item v-model="orderIndex" :options="orderStatus" @change="changeState" />
+      <van-dropdown-item v-model="orderIndex"
+                         :options="orderStatus"
+                         @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
+<<<<<<< HEAD
     <van-list v-model="loading" :finished="finished" @load="onLoad">
       <div v-for="(indent,i) in allIndent" :key="i">
         <div class="date">{{allIndent[i][0].SA_SaleOrder_deliveryDate}}</div>
@@ -50,9 +68,30 @@
           </div>
         </van-cell>
       </div>
+=======
+    <van-list v-model="loading"
+              :finished="finished"
+              @load="onLoad">
+      <span class="date">{{formatday(allIndent.SA_SaleOrder_deliveryDate)}}</span>
+      <van-cell v-for="(indent,index) in allIndent"
+                :key="index"
+                :title="indent.AA_Partner_name"
+                :label="indent.SA_SaleOrder_code"
+                is-link
+                @click="toDetails(indent)"
+                :class="[isActive?'draft':'']">
+        <!-- class="draft" -->
+        ￥{{indent.SA_SaleOrder_taxAmount}}
+        <div>
+          <van-tag type="primary" v-if="indent.SA_SaleOrder_voucherState == 190">草稿</van-tag>
+          <van-tag type="primary" v-else>{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
+        </div>
+      </van-cell>
+>>>>>>> refs/remotes/origin/master
     </van-list>
     <!-- 添加订单按钮 -->
-    <div @click="$router.push('/neworder')" class="my_button">
+    <div @click="$router.push('/neworder')"
+         class="my_button">
       <span>+</span>
     </div>
   </van-list>
@@ -68,8 +107,9 @@ export default {
   components: {
     MySearch: MySearch
   },
-  data() {
+  data () {
     return {
+      isActive: false,
       isActive1: false,
       isActive2: false,
       startDate: "请选择",
@@ -83,8 +123,6 @@ export default {
       currentDate: new Date(),
       currentDate2: new Date(),
       searchValue: null,
-      // 是否有草稿
-      draft: null,
       // 下拉框信息
       dateIndex: 1,
       dateStatus: [
@@ -115,7 +153,7 @@ export default {
     };
   },
   watch: {
-    searchValue: debounce(async function(newVal) {
+    searchValue: debounce(async function (newVal) {
       this.pageIndex = 0;
       this.allIndent = [];
       this.name = this.searchValue;
@@ -149,13 +187,13 @@ export default {
       }
     },
     // 初始化日期
-    initDate() {
+    initDate () {
       const nowMonth = new Date().setDate(1);
       this.startTime = dayjs(new Date(nowMonth)).format("YYYY-MM-DD");
       this.endTime = dayjs(new Date()).format("YYYY-MM-DD");
     },
     // 调取订单查询接口
-    async getData() {
+    async getData () {
       const { data } = await this.$Parse.Cloud.run("getOrder", {
         pageSize: this.pageSize,
         pageIndex: this.pageIndex,
@@ -184,7 +222,7 @@ export default {
       }
     },
     // 获取本季度开端月份
-    getQuarterStartMonth() {
+    getQuarterStartMonth () {
       let nowMonth = new Date().getMonth();
       var quarterStartMonth = 0;
       if (nowMonth < 3) {
@@ -202,7 +240,7 @@ export default {
       return quarterStartMonth;
     },
     // 获取本年度第一天的日期
-    getCurrentYear() {
+    getCurrentYear () {
       //获取当前时间
       let currentDate = new Date();
       //获得当前年份4位年
@@ -212,7 +250,7 @@ export default {
       return currentYearFirstDate;
     },
     // 改变时间进行筛选
-    async changeDate(orderDate) {
+    async changeDate (orderDate) {
       // 近7天
       let startTimeTmp = new Date();
       let endTimeTmp = new Date();
@@ -272,14 +310,18 @@ export default {
       }
       return value;
     },
-    async confirmPicker2(value) {
+    formatday (time) {
+      let day = dayjs(time).format("YYYY-MM-DD");
+      return day
+    },
+    async confirmPicker2 (value) {
       if (!this.startDate) {
-        this.startDate = dayjs(value).format("YYYY-MM-DD");
-        return;
+        this.startDate = dayjs(value).format("YYYY/MM/DD");
+        return
       }
       if (!this.endDate) {
-        this.endDate = dayjs(value).format("YYYY-MM-DD");
-        return;
+        this.endDate = dayjs(value).format("YYYY/MM/DD");
+        return
       }
       if (
         this.startDate &&
@@ -294,11 +336,11 @@ export default {
         this.allIndent = [];
         await this.getData();
       } else {
-        this.$toast.fail("日期信息不完整");
+        this.$toast.fail("日期填写不完整");
       }
     },
     // 改变订单状态值进行筛选
-    async changeState(orderState) {
+    async changeState (orderState) {
       this.state = orderState;
       this.pageIndex = 0;
       this.allIndent = [];
@@ -337,6 +379,7 @@ export default {
   .van-cell--clickable:nth-of-type(1) {
     border-top: 1px solid #c0c4cc;
   }
+  // 常规状态下单元格的样式
   .van-cell {
     border-bottom: 1px solid #c0c4cc;
     .van-cell__title {
@@ -359,26 +402,31 @@ export default {
       align-self: center;
     }
   }
-}
-// 此处为动态绑定class时，草稿（cell）需要绑定的样式
-.draft {
-  .van-cell__title {
-    color: rgba(144, 147, 153, 1);
-    font-size: 17px;
-    text-align: left;
-  }
-  .van-cell__value {
-    color: rgba(144, 147, 153, 1);
-    font-size: 17px;
-    text-align: right;
-    .van-tag {
-      border-radius: 4px;
-      color: #606266;
-      background-color: #c0c4cc;
-      text-align: center;
+  // 此处为动态绑定class时，草稿（cell）需要绑定的样式
+  .draft {
+    border-bottom: 1px solid #c0c4cc;
+    .van-cell__title {
+      color: rgba(144, 147, 153, 1);
+      font-size: 17px;
+      text-align: left;
+    }
+    .van-cell__value {
+      color: rgba(144, 147, 153, 1);
+      font-size: 17px;
+      text-align: right;
+      .van-tag {
+        border-radius: 4px;
+        color: #606266;
+        background-color: #c0c4cc;
+        text-align: center;
+      }
+    }
+    .van-icon {
+      align-self: center;
     }
   }
 }
+
 // 自定义日期的遮罩层弹出，，，日期格式的样式
 .van-popup {
   .date_title {

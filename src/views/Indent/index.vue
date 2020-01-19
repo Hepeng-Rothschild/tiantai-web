@@ -70,7 +70,6 @@
 
 <script>
 import dayjs from "dayjs";
-import { setItem } from "../../utils/Storage.js";
 import MySearch from "../../components/Search.vue";
 import { debounce } from "loadsh";
 
@@ -150,9 +149,13 @@ export default {
       this.endDate = null
     },
     // 跳转到详情页面
-    toDetails (indent) {
-      this.$router.push({ name: "details" });
-      setItem("allIndent", indent);
+    toDetails(indent) {
+      this.$store.commit("saveIndentDetails", indent);
+      if (1) { // 如果是订单就去展示页
+        this.$router.push("/details");
+      } else { // 是草稿就去编辑页
+        this.$router.push("/editindent");
+      }
     },
     // 初始化日期
     initDate () {

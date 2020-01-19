@@ -41,6 +41,12 @@ const routes = [
     component: () => import( '@/views/Indent')
   },
   {
+    path: '/editindent',
+    name: 'editindent',
+    meta: { title: '修改订单' },
+    component: () => import( '@/views/Indent/EditIndent.vue')
+  },
+  {
     path: '/details',
     name: 'details',
     meta: { title: '订单详情' },

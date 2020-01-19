@@ -2,53 +2,61 @@
   <van-list>
     <!-- 搜索栏 -->
     <div class="my_search">
-      <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+      <my-search v-model="searchValue"
+                 placeholder="输入客户名称进行查找"></my-search>
     </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
-      <van-popup v-model="overlay_show" position="bottom">
+      <van-dropdown-item v-model="dateIndex"
+                         :options="dateStatus"
+                         @change="changeDate"></van-dropdown-item>
+      <van-popup v-model="overlay_show"
+                 position="bottom">
         <div class="date_title">
           <div class="box1"></div>
         </div>
         <div class="dete_middle">
           <div @click="isActiveTrue">
             <div class="span">开始日期</div>
-            <div class="date_change" :class="isActive1?'border':''">{{this.startDate}}</div>
+            <div class="date_change"
+                 :class="isActive1?'border':''">{{this.startDate}}</div>
           </div>
           <div @click="isActiveFalse">
             <div class="span">结束日期</div>
-            <div class="date_change" :class="isActive2?'border':''">{{this.endDate}}</div>
+            <div class="date_change"
+                 :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
-        <van-datetime-picker
-          v-model="currentDate2"
-          type="date"
-          :item-height="44"
-          :formatter="formatter"
-          @confirm="confirmPicker2"
-        ></van-datetime-picker>
+        <van-datetime-picker v-model="currentDate2"
+                             type="date"
+                             :item-height="44"
+                             :formatter="formatter"
+                             @confirm="confirmPicker2"></van-datetime-picker>
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
                          @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
-    <van-list v-model="loading" :finished="finished" @load="onLoad">
-      <div v-for="(indent,i) in allIndent" :key="i">
-        <div class="date">{{allIndent[i][0].SA_SaleOrder_deliveryDate}}</div>
-        <van-cell
-          v-for="(indent,index) in allIndent[i]"
-          :key="index"
-          :title="indent.AA_Partner_name"
-          :label="indent.SA_SaleOrder_code"
-          is-link
-          @click="toDetails(indent)"
-          :class="draft?'draft':''"
-        >
-          ￥{{indent.SA_SaleOrder_taxAmount}}
+    <van-list v-model="loading"
+              :finished="finished"
+              @load="onLoad">
+      <div v-for="(indent,i) in allIndent"
+           :key="i">
+        <div class="date">{{formatday(allIndent[i][0].madedate)}}</div>
+        <van-cell v-for="(indent,index) in allIndent[i]"
+                  :key="index"
+                  :title="indent.name"
+                  :label="indent.code"
+                  is-link
+                  @click="toDetails(indent)"
+                  :class="[isActive?'draft':'']">
+          ￥{{indent.taxAmount}}
           <div>
-            <van-tag type="primary">{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
+            <van-tag type="primary"
+                     v-if="indent.voucherState == 190">草稿</van-tag>
+            <van-tag type="primary"
+                     v-else>{{indent.voucherState == 181 ? '未审':'已审'}}</van-tag>
           </div>
         </van-cell>
       </div>
@@ -73,12 +81,15 @@ export default {
   },
   data () {
     return {
+      // 动态绑定草稿的样式
       isActive: false,
+      // 动态绑定自定义开始日期得样式
       isActive1: false,
+      // 动态绑定自定义结束日期的样式
       isActive2: false,
-      startDate: "请选择",
-      endDate: "请选择",
-      overlay_show: false,
+      startDate: '请选择', // 自定义开始日期
+      endDate: '请选择', // 自定义结束日期
+      overlay_show: false,  //   开关遮罩层
       // 列表加载
       loading: false,
       // 全部加载完成
@@ -125,22 +136,22 @@ export default {
     }, 500)
   },
   methods: {
-    onLoad() {
+    async onLoad () {
       this.initDate();
-      this.getData();
+      await this.getData();
     },
-    isActiveTrue() {
+    isActiveTrue () {
       this.isActive1 = true;
       this.isActive2 = false;
       this.startDate = null;
     },
-    isActiveFalse() {
+    isActiveFalse () {
       this.isActive2 = true;
       this.isActive1 = false;
       this.endDate = null;
     },
     // 跳转到详情页面
-    toDetails(indent) {
+    toDetails (indent) {
       this.$store.commit("saveIndentDetails", indent);
       if (1) {
         // 如果是订单就去展示页
@@ -166,13 +177,13 @@ export default {
         name: this.name,
         state: this.state
       });
-      let allIndent = data[0];
-      let duration = allIndent.map(item => item.SA_SaleOrder_deliveryDate); //存放时间段的数组
+      let allIndent = data
+      let duration = allIndent.map(item => item.madedate); //存放时间段的数组
       let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
         .sort()
         .reverse();
       allIndent = newDuration.map(duration =>
-        allIndent.filter(indent => indent.SA_SaleOrder_deliveryDate == duration)
+        allIndent.filter(indent => indent.madedate == duration)
       );
       this.allIndent.push(...allIndent);
       this.loading = false;
@@ -264,7 +275,7 @@ export default {
       this.allIndent = [];
       await this.getData();
     },
-    formatter(type, value) {
+    formatter (type, value) {
       if (type === "year") {
         return `${value}年`;
       } else if (type === "month") {
@@ -317,7 +328,7 @@ export default {
 <style lang="less" scoped>
 .my_search {
   padding: 13px 10px 10px 10px;
-  background-color: rgba(248,248,248,1);
+  background-color: rgba(248, 248, 248, 1);
 }
 .customize {
   display: flex;
@@ -337,7 +348,7 @@ export default {
     font-size: 13px;
     padding-left: 14px;
     color: rgba(144, 147, 153, 1);
-    background-color: rgba(248,248,248,1);
+    background-color: rgba(248, 248, 248, 1);
   }
   // 设置常规状态下单元格内容样式
   .van-cell--clickable:nth-of-type(1) {

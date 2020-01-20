@@ -1,5 +1,9 @@
 <template>
   <div class="draft">
+    <!-- 搜索栏 -->
+    <div class="my_search">
+      <my-search v-model="searchValue" placeholder="请输入客户名称"></my-search>
+    </div>
     <van-list
       v-model="loading"
       :finished="finished"
@@ -12,7 +16,7 @@
         <van-cell
           v-for="(item,index) in draft"
           :key="index"
-          :title="item.Customer.AA_Person_name?item.Customer.AA_Person_name:'未填写'"
+          :title="item.Customer.AA_Partner_name?item.Customer.AA_Partner_name:'未填写'"
           :label="item.code"
           is-link
           @click="toEdit(item)"
@@ -28,9 +32,12 @@
 </template>
 
 <script>
+import MySearch from "../../components/Search.vue";
+import { debounce } from "loadsh";
 export default {
   data() {
     return {
+      searchValue: null,
       loading: false,
       finished: false,
       pageSize: 10,
@@ -38,7 +45,16 @@ export default {
       allDraft: []
     };
   },
-  mounted() {},
+  components: {
+    MySearch: MySearch
+  },
+  watch: {
+    searchValue: debounce(async function(newVal) {
+      this.pageSkip = 0;
+      this.allDraft = [];
+      // await this.getOrderDraft();
+    }, 500)
+  },
   methods: {
     onLoad() {
       this.getOrderDraft();
@@ -49,25 +65,27 @@ export default {
       let query = new Parse.Query(OrderDraft);
       query.limit(this.pageSize);
       query.skip(this.pageSkip);
+      // Customer.AA_Partner_name
+      // query.containedIn("Customer",[this.searchValue]);
       const data = await query.find();
       let allDraft = JSON.parse(JSON.stringify(data));
-      console.log(allDraft)
+      console.log(allDraft);
       allDraft.forEach(item => {
         item.totalPrice = 0;
         // console.log(item)
-        console.log(item.SaleOrderDetails)
-        // item.SaleOrderDetails.forEach(goods => {
-        //   item.totalPrice += goods.OrigTaxAmount;
-        // });
+        console.log(item.SaleOrderDetails);
+        item.SaleOrderDetails.forEach(goods => {
+          item.totalPrice += goods.OrigTaxAmount;
+        });
       });
-      // let duration = allDraft.map(item => item.VoucherDate); //存放时间段的数组
-      // let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
-      //   .sort()
-      //   .reverse();
-      // allDraft = newDuration.map(duration =>
-      //   allDraft.filter(draft => draft.VoucherDate == duration)
-      // );
-      // this.allDraft.push(...allDraft);
+      let duration = allDraft.map(item => item.VoucherDate); //存放时间段的数组
+      let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
+        .sort()
+        .reverse();
+      allDraft = newDuration.map(duration =>
+        allDraft.filter(draft => draft.VoucherDate == duration)
+      );
+      this.allDraft.push(...allDraft);
       this.loading = false;
       if (allDraft.length) {
         this.pageSkip += 10;
@@ -79,9 +97,8 @@ export default {
       }
     },
     toEdit(item) {
-      
       this.$store.commit("saveDraft", item);
-      this.$router.push('/editdraft')
+      this.$router.push("/editdraft");
     }
   }
 };
@@ -91,6 +108,13 @@ export default {
 .draft {
   height: 100%;
   background-color: rgba(248, 248, 248, 1);
+  .my_search {
+    padding: 13px 10px 10px 10px;
+    background-color: rgba(248, 248, 248, 1);
+  }
+  .van-list {
+    border-top: 1px solid #c0c4cc;
+  }
   .date {
     height: 30px;
     line-height: 30px;

@@ -178,15 +178,15 @@ export default {
   methods: {
     getDraft() {
       console.log("==================", this.Draft);
-      this.orderMessage.voucherDate = this.Draft.VoucherDate;
-      this.orderMessage.deliveryDate = this.Draft.DeliveryDate;
       this.partner = this.SelectedPartner || this.Draft.Customer;
       this.saleMan = this.SelectedSaleMan || this.Draft.Clerk;
-      this.orderMessage.moneyType = this.Draft.Currency.moneyType;
+      this.orderMessage.voucherDate = this.Draft.VoucherDate;
+      this.orderMessage.deliveryDate = this.Draft.DeliveryDate;
+      this.orderMessage.moneyType = this.Draft.Currency;
       this.orderMessage.exchangeRate = this.Draft.ExchangeRate;
       this.orderMessage.memo = this.Draft.Memo;
-      this.orderMessage.deliveryRequire1 = this.Draft.Currency.deliveryRequire1;
-      this.orderMessage.deliveryRequire2 = this.Draft.Currency.deliveryRequire2;
+      this.orderMessage.deliveryRequire1 = this.Draft.Pubuserdefnvc1;
+      this.orderMessage.deliveryRequire2 = this.Draft.priuserdefnvc3;
       this.$store.commit("saveSelectGoods", this.Draft.SaleOrderDetails);
     },
     changeMoneyType(type) {
@@ -312,8 +312,12 @@ export default {
       if (data.code === 200) {
         this.$toast.success({
           message: "创建订单成功",
-          onClose: () => {
+          onClose: async () => {
             this.$router.push("/indent");
+            let OrderDraft = this.$Parse.Object.extend("OrderDraft");
+            let query = new this.$Parse.Query(OrderDraft);
+            let draft = await query.get(this.Draft.objectId);
+            draft.destroy()
           }
         });
       } else {
@@ -326,21 +330,22 @@ export default {
     // 修改草稿
     async editDraft() {
       if (!this.validate()) return;
-      var OrderDraft = this.$Parse.Object.extend("OrderDraft");
+      let OrderDraft = this.$Parse.Object.extend("OrderDraft");
       let query = new this.$Parse.Query(OrderDraft);
-      // this.Draft.objectId
-      let draft = await query.get("H9UFfB05e5");
-      // draft.set("VoucherDate", this.orderMessage.voucherDate);
-      // draft.set("DeliveryDate", this.orderMessage.deliveryDate);
-      // draft.set("Customer", this.partner);
-      // draft.set("Clerk", this.saleMan);
-      // draft.set("SaleOrderDetails", this.SaleOrderDetails);
-      // draft.set("Currency", this.saleMan);
-      // await draft.save();
-      // OrderDraft.set("VoucherDate", '2020-10-20');
-      // await OrderDraft.save()
-      // console.log('修改草稿',data)
-      this.clearStore();
+      let draft = await query.get(this.Draft.objectId);
+      draft.set("VoucherDate", this.orderMessage.voucherDate);
+      draft.set("DeliveryDate", this.orderMessage.deliveryDate);
+      draft.set("Customer", this.partner);
+      draft.set("Clerk", this.saleMan);
+      draft.set("SaleOrderDetails", this.SaleOrderDetails);
+      draft.set("Currency", this.orderMessage.moneyType);
+      draft.set("ExchangeRate", this.orderMessage.exchangeRate);
+      draft.set("Pubuserdefnvc1", this.orderMessage.deliveryRequire1);
+      draft.set("priuserdefnvc3", this.orderMessage.deliveryRequire2);
+      draft.set("Memo", this.orderMessage.memo);
+      const data = await draft.save();
+      console.log("修改草稿", data);
+      // this.clearStore();
     },
     // 获取币种
     async getCurrency() {

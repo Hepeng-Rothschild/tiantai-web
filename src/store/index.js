@@ -19,7 +19,7 @@ export default new Vuex.Store({
     OrderMessage: null,
     SelectedPartner: null,
     SelectedSaleMan: null,
-    IndentDetails:null,
+    Draft:null,
   },
   mutations: {
     savePay(state, data) {
@@ -43,9 +43,9 @@ export default new Vuex.Store({
     saveTotalPrice(state, data) {
       state.TotalPrice = data
     },
-    saveIndentDetails(state, data) {
-      state.IndentDetails = data
-    }
+    saveDraft(state, data) {
+      state.Draft = data
+    },
   },
   actions: {
     // 获取 token

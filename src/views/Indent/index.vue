@@ -7,11 +7,8 @@
     </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex"
-                         :options="dateStatus"
-                         @change="changeDate"></van-dropdown-item>
-      <van-popup v-model="overlay_show"
-                 position="bottom">
+      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
+      <van-popup v-model="overlayShow" position="bottom">
         <div class="date_title">
           <div class="box1"></div>
         </div>
@@ -32,31 +29,27 @@
                              :item-height="44"
                              :formatter="formatter"
                              @confirm="confirmPicker2"
-                             @cancel="overlay_show = false"></van-datetime-picker>
+                             @cancel="overlayShow = false"></van-datetime-picker>
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
-                         @change="changeState" />
+                         @change="changeState"/>
     </van-dropdown-menu>
     <!-- 筛选列表 -->
-    <van-list v-model="loading"
-              :finished="finished"
-              @load="onLoad">
-      <div v-for="(indent,i) in allIndent"
-           :key="i">
-        <div class="date">{{formatday(allIndent[i][0].madedate)}}</div>
-        <van-cell v-for="(indent,index) in allIndent[i]"
-                  :key="index"
-                  :title="indent.name"
-                  :label="indent.code"
-                  is-link
-                  @click="toDetails(indent)">
-          ￥{{indent.taxAmount}}
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <div v-for="(indent,i) in allIndent" :key="i">
+        <div class="date">{{formatDate(allIndent[i][0].madedate)}}</div>
+        <van-cell
+          v-for="(item,index) in allIndent[i]"
+          :key="index"
+          :title="item.name"
+          :label="item.code"
+          is-link
+          @click="toDetails(item.id)"
+        >
+          ￥{{item.taxAmount}}
           <div>
-            <van-tag type="primary"
-                     v-if="indent.voucherState == 190">草稿</van-tag>
-            <van-tag type="primary"
-                     v-else>{{indent.voucherState == 181 ? '未审':'已审'}}</van-tag>
+            <van-tag type="primary">{{indent.voucherState == 181 ? '未审':'已审'}}</van-tag>
           </div>
         </van-cell>
       </div>
@@ -87,7 +80,7 @@ export default {
       isActive2: false,
       startDate: null, // 自定义开始日期
       endDate: null, // 自定义结束日期
-      overlay_show: false,  //   开关遮罩层
+      overlayShow: false,  //   开关遮罩层
       // 列表加载
       loading: false,
       // 全部加载完成
@@ -117,7 +110,7 @@ export default {
       startTime: null,
       // 结束时间
       endTime: null,
-      // 当前状态
+      // 订单状态
       state: null,
       pageSize: 10,
       pageIndex: 0,
@@ -150,11 +143,11 @@ export default {
       this.endDate = null;
     },
     // 跳转到详情页面
-    toDetails (indent) {
-      this.$store.commit("saveIndentDetails", indent);
+    toDetails(id) {
+      
       if (1) {
         // 如果是订单就去展示页
-        this.$router.push("/details");
+        this.$router.push({path: '/details', query: {id}})
       } else {
         // 是草稿就去编辑页
         this.$router.push("/editindent");
@@ -176,7 +169,7 @@ export default {
         name: this.searchValue,
         state: this.state
       });
-      let allIndent = data
+      let allIndent = data;
       let duration = allIndent.map(item => item.madedate); //存放时间段的数组
       let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
         .sort()
@@ -185,6 +178,7 @@ export default {
         allIndent.filter(indent => indent.madedate == duration)
       );
       this.allIndent.push(...allIndent);
+      console.log(this.allIndent)
       this.loading = false;
       if (data.length) {
         this.pageIndex++;
@@ -264,7 +258,7 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-           this.dateIndex = 5 ? this.overlay_show = true:this.overlay_show
+          this.dateIndex=5 ? this.overlayShow = true:null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -284,8 +278,7 @@ export default {
       }
       return value;
     },
-    // 转换成正常时间戳用的
-    formatday (time) {
+    formatDate (time) {
       let day = dayjs(time).format("YYYY-MM-DD");
       return day
     },
@@ -305,7 +298,7 @@ export default {
         this.startDate != null &&
         this.endDate != null
       ) {
-        this.overlay_show = false;
+        this.overlayShow = false;
         this.startTime = this.startDate;
         this.endTime = this.endDate;
         this.pageIndex = 0;

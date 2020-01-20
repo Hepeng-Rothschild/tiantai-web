@@ -47,11 +47,21 @@
       <div class="spacing">
         <div class="my_cell">
           <span class>发货要求</span>
-          <input type="text" v-model="orderMessage.deliveryRequire1" class="my_input" placeholder="请输入" />
+          <input
+            type="text"
+            v-model="orderMessage.deliveryRequire1"
+            class="my_input"
+            placeholder="请输入"
+          />
         </div>
         <div class="my_cell">
           <span class>送货要求</span>
-          <input type="text" v-model="orderMessage.deliveryRequire2" class="my_input" placeholder="请输入" />
+          <input
+            type="text"
+            v-model="orderMessage.deliveryRequire2"
+            class="my_input"
+            placeholder="请输入"
+          />
         </div>
       </div>
       <div class="remark spacing">
@@ -270,12 +280,15 @@ export default {
         Currency: { Code: this.orderMessage.moneyType.code }, // 币种
         ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
         Memo: this.orderMessage.memo, // 备注
-        DynamicPropertyKeys: ['pubuserdefnvc1','priuserdefnvc3'],
-        DynamicPropertyValues: [this.orderMessage.deliveryRequire1,this.orderMessage.deliveryRequire2],
+        DynamicPropertyKeys: ["pubuserdefnvc1", "priuserdefnvc3"],
+        DynamicPropertyValues: [
+          this.orderMessage.deliveryRequire1,
+          this.orderMessage.deliveryRequire2
+        ],
         SaleOrderDetails: this.SaleOrderDetails
       });
       console.log(data);
-      if (data.code===200) {
+      if (data.code === 200) {
         this.$toast.success({
           message: "创建订单成功",
           onClose: () => {
@@ -284,7 +297,7 @@ export default {
         });
       } else {
         this.$toast.fail({
-          message: "创建订单失败",
+          message: "创建订单失败"
         });
       }
       this.clearStore();
@@ -292,18 +305,30 @@ export default {
     // 存入草稿
     async createDraft() {
       if (!this.validate()) return;
-      // const data = await this.$Parse.Cloud.run("createDraft", {
-      //   VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
-      //   DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
-      //   Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
-      //   Clerk: { Code: this.saleMan.code }, // 业务员
-      //   Currency: { Code: this.orderMessage.moneyType.code }, // 币种
-      //   ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
-      //   Memo: this.orderMessage.memo,
-      //   SaleOrderDetails: this.SaleOrderDetails
-      // });
-      // console.log(data);
-      this.clearStore();
+      console.log();
+      const data = await this.$Parse.Cloud.run("createDraft", {
+        VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
+        DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
+        Customer: this.partner, // AA_Partner_code
+        Clerk: this.saleMan, // 业务员
+        Currency: this.orderMessage, // 币种
+        ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
+        Memo: this.orderMessage.memo,
+        SaleOrderDetails: this.SaleOrderDetails
+      });
+      if (data.code === 200) {
+        this.$toast.success({
+          message: "存入草稿成功",
+          onClose: () => {
+            this.clearStore();
+            this.$router.push("/draft");
+          }
+        });
+      } else {
+        this.$toast.fail({
+          message: "存入草稿失败"
+        });
+      }
     },
     // 获取币种
     async getCurrency() {

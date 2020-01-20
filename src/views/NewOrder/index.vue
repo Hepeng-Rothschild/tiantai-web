@@ -311,7 +311,9 @@ export default {
         DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
         Customer: this.partner, // AA_Partner_code
         Clerk: this.saleMan, // 业务员
-        Currency: this.orderMessage, // 币种
+        Currency: this.orderMessage.moneyType, // 币种
+        Pubuserdefnvc1:this.orderMessage.deliveryRequire1,
+        priuserdefnvc3:this.orderMessage.deliveryRequire2,
         ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
         Memo: this.orderMessage.memo,
         SaleOrderDetails: this.SaleOrderDetails

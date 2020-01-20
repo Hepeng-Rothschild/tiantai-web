@@ -45,8 +45,8 @@ export default {
     },
     async getOrderDraft() {
       const Parse = this.$Parse;
-      var OrderDraft = Parse.Object.extend("OrderDraft");
-      var query = new Parse.Query(OrderDraft);
+      let OrderDraft = Parse.Object.extend("OrderDraft");
+      let query = new Parse.Query(OrderDraft);
       query.limit(this.pageSize);
       query.skip(this.pageSkip);
       const data = await query.find();
@@ -54,18 +54,20 @@ export default {
       console.log(allDraft)
       allDraft.forEach(item => {
         item.totalPrice = 0;
-        item.SaleOrderDetails.forEach(goods => {
-          item.totalPrice += goods.OrigTaxAmount;
-        });
+        // console.log(item)
+        console.log(item.SaleOrderDetails)
+        // item.SaleOrderDetails.forEach(goods => {
+        //   item.totalPrice += goods.OrigTaxAmount;
+        // });
       });
-      let duration = allDraft.map(item => item.VoucherDate); //存放时间段的数组
-      let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
-        .sort()
-        .reverse();
-      allDraft = newDuration.map(duration =>
-        allDraft.filter(draft => draft.VoucherDate == duration)
-      );
-      this.allDraft.push(...allDraft);
+      // let duration = allDraft.map(item => item.VoucherDate); //存放时间段的数组
+      // let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
+      //   .sort()
+      //   .reverse();
+      // allDraft = newDuration.map(duration =>
+      //   allDraft.filter(draft => draft.VoucherDate == duration)
+      // );
+      // this.allDraft.push(...allDraft);
       this.loading = false;
       if (allDraft.length) {
         this.pageSkip += 10;

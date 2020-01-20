@@ -146,9 +146,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(["SaleOrderDetails"])
+    ...mapState(['SaleOrderDetails','Draft'])
   },
   mounted() {
+    console.log(this.Draft)
     if (
       this.$store.state.SelectedPartner &&
       !this.$store.state.SelectedSaleMan

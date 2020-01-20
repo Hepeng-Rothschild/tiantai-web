@@ -1,53 +1,59 @@
 <template>
-  <div class="details">
+  <div v-if="indentDetails" class="details">
     <div class="order border">
-      <div class="left light_color">
-        <div>单据编号</div>
-        <div>客户</div>
-        <div>业务员</div>
-        <div>预计交货</div>
+      <div>
+        <span>单据编号</span>
+        <span>{{indentDetails.code}}</span>
       </div>
-      <div class="dark_color">
-        <div>{{indentDetails.SA_SaleOrder_code}}</div>
-        <div>{{indentDetails.AA_Partner_name}}</div>
-        <div>{{indentDetails.sale_man_name}}</div>
-        <div>{{format(indentDetails.SA_SaleOrder_deliveryDate)}}</div>
+      <div class="flex">
+        <span>客户</span>
+        <span>{{indentDetails.partnerName}}</span>
+      </div>
+      <div>
+        <span>业务员</span>
+        <span>{{indentDetails.saleManName}}</span>
+      </div>
+      <div>
+        <span>预计交货</span>
+        <span>{{format(indentDetails.deliveryDate)}}</span>
       </div>
     </div>
     <!-- <van-cell title="待审核" is-link value="状态记录" title-class="blue" value-class="light_color" /> -->
     <div class="link border">
-      <div class="left light_color">
-        <div>联系人</div>
-        <div>电话</div>
-        <div>送货地址</div>
+      <div>
+        <span>联系人</span>
+        <span>{{indentDetails.linkMan}}</span>
       </div>
-      <div class="dark_color">
-        <div>{{indentDetails.SA_SaleOrder_linkMan}}</div>
-        <div>{{indentDetails.SA_SaleOrder_contactPhone}}</div>
-        <div>{{indentDetails.SA_SaleOrder_address}}</div>
+      <div class="flex">
+        <span>电话</span>
+        <span>{{indentDetails.contactPhone}}</span>
+      </div>
+      <div class="flex">
+        <span>送货地址</span>
+        <span>{{indentDetails.address}}</span>
       </div>
     </div>
-    <div class="goods">
+    <div class="goods" v-for="(item,index) in indentDetails.SaleOrderDetails" :key="index">
       <div class="up border">
         <div class="left">
-          <div class="type dark_color">{{indentDetails.AA_Inventory_code}}</div>
-          <div class>
+          <div class="type dark_color">{{item.AA_Inventory_code}}</div>
+          <div>
             <span class="light_color margin_right">名称</span>
-            <span class="dark_color">{{indentDetails.AA_Inventory_name}}</span>
+            <span class="dark_color">{{item.AA_Inventory_name}}</span>
           </div>
           <div>
             <span class="light_color margin_right">数量</span>
-            <span class="dark_color">{{indentDetails.SA_SaleOrder_b_compositionQuantity}}</span>
+            <span class="dark_color">{{item.quantity}}{{item.unit}}</span>
           </div>
         </div>
         <div class="right">
           <div>
             <span class="light_color margin_right">含税单价</span>
-            <span class="dark_color">￥{{indentDetails.SA_SaleOrder_b_taxPrice}}</span>
+            <span class="dark_color">￥{{item.taxPrice}}</span>
           </div>
           <div>
             <span class="light_color margin_right">含税金额</span>
-            <span class="dark_color">￥{{indentDetails.SA_SaleOrder_taxAmount}}</span>
+            <span class="dark_color">￥{{item.taxAmount}}</span>
           </div>
         </div>
       </div>
@@ -57,29 +63,33 @@
           <div class="light_color">含税金额</div>
         </div>
         <div class="right">
-          <div class="dark_color">￥{{indentDetails.SA_SaleOrder_amount}}</div>
-          <div class="dark_color">￥{{indentDetails.SA_SaleOrder_taxAmount}}</div>
+          <div class="dark_color">￥{{item.discountAmount}}</div>
+          <div class="dark_color">￥{{item.taxAmount}}</div>
         </div>
       </div>
     </div>
     <div class="money">
-      <div class="left">
-        <div class="light_color">币种</div>
-        <div class="light_color">汇率</div>
+      <div class="flex">
+        <span>币种</span>
+        <span>{{indentDetails.currencyName}}</span>
       </div>
-      <div class="right">
-        <div class="dark_color">{{indentDetails.AA_Currency_name}}</div>
-        <div class="dark_color">{{indentDetails.SA_SaleOrder_exchangeRate.toFixed(1)}}</div>
+      <div class="flex">
+        <span>汇率</span>
+        <span>{{indentDetails.exchangeRate.toFixed(1)}}</span>
       </div>
     </div>
     <div class="memo">
-      <div class="left">
-        <div class="light_color">送货要求</div>
-        <div class="light_color">备注</div>
+      <div class="flex">
+        <span>发货要求</span>
+        <span>{{indentDetails.priuserdefnvc3?indentDetails.priuserdefnvc3:'无'}}</span>
       </div>
-      <div class="right">
-        <div class="dark_color">{{indentDetails?'有':'无'}}</div>
-        <div class="dark_color">{{indentDetails?'有':'无'}}</div>
+      <div class="flex">
+        <span>送货要求</span>
+        <span>{{indentDetails.pubuserdefnvc1?indentDetails.pubuserdefnvc1:'无'}}</span>
+      </div>
+      <div class="flex">
+        <span>备注</span>
+        <span>{{indentDetails.memo?indentDetails.memo:'无'}}</span>
       </div>
     </div>
   </div>
@@ -91,13 +101,20 @@ export default {
   name: "detailsIndex",
   data() {
     return {
-      indentDetails: this.$store.state.IndentDetails
+      id: Number(this.$route.query.id),
+      indentDetails: null
     };
   },
   mounted() {
-    console.log(this.indentDetails);
+    this.getOrderById();
   },
   methods: {
+    async getOrderById() {
+      const { data } = await this.$Parse.Cloud.run("getOrderById", {
+        id: this.id
+      });
+      this.indentDetails = data;
+    },
     format(time) {
       const dateTime = new Date(time);
       const year = dateTime.getFullYear();
@@ -120,22 +137,34 @@ export default {
   background-color: rgba(248, 248, 248, 1);
 }
 .order {
-  display: flex;
   padding: 15px;
   line-height: 28px;
   background-color: #fff;
-  .left {
-    width: 95px;
+  span:first-child {
+    display: inline-block;
+    width: 90px;
+    color: rgba(153, 153, 153, 1);
+  }
+  span:last-child {
+    display: inline-block;
+    width: 200px;
+    color: rgba(16, 16, 16, 1);
   }
 }
 .link {
-  display: flex;
   padding: 15px;
   line-height: 28px;
   margin-top: 16px;
   background-color: #fff;
-  .left {
-    width: 95px;
+  span:first-child {
+    display: inline-block;
+    width: 90px;
+    color: rgba(153, 153, 153, 1);
+  }
+  span:last-child {
+    display: inline-block;
+    width: 200px;
+    color: rgba(16, 16, 16, 1);
   }
 }
 .goods {
@@ -167,23 +196,38 @@ export default {
   }
 }
 .money {
-  display: flex;
   padding: 15px 15px 10px 15px;
   line-height: 28px;
   margin-top: 16px;
   background-color: #fff;
-  .left {
-    width: 95px;
+  span:first-child {
+    display: inline-block;
+    width: 90px;
+    color: rgba(153, 153, 153, 1);
+  }
+  span:last-child {
+    display: inline-block;
+    width: 200px;
+    color: rgba(16, 16, 16, 1);
   }
 }
 .memo {
-  display: flex;
   padding: 5px 15px 15px 15px;
   line-height: 28px;
   background-color: #fff;
-  .left {
-    width: 95px;
+  span:first-child {
+    display: inline-block;
+    width: 90px;
+    color: rgba(153, 153, 153, 1);
   }
+  span:last-child {
+    display: inline-block;
+    width: 200px;
+    color: rgba(16, 16, 16, 1);
+  }
+}
+.flex {
+  display: flex;
 }
 .blue {
   color: rgba(1, 113, 240, 1);

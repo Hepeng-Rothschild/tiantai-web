@@ -7,7 +7,7 @@
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
-      <van-popup v-model="overlay_show" position="bottom">
+      <van-popup v-model="overlayShow" position="bottom">
         <div class="date_title">
           <div class="box1"></div>
         </div>
@@ -22,7 +22,7 @@
           </div>
         </div>
         <van-datetime-picker
-          v-model="currentDate2"
+          v-model="currentDate"
           type="date"
           :item-height="44"
           :formatter="formatter"
@@ -31,24 +31,23 @@
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
-                         @change="changeState" />
+                         @change="changeState"/>
     </van-dropdown-menu>
     <!-- 筛选列表 -->
-    <van-list v-model="loading" :finished="finished" @load="onLoad">
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
       <div v-for="(indent,i) in allIndent" :key="i">
-        <div class="date">{{allIndent[i][0].SA_SaleOrder_deliveryDate}}</div>
+        <div class="date">{{formatDate(allIndent[i][0].madedate)}}</div>
         <van-cell
-          v-for="(indent,index) in allIndent[i]"
+          v-for="(item,index) in allIndent[i]"
           :key="index"
-          :title="indent.AA_Partner_name"
-          :label="indent.SA_SaleOrder_code"
+          :title="item.name"
+          :label="item.code"
           is-link
-          @click="toDetails(indent)"
-          :class="draft?'draft':''"
+          @click="toDetails(item.id)"
         >
-          ￥{{indent.SA_SaleOrder_taxAmount}}
+          ￥{{item.taxAmount}}
           <div>
-            <van-tag type="primary">{{indent.SA_SaleOrder_voucherState == 181 ? '未审':'已审'}}</van-tag>
+            <van-tag type="primary">{{indent.voucherState == 181 ? '未审':'已审'}}</van-tag>
           </div>
         </van-cell>
       </div>
@@ -73,19 +72,17 @@ export default {
   },
   data () {
     return {
-      isActive: false,
       isActive1: false,
       isActive2: false,
       startDate: "请选择",
       endDate: "请选择",
-      overlay_show: false,
+      overlayShow: false,
       // 列表加载
       loading: false,
       // 全部加载完成
       finished: false,
       // 日期
       currentDate: new Date(),
-      currentDate2: new Date(),
       searchValue: null,
       // 下拉框信息
       dateIndex: 1,
@@ -109,18 +106,16 @@ export default {
       startTime: null,
       // 结束时间
       endTime: null,
-      // 当前状态
+      // 订单状态
       state: null,
       pageSize: 10,
       pageIndex: 0,
-      name: null
     };
   },
   watch: {
     searchValue: debounce(async function (newVal) {
       this.pageIndex = 0;
       this.allIndent = [];
-      this.name = this.searchValue;
       await this.getData();
     }, 500)
   },
@@ -140,11 +135,11 @@ export default {
       this.endDate = null;
     },
     // 跳转到详情页面
-    toDetails(indent) {
-      this.$store.commit("saveIndentDetails", indent);
+    toDetails(id) {
+      
       if (1) {
         // 如果是订单就去展示页
-        this.$router.push("/details");
+        this.$router.push({path: '/details', query: {id}})
       } else {
         // 是草稿就去编辑页
         this.$router.push("/editindent");
@@ -163,25 +158,26 @@ export default {
         pageIndex: this.pageIndex,
         startTime: this.startTime,
         endTime: this.endTime,
-        name: this.name,
+        name: this.searchValue,
         state: this.state
       });
-      let allIndent = data[0];
-      let duration = allIndent.map(item => item.SA_SaleOrder_deliveryDate); //存放时间段的数组
+      let allIndent = data;
+      let duration = allIndent.map(item => item.madedate); //存放时间段的数组
       let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
         .sort()
         .reverse();
       allIndent = newDuration.map(duration =>
-        allIndent.filter(indent => indent.SA_SaleOrder_deliveryDate == duration)
+        allIndent.filter(indent => indent.madedate == duration)
       );
       this.allIndent.push(...allIndent);
+      console.log(this.allIndent)
       this.loading = false;
-      if (data[0].length) {
+      if (data.length) {
         this.pageIndex++;
         //为了配合搜索框 finished = false 会继续触发 onLoad 事件
         this.finished = false;
       }
-      if (!data[0].length || data[0].length < this.pageSize) {
+      if (!data.length || data.length < this.pageSize) {
         this.finished = true;
       }
     },
@@ -255,7 +251,7 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-          this.overlay_show = true;
+          this.overlayShow = true;
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -274,7 +270,7 @@ export default {
       }
       return value;
     },
-    formatday (time) {
+    formatDate (time) {
       let day = dayjs(time).format("YYYY-MM-DD");
       return day
     },
@@ -293,7 +289,7 @@ export default {
         this.startDate != "请选择" &&
         this.endDate != "请选择"
       ) {
-        this.overlay_show = false;
+        this.overlayShow = false;
         this.startTime = this.startDate;
         this.endTime = this.endDate;
         this.pageIndex = 0;
@@ -359,29 +355,6 @@ export default {
         border-radius: 4px;
         color: #388ded;
         background-color: rgba(230, 247, 255, 1);
-        text-align: center;
-      }
-    }
-    .van-icon {
-      align-self: center;
-    }
-  }
-  // 此处为动态绑定class时，草稿（cell）需要绑定的样式
-  .draft {
-    border-bottom: 1px solid #c0c4cc;
-    .van-cell__title {
-      color: rgba(144, 147, 153, 1);
-      font-size: 17px;
-      text-align: left;
-    }
-    .van-cell__value {
-      color: rgba(144, 147, 153, 1);
-      font-size: 17px;
-      text-align: right;
-      .van-tag {
-        border-radius: 4px;
-        color: #606266;
-        background-color: #c0c4cc;
         text-align: center;
       }
     }

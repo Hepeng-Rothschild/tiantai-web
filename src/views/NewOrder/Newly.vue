@@ -14,7 +14,6 @@
                   is-link
                   @click="showProperty = true">
         </van-cell>
-
         <van-popup v-model="showProperty"
                    position="bottom"
                    :style="{ height: '30%' }">
@@ -33,10 +32,8 @@
           <div v-for="(category,index) in this.partnerClass"
                :key="index"
                @click="changePartnerClass(category)">{{category.Name}}</div>
-
         </van-popup>
       </div>
-
       <div class="spacing-two">
         <van-cell title="分管部门 选填"
                   :value="savePartner.saleDepartmentName?savePartner.saleDepartmentName:'请选择'"
@@ -267,7 +264,6 @@ export default {
         SaleCheckMonth: this.savePartner.saleCheckMonth || null,
         SaleCheckDate: this.savePartner.saleCheckDate || null
       });
-
       this.$store.state.savePartners = null
       this.$store.state.defaultPay = {
         radio: null,
@@ -340,7 +336,6 @@ export default {
       this.savePartner.saleSpaceMonth = sale_Date.saleSpaceMonth
       this.savePartner.saleCheckMonth = sale_Date.saleCheckMonth
       this.savePartner.saleCheckDate = sale_Date.saleCheckDate
-
     }
   }
 }

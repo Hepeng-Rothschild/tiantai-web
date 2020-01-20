@@ -264,8 +264,7 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-          // this.overlay_show = true;
-          this.dateIndex=5 ? this.overlay_show = true:null
+           this.dateIndex = 5 ? this.overlay_show = true:this.overlay_show
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");

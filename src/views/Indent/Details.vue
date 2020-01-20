@@ -69,7 +69,7 @@
       </div>
       <div class="right">
         <div class="dark_color">{{indentDetails.AA_Currency_name}}</div>
-        <div class="dark_color">{{indentDetails.SA_SaleOrder_exchangeRate.toFixed(1)}}</div>
+        <div class="dark_color">{{indentDetails.SA_SaleOrder_exchangeRate}}</div>
       </div>
     </div>
     <div class="memo">

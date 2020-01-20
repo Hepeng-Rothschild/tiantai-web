@@ -27,11 +27,12 @@
                  :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
-        <van-datetime-picker v-model="currentDate2"
+        <van-datetime-picker v-model="currentDate"
                              type="date"
                              :item-height="44"
                              :formatter="formatter"
-                             @confirm="confirmPicker2"></van-datetime-picker>
+                             @confirm="confirmPicker2"
+                             @cancel="overlay_show = false"></van-datetime-picker>
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
@@ -49,8 +50,7 @@
                   :title="indent.name"
                   :label="indent.code"
                   is-link
-                  @click="toDetails(indent)"
-                  :class="[isActive?'draft':'']">
+                  @click="toDetails(indent)">
           ￥{{indent.taxAmount}}
           <div>
             <van-tag type="primary"
@@ -81,14 +81,12 @@ export default {
   },
   data () {
     return {
-      // 动态绑定草稿的样式
-      isActive: false,
       // 动态绑定自定义开始日期得样式
       isActive1: false,
       // 动态绑定自定义结束日期的样式
       isActive2: false,
-      startDate: '请选择', // 自定义开始日期
-      endDate: '请选择', // 自定义结束日期
+      startDate: null, // 自定义开始日期
+      endDate: null, // 自定义结束日期
       overlay_show: false,  //   开关遮罩层
       // 列表加载
       loading: false,
@@ -96,7 +94,6 @@ export default {
       finished: false,
       // 日期
       currentDate: new Date(),
-      currentDate2: new Date(),
       searchValue: null,
       // 下拉框信息
       dateIndex: 1,
@@ -124,20 +121,20 @@ export default {
       state: null,
       pageSize: 10,
       pageIndex: 0,
-      name: null
     };
   },
   watch: {
     searchValue: debounce(async function (newVal) {
       this.pageIndex = 0;
       this.allIndent = [];
-      this.name = this.searchValue;
       await this.getData();
     }, 500)
   },
+  created () {
+    this.initDate();
+  },
   methods: {
     async onLoad () {
-      this.initDate();
       await this.getData();
     },
     // 开关自定义开始时间
@@ -176,7 +173,7 @@ export default {
         pageIndex: this.pageIndex,
         startTime: this.startTime,
         endTime: this.endTime,
-        name: this.name,
+        name: this.searchValue,
         state: this.state
       });
       let allIndent = data
@@ -189,12 +186,12 @@ export default {
       );
       this.allIndent.push(...allIndent);
       this.loading = false;
-      if (data[0].length) {
+      if (data.length) {
         this.pageIndex++;
         //为了配合搜索框 finished = false 会继续触发 onLoad 事件
         this.finished = false;
       }
-      if (!data[0].length || data[0].length < this.pageSize) {
+      if (!data.length || data.length < this.pageSize) {
         this.finished = true;
       }
     },
@@ -267,7 +264,8 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-          this.overlay_show = true;
+          // this.overlay_show = true;
+          this.dateIndex=5 ? this.overlay_show = true:null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -305,8 +303,8 @@ export default {
       if (
         this.startDate &&
         this.endDate &&
-        this.startDate != "请选择" &&
-        this.endDate != "请选择"
+        this.startDate != null &&
+        this.endDate != null
       ) {
         this.overlay_show = false;
         this.startTime = this.startDate;
@@ -381,29 +379,6 @@ export default {
       align-self: center;
     }
   }
-  // 此处为动态绑定class时，草稿（cell）需要绑定的样式
-  .draft {
-    border-bottom: 1px solid #c0c4cc;
-    .van-cell__title {
-      color: rgba(144, 147, 153, 1);
-      font-size: 17px;
-      text-align: left;
-    }
-    .van-cell__value {
-      color: rgba(144, 147, 153, 1);
-      font-size: 17px;
-      text-align: right;
-      .van-tag {
-        border-radius: 4px;
-        color: #606266;
-        background-color: #c0c4cc;
-        text-align: center;
-      }
-    }
-    .van-icon {
-      align-self: center;
-    }
-  }
 }
 
 // 自定义日期的遮罩层弹出，，，日期格式的样式
@@ -428,6 +403,7 @@ export default {
         color: #606266;
       }
       .date_change {
+        height: 25px;
         text-align: center;
         font-size: 17px;
         color: #000000;

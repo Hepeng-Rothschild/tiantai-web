@@ -2,7 +2,8 @@
   <van-list>
     <!-- 搜索栏 -->
     <div class="my_search">
-      <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+      <my-search v-model="searchValue"
+                 placeholder="输入客户名称进行查找"></my-search>
     </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
@@ -14,20 +15,21 @@
         <div class="dete_middle">
           <div @click="isActiveTrue">
             <div class="span">开始日期</div>
-            <div class="date_change" :class="isActive1?'border':''">{{this.startDate}}</div>
+            <div class="date_change"
+                 :class="isActive1?'border':''">{{this.startDate}}</div>
           </div>
           <div @click="isActiveFalse">
             <div class="span">结束日期</div>
-            <div class="date_change" :class="isActive2?'border':''">{{this.endDate}}</div>
+            <div class="date_change"
+                 :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
-        <van-datetime-picker
-          v-model="currentDate"
-          type="date"
-          :item-height="44"
-          :formatter="formatter"
-          @confirm="confirmPicker2"
-        ></van-datetime-picker>
+        <van-datetime-picker v-model="currentDate"
+                             type="date"
+                             :item-height="44"
+                             :formatter="formatter"
+                             @confirm="confirmPicker2"
+                             @cancel="overlayShow = false"></van-datetime-picker>
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
@@ -72,11 +74,13 @@ export default {
   },
   data () {
     return {
+      // 动态绑定自定义开始日期得样式
       isActive1: false,
+      // 动态绑定自定义结束日期的样式
       isActive2: false,
-      startDate: "请选择",
-      endDate: "请选择",
-      overlayShow: false,
+      startDate: null, // 自定义开始日期
+      endDate: null, // 自定义结束日期
+      overlayShow: false,  //   开关遮罩层
       // 列表加载
       loading: false,
       // 全部加载完成
@@ -119,17 +123,21 @@ export default {
       await this.getData();
     }, 500)
   },
+  created () {
+    this.initDate();
+  },
   methods: {
-    onLoad() {
-      this.initDate();
-      this.getData();
+    async onLoad () {
+      await this.getData();
     },
-    isActiveTrue() {
+    // 开关自定义开始时间
+    isActiveTrue () {
       this.isActive1 = true;
       this.isActive2 = false;
       this.startDate = null;
     },
-    isActiveFalse() {
+    // 开关自定义结束时间
+    isActiveFalse () {
       this.isActive2 = true;
       this.isActive1 = false;
       this.endDate = null;
@@ -211,7 +219,6 @@ export default {
     },
     // 改变时间进行筛选
     async changeDate (orderDate) {
-      // 近7天
       let startTimeTmp = new Date();
       let endTimeTmp = new Date();
       switch (orderDate) {
@@ -251,7 +258,7 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-          this.overlayShow = true;
+          this.dateIndex=5 ? this.overlayShow = true:null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -260,7 +267,8 @@ export default {
       this.allIndent = [];
       await this.getData();
     },
-    formatter(type, value) {
+    // 自定义时间的年月日文字
+    formatter (type, value) {
       if (type === "year") {
         return `${value}年`;
       } else if (type === "month") {
@@ -274,6 +282,7 @@ export default {
       let day = dayjs(time).format("YYYY-MM-DD");
       return day
     },
+    // 自定义时间的确定转换
     async confirmPicker2 (value) {
       if (!this.startDate) {
         this.startDate = dayjs(value).format("YYYY/MM/DD");
@@ -286,8 +295,8 @@ export default {
       if (
         this.startDate &&
         this.endDate &&
-        this.startDate != "请选择" &&
-        this.endDate != "请选择"
+        this.startDate != null &&
+        this.endDate != null
       ) {
         this.overlayShow = false;
         this.startTime = this.startDate;
@@ -313,7 +322,7 @@ export default {
 <style lang="less" scoped>
 .my_search {
   padding: 13px 10px 10px 10px;
-  background-color: rgba(248,248,248,1);
+  background-color: rgba(248, 248, 248, 1);
 }
 .customize {
   display: flex;
@@ -333,7 +342,7 @@ export default {
     font-size: 13px;
     padding-left: 14px;
     color: rgba(144, 147, 153, 1);
-    background-color: rgba(248,248,248,1);
+    background-color: rgba(248, 248, 248, 1);
   }
   // 设置常规状态下单元格内容样式
   .van-cell--clickable:nth-of-type(1) {
@@ -386,6 +395,7 @@ export default {
         color: #606266;
       }
       .date_change {
+        height: 25px;
         text-align: center;
         font-size: 17px;
         color: #000000;

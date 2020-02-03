@@ -47,11 +47,21 @@
       <div class="spacing">
         <div class="my_cell">
           <span class>发货要求</span>
-          <input type="text" v-model="orderMessage.deliveryRequire1" class="my_input" placeholder="请输入" />
+          <input
+            type="text"
+            v-model="orderMessage.deliveryRequire1"
+            class="my_input"
+            placeholder="请输入"
+          />
         </div>
         <div class="my_cell">
           <span class>送货要求</span>
-          <input type="text" v-model="orderMessage.deliveryRequire2" class="my_input" placeholder="请输入" />
+          <input
+            type="text"
+            v-model="orderMessage.deliveryRequire2"
+            class="my_input"
+            placeholder="请输入"
+          />
         </div>
       </div>
       <div class="remark spacing">
@@ -60,7 +70,7 @@
       </div>
     </van-cell-group>
     <div class="buttonBox">
-      <van-button plain type="primary" @click="createDraft()">存入草稿</van-button>
+      <van-button plain type="primary" @click="editDraft()">修改草稿</van-button>
       <van-button type="info" @click="createOrder()">提交订单</van-button>
     </div>
     <!-- 日期弹窗 -->
@@ -121,8 +131,8 @@ export default {
       showPop: false,
       popData: {},
 
-      partner: this.$store.state.SelectedPartner,
-      saleMan: this.$store.state.SelectedSaleMan,
+      partner: this.SelectedPartner,
+      saleMan: this.SelectedSaleMan,
       orderMessage: this.$store.state.OrderMessage || {
         voucherDate: "请选择", // 单据日期
         deliveryDate: "请选择", // 交货日期
@@ -146,10 +156,17 @@ export default {
     }
   },
   computed: {
-    ...mapState(['SaleOrderDetails','Draft'])
+    ...mapState([
+      "SaleOrderDetails",
+      "Draft",
+      "SelectedPartner",
+      "SelectedSaleMan"
+    ])
   },
   mounted() {
-    console.log(this.Draft)
+    if (this.Draft) {
+      this.getDraft();
+    }
     if (
       this.$store.state.SelectedPartner &&
       !this.$store.state.SelectedSaleMan
@@ -159,6 +176,19 @@ export default {
     this.getCurrency();
   },
   methods: {
+    getDraft() {
+      console.log("==================", this.Draft);
+      this.partner = this.SelectedPartner || this.Draft.Customer;
+      this.saleMan = this.SelectedSaleMan || this.Draft.Clerk;
+      this.orderMessage.voucherDate = this.Draft.VoucherDate;
+      this.orderMessage.deliveryDate = this.Draft.DeliveryDate;
+      this.orderMessage.moneyType = this.Draft.Currency;
+      this.orderMessage.exchangeRate = this.Draft.ExchangeRate;
+      this.orderMessage.memo = this.Draft.Memo;
+      this.orderMessage.deliveryRequire1 = this.Draft.Pubuserdefnvc1;
+      this.orderMessage.deliveryRequire2 = this.Draft.priuserdefnvc3;
+      this.$store.commit("saveSelectGoods", this.Draft.SaleOrderDetails);
+    },
     changeMoneyType(type) {
       this.orderMessage.moneyType = type;
       this.popupShowCoin = false;
@@ -271,40 +301,51 @@ export default {
         Currency: { Code: this.orderMessage.moneyType.code }, // 币种
         ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
         Memo: this.orderMessage.memo, // 备注
-        DynamicPropertyKeys: ['pubuserdefnvc1','priuserdefnvc3'],
-        DynamicPropertyValues: [this.orderMessage.deliveryRequire1,this.orderMessage.deliveryRequire2],
+        DynamicPropertyKeys: ["pubuserdefnvc1", "priuserdefnvc3"],
+        DynamicPropertyValues: [
+          this.orderMessage.deliveryRequire1,
+          this.orderMessage.deliveryRequire2
+        ],
         SaleOrderDetails: this.SaleOrderDetails
       });
       console.log(data);
-      if (data.code===200) {
+      if (data.code === 200) {
         this.$toast.success({
           message: "创建订单成功",
-          onClose: () => {
-            this.$router.push("/orderList");
+          onClose: async () => {
+            this.$router.push("/indent");
+            let OrderDraft = this.$Parse.Object.extend("OrderDraft");
+            let query = new this.$Parse.Query(OrderDraft);
+            let draft = await query.get(this.Draft.objectId);
+            draft.destroy()
           }
         });
       } else {
         this.$toast.fail({
-          message: "创建订单失败",
+          message: "创建订单失败"
         });
       }
       this.clearStore();
     },
-    // 存入草稿
-    async createDraft() {
+    // 修改草稿
+    async editDraft() {
       if (!this.validate()) return;
-      // const data = await this.$Parse.Cloud.run("createDraft", {
-      //   VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
-      //   DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
-      //   Customer: { Code: this.partner.AA_Partner_code }, // AA_Partner_code
-      //   Clerk: { Code: this.saleMan.code }, // 业务员
-      //   Currency: { Code: this.orderMessage.moneyType.code }, // 币种
-      //   ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
-      //   Memo: this.orderMessage.memo,
-      //   SaleOrderDetails: this.SaleOrderDetails
-      // });
-      // console.log(data);
-      this.clearStore();
+      let OrderDraft = this.$Parse.Object.extend("OrderDraft");
+      let query = new this.$Parse.Query(OrderDraft);
+      let draft = await query.get(this.Draft.objectId);
+      draft.set("VoucherDate", this.orderMessage.voucherDate);
+      draft.set("DeliveryDate", this.orderMessage.deliveryDate);
+      draft.set("Customer", this.partner);
+      draft.set("Clerk", this.saleMan);
+      draft.set("SaleOrderDetails", this.SaleOrderDetails);
+      draft.set("Currency", this.orderMessage.moneyType);
+      draft.set("ExchangeRate", this.orderMessage.exchangeRate);
+      draft.set("Pubuserdefnvc1", this.orderMessage.deliveryRequire1);
+      draft.set("priuserdefnvc3", this.orderMessage.deliveryRequire2);
+      draft.set("Memo", this.orderMessage.memo);
+      const data = await draft.save();
+      console.log("修改草稿", data);
+      // this.clearStore();
     },
     // 获取币种
     async getCurrency() {

@@ -3,7 +3,7 @@
     <!-- 搜索栏 -->
     <div class="my_search">
       <my-search v-model="searchValue"
-                 placeholder="输入客户名称进行查找"></my-search>
+                 placeholder="输入客户名称"></my-search>
     </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>

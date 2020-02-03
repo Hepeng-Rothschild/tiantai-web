@@ -1,5 +1,9 @@
 <template>
   <div class="draft">
+    <!-- 搜索栏 -->
+    <div class="my_search">
+      <my-search v-model="searchValue" placeholder="请输入客户名称"></my-search>
+    </div>
     <van-list
       v-model="loading"
       :finished="finished"
@@ -12,7 +16,7 @@
         <van-cell
           v-for="(item,index) in draft"
           :key="index"
-          :title="item.Customer.AA_Person_name?item.Customer.AA_Person_name:'未填写'"
+          :title="item.Customer.AA_Partner_name?item.Customer.AA_Partner_name:'未填写'"
           :label="item.code"
           is-link
           @click="toEdit(item)"
@@ -28,9 +32,12 @@
 </template>
 
 <script>
+import MySearch from "../../components/Search.vue";
+import { debounce } from "loadsh";
 export default {
   data() {
     return {
+      searchValue: null,
       loading: false,
       finished: false,
       pageSize: 10,
@@ -38,22 +45,35 @@ export default {
       allDraft: []
     };
   },
-  mounted() {},
+  components: {
+    MySearch: MySearch
+  },
+  watch: {
+    searchValue: debounce(async function(newVal) {
+      this.pageSkip = 0;
+      this.allDraft = [];
+      // await this.getOrderDraft();
+    }, 500)
+  },
   methods: {
     onLoad() {
       this.getOrderDraft();
     },
     async getOrderDraft() {
       const Parse = this.$Parse;
-      var OrderDraft = Parse.Object.extend("OrderDraft");
-      var query = new Parse.Query(OrderDraft);
+      let OrderDraft = Parse.Object.extend("OrderDraft");
+      let query = new Parse.Query(OrderDraft);
       query.limit(this.pageSize);
       query.skip(this.pageSkip);
+      // Customer.AA_Partner_name
+      // query.containedIn("Customer",[this.searchValue]);
       const data = await query.find();
       let allDraft = JSON.parse(JSON.stringify(data));
-      console.log(allDraft)
+      console.log(allDraft);
       allDraft.forEach(item => {
         item.totalPrice = 0;
+        // console.log(item)
+        console.log(item.SaleOrderDetails);
         item.SaleOrderDetails.forEach(goods => {
           item.totalPrice += goods.OrigTaxAmount;
         });
@@ -77,9 +97,8 @@ export default {
       }
     },
     toEdit(item) {
-      
       this.$store.commit("saveDraft", item);
-      this.$router.push('/editdraft')
+      this.$router.push("/editdraft");
     }
   }
 };
@@ -89,6 +108,13 @@ export default {
 .draft {
   height: 100%;
   background-color: rgba(248, 248, 248, 1);
+  .my_search {
+    padding: 13px 10px 10px 10px;
+    background-color: rgba(248, 248, 248, 1);
+  }
+  .van-list {
+    border-top: 1px solid #c0c4cc;
+  }
   .date {
     height: 30px;
     line-height: 30px;

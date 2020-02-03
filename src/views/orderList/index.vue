@@ -138,6 +138,7 @@ export default {
     }, 500)
   },
   created () {
+    console.log('==========init')
     this.initDate();
   },
   methods: {

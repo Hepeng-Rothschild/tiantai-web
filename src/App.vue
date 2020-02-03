@@ -13,6 +13,7 @@ export default {
   mounted() {
     this.$Parse.Cloud.run('checkUser').then(result =>{
         if(result.code == 404){
+          alert(process.env.VUE_APP_LOGIN_URL)
           window.location.href = process.env.VUE_APP_LOGIN_URL
         }
     })

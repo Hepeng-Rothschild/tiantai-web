@@ -1,6 +1,6 @@
 <template>
   <div>
-    <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+    <my-search v-model="searchValue" placeholder="请输入业务员名称"></my-search>
 
     <van-list
       v-model="loading"
@@ -14,8 +14,10 @@
       </van-cell-group>
     </van-list>
 
-    <!-- 新增客户按钮 -->
-    <van-button round type="default" class="add" @click="$router.push('/partnerCreate')">+</van-button>
+    <!-- 新增按钮 -->
+    <!-- <div @click="$router.push('/newly')" class="my_button">
+      <span>+</span>
+    </div> -->
   </div>
 </template>
 
@@ -78,6 +80,7 @@ export default {
 <style lang="less" scoped>
 .search {
   padding: 10px;
+  background-color: rgba(248, 248, 248, 1);
   border-bottom: 1px solid #c0c4cc;
 }
 .van-cell {

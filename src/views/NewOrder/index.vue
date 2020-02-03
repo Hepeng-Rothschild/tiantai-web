@@ -295,7 +295,6 @@ export default {
         ],
         SaleOrderDetails: this.SaleOrderDetails
       });
-      console.log(data);
       if (data.code === 200) {
         this.$toast.success({
           message: "创建订单成功",
@@ -313,7 +312,6 @@ export default {
     // 存入草稿
     async createDraft () {
       if (!this.validate()) return;
-      console.log();
       const data = await this.$Parse.Cloud.run("createDraft", {
         VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
         DeliveryDate: this.orderMessage.deliveryDate, // 预计交货日期
@@ -324,7 +322,8 @@ export default {
         priuserdefnvc3: this.orderMessage.deliveryRequire2,
         ExchangeRate: this.orderMessage.exchangeRate, // 汇率，decimal类型
         Memo: this.orderMessage.memo,
-        SaleOrderDetails: this.SaleOrderDetails
+        SaleOrderDetails: this.SaleOrderDetails,
+        Name:this.partner.AA_Partner_name // 此字段用于草稿页的模糊搜索
       });
       if (data.code === 200) {
         this.$toast.success({

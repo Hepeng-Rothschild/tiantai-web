@@ -11,6 +11,7 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
+
     this.$Parse.Cloud.run("checkUser")
       .then(result => {
         if (result.code == 404) {
@@ -21,9 +22,12 @@ export default {
         window.location.href = process.env.VUE_APP_LOGIN_URL;
       });
 
-    // if(!this.$Parse.User.current()){
-    //   window.location.href = process.env.loginURl
-    // }
+    if(!this.$Parse.User.current()){
+      window.location.href = process.env.loginURl
+    }
+    // 以上代码提交代码的时候打开
+
+
     // this.$store.dispatch("logout");
     // this.$store.dispatch("login");
   },

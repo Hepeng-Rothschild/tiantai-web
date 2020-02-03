@@ -68,8 +68,10 @@
                position="bottom"
                :style="{ height: '27%' }"
                class="selectEnter">
-      <div @click="$router.push('/draft')">继续编辑草稿</div>
-      <div @click="$router.push('/neworder')">新增销售订单</div>
+      <div @click="$router.push('/draft')"
+           class="select-draft">继续编辑草稿</div>
+      <div @click="$router.push('/neworder')"
+           class="select-order">新增销售订单</div>
       <div class="select-space"></div>
       <div @click="selectEnter = false"
            class="select-cancel">取消</div>
@@ -445,16 +447,18 @@ export default {
 }
 .selectEnter {
   .select-space {
-    height: 1px;
+    height: 2px;
     background-color: #c0c4cc;
   }
-  div {
+  .select-draft {
+    border-bottom: 1px solid #c0c4cc;
+  }
+  .select-order,.select-draft{
     height: 50px;
     line-height: 50px;
     text-align: center;
     font-size: 17px;
     color: rgba(16, 16, 16, 1);
-    border-top: 1px solid #c0c4cc;
   }
   .select-cancel {
     height: 50px;

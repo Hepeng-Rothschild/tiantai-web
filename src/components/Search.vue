@@ -42,7 +42,7 @@ export default {
     font-size: 14px;
     color: rgba(136, 136, 136, 1);
     text-align: center;
-    // 去除input顶部的阴影
+    // 去除input顶部栏的阴影
     -webkit-appearance: none;
   }
   // --清除谷歌浏览器下的 search 叉号

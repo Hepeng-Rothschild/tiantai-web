@@ -15,7 +15,7 @@
     </van-list>
 
     <!-- 新增按钮 -->
-    <div @click="$router.push('/newly')" class="my_button">
+    <div @click="$router.push('/partnercreate')" class="my_button">
       <span>+</span>
     </div>
   </div>

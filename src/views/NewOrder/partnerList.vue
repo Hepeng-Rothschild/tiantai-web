@@ -118,7 +118,7 @@ export default {
   justify-content: center;
   position: fixed;
   bottom: 50px;
-  right: 30px;
+  right: 20px;
   width: 57px;
   height: 57px;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
@@ -128,7 +128,7 @@ export default {
     color: rgba(1, 113, 240, 1);
     font-size: 42px;
     height: 57px;
-    line-height: 52px;
+    line-height: 57px;
   }
 }
 </style>

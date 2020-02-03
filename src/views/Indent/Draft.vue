@@ -37,7 +37,7 @@ import { debounce } from "loadsh";
 export default {
   data() {
     return {
-      searchValue: null,
+      searchValue: '',
       loading: false,
       finished: false,
       pageSize: 10,
@@ -52,7 +52,7 @@ export default {
     searchValue: debounce(async function(newVal) {
       this.pageSkip = 0;
       this.allDraft = [];
-      // await this.getOrderDraft();
+      this.getOrderDraft();
     }, 500)
   },
   methods: {
@@ -65,15 +65,12 @@ export default {
       let query = new Parse.Query(OrderDraft);
       query.limit(this.pageSize);
       query.skip(this.pageSkip);
-      // Customer.AA_Partner_name
-      // query.containedIn("Customer",[this.searchValue]);
+      query.contains('Name', this.searchValue)
       const data = await query.find();
       let allDraft = JSON.parse(JSON.stringify(data));
-      console.log(allDraft);
+      // console.log(allDraft);
       allDraft.forEach(item => {
         item.totalPrice = 0;
-        // console.log(item)
-        console.log(item.SaleOrderDetails);
         item.SaleOrderDetails.forEach(goods => {
           item.totalPrice += goods.OrigTaxAmount;
         });
@@ -91,13 +88,15 @@ export default {
         this.pageSkip += 10;
         //为了配合搜索框 finished = false 会继续触发 onLoad 事件
         this.finished = false;
+        console.log(this.pageSkip, this.pageSize);
       }
-      if (!allDraft.length || allDraft.length < this.pageSize) {
+      if (!allDraft.length) {
         this.finished = true;
       }
     },
     toEdit(item) {
       this.$store.commit("saveDraft", item);
+      this.$store.commit("saveTotalPrice", item.totalPrice);
       this.$router.push("/editdraft");
     }
   }
@@ -110,7 +109,7 @@ export default {
   background-color: rgba(248, 248, 248, 1);
   .my_search {
     padding: 13px 10px 10px 10px;
-    background-color: rgba(248, 248, 248, 1);
+    background-color: #fff;
   }
   .van-list {
     border-top: 1px solid #c0c4cc;

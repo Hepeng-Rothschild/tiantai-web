@@ -71,8 +71,8 @@ const routes = [
     component: () => import( '@/views/Indent/Aide.vue')
   },
   {
-    path: '/NewOrder',
-    name: 'NewOrder',
+    path: '/neworder',
+    name: 'neworder',
     meta: { title: '新增销售订单' },
     component: () => import( '@/views/NewOrder')
   },

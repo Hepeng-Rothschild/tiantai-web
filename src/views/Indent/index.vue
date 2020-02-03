@@ -434,6 +434,7 @@ export default {
   span {
     color: rgba(1, 113, 240, 1);
     font-size: 42px;
+    line-height: 52px;
   }
 }
 </style>

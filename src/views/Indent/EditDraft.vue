@@ -343,9 +343,22 @@ export default {
       draft.set("Pubuserdefnvc1", this.orderMessage.deliveryRequire1);
       draft.set("priuserdefnvc3", this.orderMessage.deliveryRequire2);
       draft.set("Memo", this.orderMessage.memo);
+      draft.set("Name", this.partner.AA_Partner_name);
       const data = await draft.save();
-      console.log("修改草稿", data);
-      // this.clearStore();
+      console.log("修改草稿", data.attributes);
+      if (data.attributes) {
+        this.$toast.success({
+          message: "修改草稿成功",
+          onClose: () => {
+            this.clearStore();
+            this.$router.push("/draft");
+          }
+        });
+      } else {
+        this.$toast.fail({
+          message: "修改草稿失败"
+        });
+      }
     },
     // 获取币种
     async getCurrency() {

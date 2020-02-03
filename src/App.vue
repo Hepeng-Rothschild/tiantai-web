@@ -14,8 +14,8 @@ export default {
     // if(!this.$Parse.User.current()){
     //   window.location.href = process.env.loginURl
     // }
-    // this.$store.dispatch("logout");
-    // this.$store.dispatch("login");
+    this.$store.dispatch("logout");
+    this.$store.dispatch("login");
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据

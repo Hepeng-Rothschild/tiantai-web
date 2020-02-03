@@ -8,14 +8,14 @@
         title="客户*"
         is-link
         class="spacing"
-        to="/selectpartner"
+        to="/partnerList"
       >{{ partner?partner.AA_Partner_Contact:'请选择客户' }}</van-cell>
       <!-- 选择业务员 -->
       <van-cell
         title="业务员"
         is-link
         class="spacing"
-        to="/selectsaleman"
+        to="/salemanList"
       >{{saleMan?saleMan.name:'请选择'}}</van-cell>
       <!-- 选择商品 -->
       <van-cell title="选择商品" value="请选择" is-link class="spacing" to="/choose"></van-cell>
@@ -291,7 +291,7 @@ export default {
         this.$toast.success({
           message: "创建订单成功",
           onClose: () => {
-            this.$router.push("/indent");
+            this.$router.push("/orderList");
           }
         });
       } else {

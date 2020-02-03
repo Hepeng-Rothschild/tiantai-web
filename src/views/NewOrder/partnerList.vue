@@ -21,7 +21,7 @@
       </van-cell-group>
     </van-list>
     <!-- 新增客户按钮 -->
-    <div @click="$router.push('/newly')" class="my_button">
+    <div @click="$router.push('/partnerCreate')" class="my_button">
       <span>+</span>
     </div>
   </div>

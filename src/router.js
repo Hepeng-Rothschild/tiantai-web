@@ -17,58 +17,58 @@ const routes = [
     component: () => import( '@/views/NewOrder/DefaultPay.vue')
   },
   {
-    path: '/newly',
-    name: 'newly',
+    path: '/partnerCreate',
+    name: 'partnerCreate',
     meta: { title: '新增客户' },
-    component: () => import( '@/views/NewOrder/Newly.vue')
+    component: () => import( '@/views/NewOrder/partnerCreate.vue')
   },
   {
-    path: '/selectpartner',
-    name: 'selectpartner',
+    path: '/partnerList',
+    name: 'partnerList',
     meta: { title: '选择客户' },
-    component: () => import('@/views/NewOrder/SelectPartner.vue')
+    component: () => import('@/views/NewOrder/partnerList.vue')
   },
   {
-    path: '/selectsaleman',
-    name: 'selectsaleman',
+    path: '/salemanList',
+    name: 'salemanList',
     meta: { title: '选择业务员' },
-    component: () => import('@/views/NewOrder/SelectSaleman.vue')
+    component: () => import('@/views/NewOrder/salemanList.vue')
   },
   {
-    path: '/indent',
-    name: 'indent',
+    path: '/orderList',
+    name: 'orderList',
     meta: { title: '销售订单' },
-    component: () => import( '@/views/Indent')
+    component: () => import( '@/views/orderList')
   },
   {
     path: '/editdraft',
     name: 'editdraft',
     meta: { title: '编辑草稿' },
-    component: () => import( '@/views/Indent/EditDraft.vue')
+    component: () => import( '@/views/orderList/EditDraft.vue')
   },
   {
     path: '/draft',
     name: 'draft',
     meta: { title: '草稿' },
-    component: () => import( '@/views/Indent/Draft.vue')
+    component: () => import( '@/views/orderList/Draft.vue')
   },
   {
     path: '/details',
     name: 'details',
     meta: { title: '订单详情' },
-    component: () => import( '@/views/Indent/Details.vue')
+    component: () => import( '@/views/orderList/Details.vue')
   },
   {
     path: '/records',
     name: 'records',
     meta: { title: '订单详情' },
-    component: () => import( '@/views/Indent/Records.vue')
+    component: () => import( '@/views/orderList/Records.vue')
   },
   {
     path: '/aide',
     name: 'aide',
     meta: { title: '销售小助手' },
-    component: () => import( '@/views/Indent/Aide.vue')
+    component: () => import( '@/views/orderList/Aide.vue')
   },
   {
     path: '/NewOrder',

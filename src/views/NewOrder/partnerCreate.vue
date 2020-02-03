@@ -273,7 +273,7 @@ export default {
         saleCheckMonth: null,
         saleCheckDate: null
       }
-      console.log(data);
+      // console.log(data);
     },
     // 判断页面中的内容进行提示
     inputMessage () {
@@ -308,7 +308,7 @@ export default {
         return
       } else {
         this.createPartner()
-        this.$router.push({ name: 'selectpartner' })
+        this.$router.push({ name: 'partnerList' })
         this.$toast.success('新增客户成功')
       }
     },

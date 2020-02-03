@@ -1,37 +1,27 @@
 <template>
   <div>
     <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+
     <van-list
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
-      :offset="200"
+      :offset="100"
       @load="onLoad"
     >
-      <van-cell-group
-        v-for="(partner,index) in partner"
-        :key="index"
-        @click="selectPartner(partner)"
-      >
-        <van-cell
-          :title="partner.AA_Partner_Contact"
-          :label="Number(partner.AA_Partner_Pay_AdvPBalance).toFixed(2)"
-          is-link
-        />
+      <van-cell-group v-for="item in saleMan" :key="item.id" @click="selectSaleMan(item)">
+        <van-cell :title="item.name" is-link />
       </van-cell-group>
     </van-list>
+
     <!-- 新增客户按钮 -->
-    <div @click="$router.push('/newly')" class="my_button">
-      <span>+</span>
-    </div>
+    <van-button round type="default" class="add" @click="$router.push('/partnerCreate')">+</van-button>
   </div>
 </template>
 
 <script>
 import MySearch from "../../components/Search.vue";
-import { setItem, getItem } from "../../utils/Storage.js";
-import { mapState } from "vuex";
-import { debounce } from "loadsh";
+import { debounce } from 'loadsh'
 
 export default {
   components: {
@@ -40,7 +30,7 @@ export default {
   data() {
     return {
       searchValue: null,
-      partner: [],
+      saleMan: [],
       loading: false,
       finished: false,
       pageIndex: 0,
@@ -48,24 +38,25 @@ export default {
     };
   },
   watch: {
-    searchValue: debounce(async function(newValue, oldValue) {
+     searchValue: debounce(async function(newValue, oldValue) {
       this.pageIndex = 0;
-      this.partner = [];
-      this.getPartner();
-    }, 500)
+      this.saleMan = [];
+      this.getSaleMan();
+    },500)
   },
   methods: {
     onLoad() {
-      this.getPartner();
+      this.getSaleMan();
     },
-    // 获取客户
-    async getPartner() {
-      const { data } = await this.$Parse.Cloud.run("getPartner", {
+    // getSaleMan 获取业务员
+    async getSaleMan() {
+      
+      const { data } = await this.$Parse.Cloud.run("getSaleMan", {
         name: this.searchValue,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
       });
-      this.partner.push(...data[0]);
+      this.saleMan.push(...data[0]);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++;
@@ -75,13 +66,10 @@ export default {
       if (!data[0].length ||data[0].length<this.pageSize) {
         this.finished = true;
       }
-     
     },
-    selectPartner(partner) {
+    selectSaleMan(saleMan) {
       this.$router.back();
-      this.$store.commit("saveSelectedPartner", partner);
-      // 清除上一次选择的销售员数据
-      this.$store.commit("saveSelectedSaleMan", null);
+      this.$store.commit("saveSelectedSaleMan", saleMan);
     }
   }
 };
@@ -101,7 +89,7 @@ export default {
 .add {
   position: fixed;
   width: 57px;
-  height: 57px;
+  height: 50px;
   right: 26px;
   bottom: 45px;
   padding: 0;
@@ -110,24 +98,6 @@ export default {
   .van-button__text {
     font-size: 40px;
     color: rgba(1, 113, 240, 1);
-  }
-}
-.my_button {
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  bottom: 50px;
-  right: 30px;
-  width: 57px;
-  height: 57px;
-  box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, .7);
-  span {
-    color: rgba(1, 113, 240, 1);
-    font-size: 42px;
-    height: 57px;
-    line-height: 57px;
   }
 }
 </style>

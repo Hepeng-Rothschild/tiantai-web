@@ -15,9 +15,9 @@
     </van-list>
 
     <!-- 新增按钮 -->
-    <!-- <div @click="$router.push('/newly')" class="my_button">
+    <div @click="$router.push('/newly')" class="my_button">
       <span>+</span>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -89,7 +89,7 @@ export default {
   font-size: 17px;
   align-items: center;
 }
-.add {
+.my_button {
   display: flex;
   justify-content: center;
   position: fixed;

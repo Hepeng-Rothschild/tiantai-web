@@ -162,7 +162,7 @@ export default {
           -webkit-appearance: none;
         }
         .van-icon {
-          padding-top: 2px;
+          align-self: center;
         }
       }
     }

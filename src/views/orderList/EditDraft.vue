@@ -313,7 +313,7 @@ export default {
         this.$toast.success({
           message: "创建订单成功",
           onClose: async () => {
-            this.$router.push("/indent");
+            this.$router.push("/orderlist");
             let OrderDraft = this.$Parse.Object.extend("OrderDraft");
             let query = new this.$Parse.Query(OrderDraft);
             let draft = await query.get(this.Draft.objectId);

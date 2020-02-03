@@ -135,6 +135,7 @@ export default {
     .right-input {
       display: flex;
       margin-left: auto;
+      -webkit-appearance: none;
       .icon {
         color: red;
       }
@@ -149,6 +150,7 @@ export default {
       input {
         width: 120px;
         border: 1px solid #c0c4cc;
+        -webkit-appearance: none;
       }
       .date-input {
         font-size: 17px;
@@ -157,9 +159,10 @@ export default {
         input {
           width: 100px;
           border: 0px;
+          -webkit-appearance: none;
         }
         .van-icon {
-          padding-top: 2px;
+          align-self: center;
         }
       }
     }

@@ -7,8 +7,11 @@
     </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
-      <van-popup v-model="overlayShow" position="bottom">
+      <van-dropdown-item v-model="dateIndex"
+                         :options="dateStatus"
+                         @change="changeDate"></van-dropdown-item>
+      <van-popup v-model="overlayShow"
+                 position="bottom">
         <div class="date_title">
           <div class="box1"></div>
         </div>
@@ -33,32 +36,42 @@
       </van-popup>
       <van-dropdown-item v-model="orderIndex"
                          :options="orderStatus"
-                         @change="changeState"/>
+                         @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-      <div v-for="(indent,i) in allIndent" :key="i">
+    <van-list v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              @load="onLoad">
+      <div v-for="(indent,i) in allIndent"
+           :key="i">
         <div class="date">{{formatDate(allIndent[i][0].madedate)}}</div>
-        <van-cell
-          v-for="(item,index) in allIndent[i]"
-          :key="index"
-          :title="item.name"
-          :label="item.code"
-          is-link
-          @click="toDetails(item.id)"
-        >
+        <van-cell v-for="(item,index) in allIndent[i]"
+                  :key="index"
+                  :title="item.name"
+                  :label="item.code"
+                  is-link
+                  @click="toDetails(item.id)">
           ￥{{item.taxAmount}}
           <div>
-            <van-tag type="primary">{{indent.voucherState == 181 ? '未审':'已审'}}</van-tag>
+            <van-tag type="primary">{{item.voucherState == 181 ? '未审':'已审'}}</van-tag>
           </div>
         </van-cell>
       </div>
     </van-list>
     <!-- 添加订单按钮 -->
-    <div @click="$router.push('/neworder')"
+    <div @click="selectEnter = true"
          class="my_button">
       <span>+</span>
     </div>
+    <van-popup v-model="selectEnter"
+               position="bottom"
+               round
+               :style="{ height: '14.5%' }"
+               class="selectEnter">
+      <div @click="$router.push('/draft')">继续编辑草稿</div>
+      <div @click="$router.push('/neworder')">新增销售订单</div>
+    </van-popup>
   </van-list>
 </template>
 
@@ -81,6 +94,7 @@ export default {
       startDate: null, // 自定义开始日期
       endDate: null, // 自定义结束日期
       overlayShow: false,  //   开关遮罩层
+      selectEnter: false,
       // 列表加载
       loading: false,
       // 全部加载完成
@@ -143,11 +157,11 @@ export default {
       this.endDate = null;
     },
     // 跳转到详情页面
-    toDetails(id) {
-      
+    toDetails (id) {
+
       if (1) {
         // 如果是订单就去展示页
-        this.$router.push({path: '/details', query: {id}})
+        this.$router.push({ path: '/details', query: { id } })
       } else {
         // 是草稿就去编辑页
         this.$router.push("/editindent");
@@ -258,7 +272,7 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-          this.dateIndex=5 ? this.overlayShow = true:null
+          this.dateIndex = 5 ? this.overlayShow = true : null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -323,17 +337,6 @@ export default {
 .my_search {
   padding: 13px 10px 10px 10px;
   background-color: rgba(248, 248, 248, 1);
-}
-.customize {
-  display: flex;
-  font-size: 15px;
-  input {
-    width: 100%;
-    height: 100%;
-    font-size: 15px;
-    text-align: center;
-    border: 0px;
-  }
 }
 .van-list {
   .date {
@@ -434,6 +437,18 @@ export default {
   span {
     color: rgba(1, 113, 240, 1);
     font-size: 42px;
+    height: 57px;
+    line-height: 57px;
+  }
+}
+.selectEnter {
+  div {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 17px;
+    color: rgba(16, 16, 16, 1);
+    border-bottom: 1px solid #c0c4cc;
   }
 }
 </style>

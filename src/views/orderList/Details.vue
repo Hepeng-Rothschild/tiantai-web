@@ -5,7 +5,7 @@
         <span>单据编号</span>
         <span>{{indentDetails.code}}</span>
       </div>
-      <div class="flex">
+      <div class="flex">  
         <span>客户</span>
         <span>{{indentDetails.partnerName}}</span>
       </div>

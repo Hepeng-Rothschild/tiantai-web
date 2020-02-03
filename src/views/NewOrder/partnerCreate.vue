@@ -372,7 +372,7 @@ export default {
       font-family: "PingFangSC-regular";
     }
     .van-cell__value {
-      color: #888888;
+      color: #888;
       font-size: 17px;
       text-align: right;
       font-family: "PingFangSC-regular";

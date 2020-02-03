@@ -1,6 +1,8 @@
 <template>
   <div class="inventory">
-    <my-search v-model="searchValue" placeholder="请输入商品名称" class="search" />
+    <div class="my_search">
+      <my-search v-model="searchValue" placeholder="请输入商品名称" class="search" />
+    </div>
     <!-- list -->
     <van-list
       v-model="loading"
@@ -46,7 +48,7 @@ export default {
     MySearch: MySearch
   },
   watch: {
-     searchValue: debounce(async function(newValue, oldValue) {
+    searchValue: debounce(async function(newValue, oldValue) {
       this.pageIndex = 1;
       this.inventory = [];
       this.getData();
@@ -62,17 +64,17 @@ export default {
     },
     async getData() {
       const { data } = await this.$Parse.Cloud.run("getInventory", {
-        inventoryName:this.searchValue,
+        inventoryName: this.searchValue,
         pageSize: this.pageSize,
         pageIndex: this.pageIndex
       });
-      this.inventory.push(...data)
+      this.inventory.push(...data);
       this.loading = false;
-      if(data.length){
+      if (data.length) {
         this.pageIndex++;
-        this.finished = false
+        this.finished = false;
       }
-      if(!data.length||data.length<this.pageSize){
+      if (!data.length || data.length < this.pageSize) {
         this.finished = true;
       }
     }
@@ -82,14 +84,15 @@ export default {
 
 <style lang="less" scoped>
 .inventory {
-  padding: 10px;
-  .search {
-    margin-bottom: 15px;
+  .my_search {
+    padding: 10px;
+    background-color: rgba(248, 248, 248, 1);
   }
   .cell {
     display: flex;
     justify-content: space-between;
-    padding: 10px 5px;
+    padding: 10px 10px;
+    border-bottom: 1px solid #c0c4cc;
 
     .text {
       width: 220px;

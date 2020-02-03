@@ -1,6 +1,6 @@
 <template>
   <div>
-    <my-search v-model="searchValue" placeholder="输入客户名称进行查找"></my-search>
+    <my-search v-model="searchValue" placeholder="请输入客户名称"></my-search>
     <van-list
       v-model="loading"
       :finished="finished"
@@ -90,6 +90,7 @@ export default {
 <style lang="less" scoped>
 .search {
   padding: 10px;
+  background-color: rgba(248, 248, 248, 1);
   border-bottom: 1px solid #c0c4cc;
 }
 .van-cell {
@@ -122,12 +123,12 @@ export default {
   height: 57px;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, .7);
+  background-color: rgba(255, 255, 255, 0.7);
   span {
     color: rgba(1, 113, 240, 1);
     font-size: 42px;
     height: 57px;
-    line-height: 57px;
+    line-height: 52px;
   }
 }
 </style>

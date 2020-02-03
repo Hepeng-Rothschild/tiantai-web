@@ -87,17 +87,21 @@ export default {
   align-items: center;
 }
 .add {
+  display: flex;
+  justify-content: center;
   position: fixed;
+  bottom: 50px;
+  right: 30px;
   width: 57px;
-  height: 50px;
-  right: 26px;
-  bottom: 45px;
-  padding: 0;
-  border-radius: 50%;
+  height: 57px;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
-  .van-button__text {
-    font-size: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.7);
+  span {
     color: rgba(1, 113, 240, 1);
+    font-size: 42px;
+    height: 57px;
+    line-height: 57px;
   }
 }
 </style>

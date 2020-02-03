@@ -66,7 +66,8 @@
     </div>
     <van-popup v-model="selectEnter"
                position="bottom"
-               :style="{ height: '20%' }"
+               round
+               :style="{ height: '14.5%' }"
                class="selectEnter">
       <div @click="$router.push('/draft')">继续编辑草稿</div>
       <div @click="$router.push('/neworder')">新增销售订单</div>
@@ -118,7 +119,7 @@ export default {
         { text: "已审", value: 189 }
       ],
       // 所有订单
-      allIndent:[],
+      allIndent: [],
       // 开始时间
       startTime: null,
       // 结束时间
@@ -337,17 +338,6 @@ export default {
   padding: 13px 10px 10px 10px;
   background-color: rgba(248, 248, 248, 1);
 }
-.customize {
-  display: flex;
-  font-size: 15px;
-  input {
-    width: 100%;
-    height: 100%;
-    font-size: 15px;
-    text-align: center;
-    border: 0px;
-  }
-}
 .van-list {
   .date {
     height: 30px;
@@ -447,6 +437,8 @@ export default {
   span {
     color: rgba(1, 113, 240, 1);
     font-size: 42px;
+    height: 57px;
+    line-height: 57px;
   }
 }
 .selectEnter {
@@ -456,6 +448,7 @@ export default {
     text-align: center;
     font-size: 17px;
     color: rgba(16, 16, 16, 1);
+    border-bottom: 1px solid #c0c4cc;
   }
 }
 </style>

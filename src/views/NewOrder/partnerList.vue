@@ -122,7 +122,7 @@ export default {
   height: 57px;
   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, .7);
+  background-color: rgba(255, 255, 255, 0.7);
   span {
     color: rgba(1, 113, 240, 1);
     font-size: 42px;

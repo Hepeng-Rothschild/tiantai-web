@@ -46,6 +46,13 @@ export default new Vuex.Store({
     saveDraft(state, data) {
       state.Draft = data
     },
+    clearStore(state) {
+      state.OrderMessage = null;
+      state.SaleOrderDetails = null;
+      state.TotalPrice = null;
+      state.SelectedPartner = null;
+      state.SelectedSaleMan = null;
+    }
   },
   actions: {
     

@@ -81,11 +81,11 @@
     <div class="memo">
       <div class="flex">
         <span>发货要求</span>
-        <span>{{indentDetails.priuserdefnvc3?indentDetails.priuserdefnvc3:'无'}}</span>
+        <span>{{indentDetails.pubuserdefnvc1?indentDetails.pubuserdefnvc1:'无'}}</span>
       </div>
       <div class="flex">
         <span>送货要求</span>
-        <span>{{indentDetails.pubuserdefnvc1?indentDetails.pubuserdefnvc1:'无'}}</span>
+        <span>{{indentDetails.priuserdefnvc3?indentDetails.priuserdefnvc3:'无'}}</span>
       </div>
       <div class="flex">
         <span>备注</span>
@@ -114,6 +114,7 @@ export default {
         id: this.id
       });
       this.indentDetails = data;
+      console.log(this.indentDetails)
     },
     format(time) {
       const dateTime = new Date(time);

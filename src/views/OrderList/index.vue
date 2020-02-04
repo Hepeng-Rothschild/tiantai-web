@@ -405,6 +405,7 @@ export default {
   }
   /deep/ .van-picker {
      .van-hairline--top-bottom {
+       border: 0px;
        .van-picker__cancel {
         position: absolute;
         top: -90px;

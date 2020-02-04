@@ -150,11 +150,11 @@ router.beforeEach(async (to, from, next) => {
     
     let result = await Parse.Cloud.run("checkUser")
     if (result.code == 404) {
-      // return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+      return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
     }
   }catch(e){
     console.log(e)
-    // return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+    return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
   }
   
 

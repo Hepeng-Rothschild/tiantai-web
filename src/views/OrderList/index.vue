@@ -66,10 +66,15 @@
     </div>
     <van-popup v-model="selectEnter"
                position="bottom"
-               :style="{ height: '20%' }"
+               :style="{ height: '27%' }"
                class="selectEnter">
-      <div @click="$router.push('/draft')">继续编辑草稿</div>
-      <div @click="$router.push('/neworder')">新增销售订单</div>
+      <div @click="$router.push('/draft')"
+           class="select-draft">继续编辑草稿</div>
+      <div @click="$router.push('/neworder')"
+           class="select-order">新增销售订单</div>
+      <div class="select-space"></div>
+      <div @click="selectEnter = false"
+           class="select-cancel">取消</div>
     </van-popup>
   </van-list>
 </template>
@@ -273,7 +278,8 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-          this.dateIndex = 5 ? this.overlayShow = true : null
+          this.overlayShow = true
+          // this.dateIndex = 5 ? this.overlayShow = true : null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -338,17 +344,6 @@ export default {
 .my_search {
   padding: 13px 10px 10px 10px;
   background-color: rgba(248, 248, 248, 1);
-}
-.customize {
-  display: flex;
-  font-size: 15px;
-  input {
-    width: 100%;
-    height: 100%;
-    font-size: 15px;
-    text-align: center;
-    border: 0px;
-  }
 }
 .van-list {
   .date {
@@ -449,13 +444,29 @@ export default {
   span {
     color: rgba(1, 113, 240, 1);
     font-size: 42px;
-    line-height: 52px;
+    height: 57px;
+    line-height: 57px;
   }
 }
 .selectEnter {
-  div {
-    height: 40px;
-    line-height: 40px;
+  .select-space {
+    height: 2px;
+    background-color: #c0c4cc;
+  }
+  .select-draft {
+    border-bottom: 1px solid #c0c4cc;
+  }
+  .select-order,
+  .select-draft {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 17px;
+    color: rgba(16, 16, 16, 1);
+  }
+  .select-cancel {
+    height: 50px;
+    line-height: 50px;
     text-align: center;
     font-size: 17px;
     color: rgba(16, 16, 16, 1);

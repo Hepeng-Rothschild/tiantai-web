@@ -15,9 +15,9 @@
     </van-list>
 
     <!-- 新增按钮 -->
-    <!-- <div @click="$router.push('/newly')" class="my_button">
+    <div @click="$router.push('/partnercreate')" class="my_button">
       <span>+</span>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -89,22 +89,22 @@ export default {
   font-size: 17px;
   align-items: center;
 }
-// .my_button {
-//   display: flex;
-//   justify-content: center;
-//   position: fixed;
-//   bottom: 50px;
-//   right: 30px;
-//   width: 57px;
-//   height: 57px;
-//   box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
-//   border-radius: 50%;
-//   background-color: rgba(255, 255, 255, .7);
-//   span {
-//     color: rgba(1, 113, 240, 1);
-//     font-size: 42px;
-//     height: 57px;
-//     line-height: 52px;
-//   }
-// }
+.my_button {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 50px;
+  right: 30px;
+  width: 57px;
+  height: 57px;
+  box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.7);
+  span {
+    color: rgba(1, 113, 240, 1);
+    font-size: 42px;
+    height: 57px;
+    line-height: 57px;
+  }
+}
 </style>

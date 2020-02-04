@@ -122,9 +122,9 @@ export default {
         { text: "未审", value: 181 },
         { text: "已审", value: 189 }
       ],
-      order:[],
+      order: [],
       // 所有订单
-      orderList:[],
+      orderList: [],
       // 开始时间
       startTime: null,
       // 结束时间
@@ -419,11 +419,17 @@ export default {
   /deep/ .van-picker {
     /deep/ .van-hairline--top-bottom {
       /deep/ .van-picker__cancel {
+        -webkit-position: absolute;
+        -webkit-top: -90px;
+        -webkit-left: 0;
         position: absolute;
         top: -90px;
         left: 0;
       }
       /deep/ .van-picker__confirm {
+        -webkit-position: absolute;
+        -webkit-top: -90px;
+        -webkit-right: 0;
         position: absolute;
         top: -90px;
         right: 0;
@@ -451,7 +457,7 @@ export default {
 }
 .selectEnter {
   .select-space {
-    height: 5px;
+    height: 2px;
     background-color: gray;
   }
   .select-draft {
@@ -467,7 +473,7 @@ export default {
   }
   .select-cancel {
     height: 50px;
-    line-height: 50px;
+    line-height: 52px;
     text-align: center;
     font-size: 17px;
     color: rgba(16, 16, 16, 1);

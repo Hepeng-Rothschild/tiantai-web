@@ -276,7 +276,8 @@ export default {
           startTimeTmp = this.getCurrentYear();
           break;
         default:
-          this.dateIndex = 5 ? this.overlayShow = true : null
+          this.overlayShow = true
+          // this.dateIndex = 5 ? this.overlayShow = true : null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -453,7 +454,8 @@ export default {
   .select-draft {
     border-bottom: 1px solid #c0c4cc;
   }
-  .select-order,.select-draft{
+  .select-order,
+  .select-draft {
     height: 50px;
     line-height: 50px;
     text-align: center;

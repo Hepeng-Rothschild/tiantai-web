@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="decimal">
-        <div class="right-input"><span class="icon">*</span><span>每x个月为一个账期</span><input type="text"
+        <div class="right-input"><span class="icon">*</span><span>每x个月一个账期</span><input type="text"
                  v-model="params.saleSpaceMonth"
                  oninput="value=value.replace(/[^\d]/g,'')"></div>
       </div>

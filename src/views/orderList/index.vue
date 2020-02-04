@@ -43,10 +43,10 @@
               :finished="finished"
               finished-text="没有更多了"
               @load="onLoad">
-      <div v-for="(indent,i) in allIndent"
+      <div v-for="(indent,i) in orderList"
            :key="i">
-        <div class="date">{{formatDate(allIndent[i][0].madedate)}}</div>
-        <van-cell v-for="(item,index) in allIndent[i]"
+        <div class="date">{{formatDate(orderList[i][0].madedate)}}</div>
+        <van-cell v-for="(item,index) in orderList[i]"
                   :key="index"
                   :title="item.name"
                   :label="item.code"
@@ -117,8 +117,9 @@ export default {
         { text: "未审", value: 181 },
         { text: "已审", value: 189 }
       ],
+      order:[],
       // 所有订单
-      allIndent:[],
+      orderList:[],
       // 开始时间
       startTime: null,
       // 结束时间
@@ -132,7 +133,7 @@ export default {
   watch: {
     searchValue: debounce(async function (newVal) {
       this.pageIndex = 0;
-      this.allIndent = [];
+      this.orderList = [];
       await this.getData();
     }, 500)
   },
@@ -182,16 +183,17 @@ export default {
         name: this.searchValue,
         state: this.state
       });
-      let allIndent = data;
-      let duration = allIndent.map(item => item.madedate); //存放时间段的数组
+      let orderList = JSON.parse(JSON.stringify(data));
+      // console.log(orderList,'===')
+      this.order.push(...orderList)
+      let duration = this.order.map(item => item.madedate); //存放时间段的数组
       let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
         .sort()
         .reverse();
-      allIndent = newDuration.map(duration =>
-        allIndent.filter(indent => indent.madedate == duration)
+      this.orderList = newDuration.map(duration =>
+        this.order.filter(indent => indent.madedate == duration)
       );
-      this.allIndent.push(...allIndent);
-      console.log(this.allIndent)
+      // this.orderList.push(...orderList);
       this.loading = false;
       if (data.length) {
         this.pageIndex++;
@@ -277,7 +279,7 @@ export default {
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
       this.endTime = dayjs(endTimeTmp).format("YYYY-MM-DD");
       this.pageIndex = 0;
-      this.allIndent = [];
+      this.order = [];
       await this.getData();
     },
     // 自定义时间的年月日文字
@@ -315,7 +317,7 @@ export default {
         this.startTime = this.startDate;
         this.endTime = this.endDate;
         this.pageIndex = 0;
-        this.allIndent = [];
+        this.order = [];
         await this.getData();
       } else {
         this.$toast.fail("日期填写不完整");
@@ -325,7 +327,7 @@ export default {
     async changeState (orderState) {
       this.state = orderState;
       this.pageIndex = 0;
-      this.allIndent = [];
+      this.order = [];
       await this.getData();
     }
   }

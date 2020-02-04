@@ -38,37 +38,37 @@ const routes = [
     path: '/orderList',
     name: 'orderList',
     meta: { title: '销售订单' },
-    component: () => import( '@/views/orderList')
+    component: () => import( '@/views/OrderList')
   },
   {
     path: '/editdraft',
     name: 'editdraft',
     meta: { title: '编辑草稿' },
-    component: () => import( '@/views/orderList/EditDraft.vue')
+    component: () => import( '@/views/OrderList/EditDraft.vue')
   },
   {
     path: '/draft',
     name: 'draft',
     meta: { title: '草稿' },
-    component: () => import( '@/views/orderList/Draft.vue')
+    component: () => import( '@/views/OrderList/Draft.vue')
   },
   {
     path: '/details',
     name: 'details',
     meta: { title: '订单详情' },
-    component: () => import( '@/views/orderList/Details.vue')
+    component: () => import( '@/views/OrderList/Details.vue')
   },
   {
     path: '/records',
     name: 'records',
     meta: { title: '订单详情' },
-    component: () => import( '@/views/orderList/Records.vue')
+    component: () => import( '@/views/OrderList/Records.vue')
   },
   {
     path: '/aide',
     name: 'aide',
     meta: { title: '销售小助手' },
-    component: () => import( '@/views/orderList/Aide.vue')
+    component: () => import( '@/views/OrderList/Aide.vue')
   },
   {
     path: '/neworder',

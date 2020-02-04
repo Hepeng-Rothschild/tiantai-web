@@ -57,7 +57,7 @@
     </div>
     <van-popup v-model="selectEnter"
                position="bottom"
-               :style="{ height: '28%' }"
+               round
                class="selectEnter">
       <div @click="$router.push('/draft')"
            class="select-draft">继续编辑草稿</div>
@@ -261,7 +261,7 @@ export default {
           break;
         default:
           this.overlayShow = true
-          // this.dateIndex = 5
+          this.dateIndex = null
           // this.dateIndex = 5 ? this.overlayShow = true : null
           break;
       }
@@ -399,19 +399,12 @@ export default {
     border-bottom: 1px solid #388ded;
   }
   /deep/ .van-picker {
-    /deep/ .van-hairline--top-bottom {
-      /deep/ .van-picker__cancel {
-        -webkit-position: absolute;
-        -webkit-top: -90px;
-        -webkit-left: 0;
+     .van-hairline--top-bottom {
+       .van-picker__cancel {
         position: absolute;
         top: -90px;
-        left: 0;
       }
-      /deep/ .van-picker__confirm {
-        -webkit-position: absolute;
-        -webkit-top: -90px;
-        -webkit-right: 0;
+       .van-picker__confirm {
         position: absolute;
         top: -90px;
         right: 0;
@@ -455,7 +448,7 @@ export default {
   }
   .select-cancel {
     height: 50px;
-    line-height: 52px;
+    line-height: 50px;
     text-align: center;
     font-size: 17px;
     color: rgba(16, 16, 16, 1);

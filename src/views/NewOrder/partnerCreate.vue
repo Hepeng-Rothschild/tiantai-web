@@ -7,7 +7,7 @@
           <van-field v-model="savePartner.name"
                      placeholder="请输入"
                      input-align="right"
-                     style="border:0px;" />
+                     style="border:0px;"/>
         </van-cell>
         <van-cell title="客户性质"
                   :value="savePartner.partnerTypeName?savePartner.partnerTypeName:'客户'"

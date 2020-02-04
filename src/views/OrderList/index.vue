@@ -57,7 +57,7 @@
     </div>
     <van-popup v-model="selectEnter"
                position="bottom"
-               :style="{ height: '28%' }"
+               round
                class="selectEnter">
       <div @click="$router.push('/draft')"
            class="select-draft">继续编辑草稿</div>
@@ -72,12 +72,13 @@
 <script>
 import dayjs from "dayjs";
 import MySearch from "../../components/Search.vue";
+import MydropDown from "../../components/DropDownFather.vue";
 import { debounce } from "loadsh";
 
 export default {
   name: "indentIndex",
   components: {
-    MySearch: MySearch
+    MySearch: MySearch,
   },
   data() {
     return {
@@ -261,8 +262,7 @@ export default {
           break;
         default:
           this.overlayShow = true
-          // this.dateIndex = 5
-          // this.dateIndex = 5 ? this.overlayShow = true : null
+          this.dateIndex = null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -374,11 +374,13 @@ export default {
 // 自定义日期的遮罩层弹出，，，日期格式的样式
 .van-popup {
   .date_title {
-    position: relative;
+    
     display: flex;
     padding: 10px 20px 10px 20px;
     justify-content: space-between;
     .box1 {
+      position: relative;
+      width: 100%;
       height: 20px;
     }
   }
@@ -403,24 +405,13 @@ export default {
   .border {
     border-bottom: 1px solid #388ded;
   }
-  /deep/ .van-picker {
-    /deep/ .van-hairline--top-bottom {
-      /deep/ .van-picker__cancel {
-        -webkit-position: absolute;
-        -webkit-top: -90px;
-        -webkit-left: 0;
-        position: absolute;
-        top: -90px;
-        left: 0;
-      }
-      /deep/ .van-picker__confirm {
-        -webkit-position: absolute;
-        -webkit-top: -90px;
-        -webkit-right: 0;
-        position: absolute;
-        top: -90px;
-        right: 0;
-      }
+    /deep/ .van-picker {
+     .van-hairline--top-bottom {
+       position: absolute;
+       top: -90px;
+       width: 100%;
+        display: flex;
+        justify-content: space-between;
     }
   }
 }
@@ -460,7 +451,7 @@ export default {
   }
   .select-cancel {
     height: 50px;
-    line-height: 52px;
+    line-height: 50px;
     text-align: center;
     font-size: 17px;
     color: rgba(16, 16, 16, 1);

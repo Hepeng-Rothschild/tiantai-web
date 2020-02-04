@@ -7,11 +7,19 @@
 <script>
 import { getItem, setItem } from "./utils/Storage.js";
 export default {
-  created() {
+  created () {
     this.listenBeforeUnload();
   },
-  mounted() {
-    
+  mounted () {
+    this.$Parse.Cloud.run("checkUser")
+      .then(result => {
+        if (result.code == 404) {
+          window.location.href = process.env.VUE_APP_LOGIN_URL;
+        }
+      })
+      .catch(e => {
+        window.location.href = process.env.VUE_APP_LOGIN_URL;
+      });
     // 以上代码提交代码的时候打开
     // if(!this.$Parse.User.current()){
     //   window.location.href = process.env.loginURl
@@ -22,7 +30,7 @@ export default {
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据
-    listenBeforeUnload() {
+    listenBeforeUnload () {
       if (sessionStorage.getItem("store")) {
         this.$store.replaceState(
           Object.assign({}, this.$store.state, getItem("store"))

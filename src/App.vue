@@ -11,22 +11,12 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
-    this.$Parse.Cloud.run("checkUser")
-      .then(result => {
-        if (result.code == 404) {
-          window.location.href = process.env.VUE_APP_LOGIN_URL;
-        }
-      })
-      .catch(e => {
-        window.location.href = process.env.VUE_APP_LOGIN_URL;
-      });
-    // 以上代码提交代码的时候打开
     // if(!this.$Parse.User.current()){
     //   window.location.href = process.env.loginURl
     // }
 
-    // this.$store.dispatch("logout");
-    // this.$store.dispatch("login");
+    this.$store.dispatch("logout");
+    this.$store.dispatch("login");
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据

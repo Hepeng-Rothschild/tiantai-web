@@ -9,7 +9,7 @@
         is-link
         class="spacing"
         to="/partnerList"
-      >{{ partner?partner.AA_Partner_Contact:'请选择客户' }}</van-cell>
+      >{{ partner?partner.AA_Partner_name:'请选择客户' }}</van-cell>
       <!-- 选择业务员 -->
       <van-cell title="业务员" is-link class="spacing" to="/salemanList">{{saleMan?saleMan.name:'请选择'}}</van-cell>
       <!-- 选择商品 -->

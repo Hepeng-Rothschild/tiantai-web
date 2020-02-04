@@ -66,7 +66,7 @@
     </div>
     <van-popup v-model="selectEnter"
                position="bottom"
-               :style="{ height: '27%' }"
+               :style="{ height: '28%' }"
                class="selectEnter">
       <div @click="$router.push('/draft')"
            class="select-draft">继续编辑草稿</div>
@@ -114,7 +114,7 @@ export default {
         { text: "上月", value: 2 },
         { text: "本季度", value: 3 },
         { text: "本年", value: 4 },
-        { text: "自定义", value: 5 }
+        { text: "自定义", value: 5 },
       ],
       orderIndex: null,
       orderStatus: [
@@ -196,7 +196,7 @@ export default {
         allIndent.filter(indent => indent.madedate == duration)
       );
       this.allIndent.push(...allIndent);
-      console.log(this.allIndent)
+      // console.log(this.allIndent)
       this.loading = false;
       if (data.length) {
         this.pageIndex++;
@@ -277,6 +277,7 @@ export default {
           break;
         default:
           this.overlayShow = true
+          // this.dateIndex = 5
           // this.dateIndex = 5 ? this.overlayShow = true : null
           break;
       }
@@ -448,8 +449,8 @@ export default {
 }
 .selectEnter {
   .select-space {
-    height: 2px;
-    background-color: #c0c4cc;
+    height: 5px;
+    background-color: gray;
   }
   .select-draft {
     border-bottom: 1px solid #c0c4cc;

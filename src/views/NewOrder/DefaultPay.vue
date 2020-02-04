@@ -162,6 +162,7 @@ export default {
           -webkit-appearance: none;
         }
         .van-icon {
+          -webkit-align-self: center;
           align-self: center;
         }
       }

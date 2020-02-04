@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import Parse from './utils/parse.js'
 Vue.use(VueRouter)
 
 const routes = [
@@ -8,19 +8,19 @@ const routes = [
     path: '/choose',
     name: 'choose',
     meta: { title: '选择商品' },
-    component: () => import( '@/views/NewOrder/Choose.vue')
+    component: () => import('@/views/NewOrder/Choose.vue')
   },
   {
     path: '/defaultPay',
     name: 'defaultPay',
     meta: { title: '默认收款方式' },
-    component: () => import( '@/views/NewOrder/DefaultPay.vue')
+    component: () => import('@/views/NewOrder/DefaultPay.vue')
   },
   {
     path: '/partnerCreate',
     name: 'partnerCreate',
     meta: { title: '新增客户' },
-    component: () => import( '@/views/NewOrder/partnerCreate.vue')
+    component: () => import('@/views/NewOrder/partnerCreate.vue')
   },
   {
     path: '/partnerList',
@@ -38,43 +38,43 @@ const routes = [
     path: '/orderList',
     name: 'orderList',
     meta: { title: '销售订单' },
-    component: () => import( '@/views/OrderList')
+    component: () => import('@/views/OrderList')
   },
   {
     path: '/editdraft',
     name: 'editdraft',
     meta: { title: '编辑草稿' },
-    component: () => import( '@/views/OrderList/EditDraft.vue')
+    component: () => import('@/views/OrderList/EditDraft.vue')
   },
   {
     path: '/draft',
     name: 'draft',
     meta: { title: '草稿' },
-    component: () => import( '@/views/OrderList/Draft.vue')
+    component: () => import('@/views/OrderList/Draft.vue')
   },
   {
     path: '/details',
     name: 'details',
     meta: { title: '订单详情' },
-    component: () => import( '@/views/OrderList/Details.vue')
+    component: () => import('@/views/OrderList/Details.vue')
   },
   {
     path: '/records',
     name: 'records',
     meta: { title: '订单详情' },
-    component: () => import( '@/views/OrderList/Records.vue')
+    component: () => import('@/views/OrderList/Records.vue')
   },
   {
     path: '/aide',
     name: 'aide',
     meta: { title: '销售小助手' },
-    component: () => import( '@/views/OrderList/Aide.vue')
+    component: () => import('@/views/OrderList/Aide.vue')
   },
   {
     path: '/neworder',
     name: 'neworder',
     meta: { title: '新增销售订单' },
-    component: () => import( '@/views/NewOrder')
+    component: () => import('@/views/NewOrder')
   },
   {
     path: '/info',
@@ -143,15 +143,23 @@ const router = new VueRouter({
   // base: process.env.BASE_URL,
   routes
 })
-router.beforeEach((to, from, next) => {
-  /* 路由发生变化修改页面meta */
-  // if (to.meta.title) {
-  //   let head = document.getElementsByTagName('head');
-  //   let meta = document.createElement('meta');
-  //   meta.title = to.meta.title;
-  //   head[0].appendChild(meta)
-  // }
-  /* 路由发生变化修改页面title */
+router.beforeEach(async (to, from, next) => {
+  
+
+  try {
+    
+    let result = await Parse.Cloud.run("checkUser")
+    if (result.code == 404) {
+      return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+    }
+  }catch(e){
+    console.log(e)
+    return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+  }
+  
+
+
+
   if (to.meta.title) {
     document.title = to.meta.title;
   }

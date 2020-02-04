@@ -149,7 +149,7 @@ export default {
       }
       input {
         width: 120px;
-        border: 1px solid #c0c4cc;
+        border: 0px;
         -webkit-appearance: none;
       }
       .date-input {

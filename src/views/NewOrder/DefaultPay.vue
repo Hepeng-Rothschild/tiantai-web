@@ -5,7 +5,7 @@
       <van-radio name="全额现结">全额现结</van-radio>
       <van-radio name="限期收款">限期收款</van-radio>
       <div class="decimal">
-        <div class="right-input"><span class="icon">*</span><span class="title">销货/开票后x天内进行收款</span><input type="text"
+        <div class="right-input"><span class="icon">*</span><span class="title">销货x天内收款：</span><input type="text"
                  v-model="params.saleCreditDays"
                  oninput="value=value.replace(/[^\d]/g,'')"></div>
       </div>
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="decimal">
-        <div class="right-input"><span class="icon">*</span><span>每x个月一个账期</span><input type="text"
+        <div class="right-input"><span class="icon">*</span><span>每x个月一个账期：</span><input type="text"
                  v-model="params.saleSpaceMonth"
                  oninput="value=value.replace(/[^\d]/g,'')"></div>
       </div>
@@ -140,8 +140,6 @@ export default {
         color: red;
       }
       .title {
-        display: inline-block;
-        width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

@@ -6,7 +6,7 @@
     </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
+      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate" @click="changeDate_1(dateIndex)"></van-dropdown-item>
       <van-popup v-model="overlayShow" position="bottom">
         <div class="date_title">
           <div class="box1"></div>
@@ -262,7 +262,6 @@ export default {
         default:
           this.overlayShow = true
           this.dateIndex = null
-          // this.dateIndex = 5 ? this.overlayShow = true : null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
@@ -374,11 +373,13 @@ export default {
 // 自定义日期的遮罩层弹出，，，日期格式的样式
 .van-popup {
   .date_title {
-    position: relative;
+    
     display: flex;
     padding: 10px 20px 10px 20px;
     justify-content: space-between;
     .box1 {
+      position: relative;
+      width: 100%;
       height: 20px;
     }
   }
@@ -403,18 +404,13 @@ export default {
   .border {
     border-bottom: 1px solid #388ded;
   }
-  /deep/ .van-picker {
+    /deep/ .van-picker {
      .van-hairline--top-bottom {
-       border: 0px;
-       .van-picker__cancel {
-        position: absolute;
-        top: -90px;
-      }
-       .van-picker__confirm {
-        position: absolute;
-        top: -90px;
-        right: 0;
-      }
+       position: absolute;
+       top: -90px;
+       width: 100%;
+        display: flex;
+        justify-content: space-between;
     }
   }
 }

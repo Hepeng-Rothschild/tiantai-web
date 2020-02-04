@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import Parse from './utils/parse.js'
 Vue.use(VueRouter)
 
 const routes = [
@@ -144,15 +144,17 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach(async (to, from, next) => {
+  
 
   try {
     
-    let result = await this.$Parse.Cloud.run("checkUser")
+    let result = await Parse.Cloud.run("checkUser")
     if (result.code == 404) {
-      return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+      // return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
     }
   }catch(e){
-    return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+    console.log(e)
+    // return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
   }
   
 

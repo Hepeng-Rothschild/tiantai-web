@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import Parse from './utils/parse.js'
 Vue.use(VueRouter)
 
 const routes = [
@@ -144,6 +144,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach(async (to, from, next) => {
+  
 
   // try {
     

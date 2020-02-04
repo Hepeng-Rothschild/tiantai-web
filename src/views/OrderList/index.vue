@@ -61,7 +61,7 @@
                class="selectEnter">
       <div @click="$router.push('/draft')"
            class="select-draft">继续编辑草稿</div>
-      <div @click="$router.push('/neworder')"
+      <div @click="toNewOrder()"
            class="select-order">新增销售订单</div>
       <div class="select-space"></div>
       <div @click="selectEnter = false" class="select-cancel">取消</div>
@@ -318,6 +318,11 @@ export default {
       this.pageIndex = 0;
       this.order = [];
       await this.getData();
+    },
+    toNewOrder() {
+      // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
+      this.$store.commit("clearStore");
+      this.$router.push('/neworder')
     }
   }
 };

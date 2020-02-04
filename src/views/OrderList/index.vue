@@ -6,7 +6,7 @@
     </div>
     <!-- 下拉菜单 -->
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate" @click="changeDate_1(dateIndex)"></van-dropdown-item>
+      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
       <van-popup v-model="overlayShow" position="bottom">
         <div class="date_title">
           <div class="box1"></div>
@@ -72,12 +72,13 @@
 <script>
 import dayjs from "dayjs";
 import MySearch from "../../components/Search.vue";
+import MydropDown from "../../components/DropDownFather.vue";
 import { debounce } from "loadsh";
 
 export default {
   name: "indentIndex",
   components: {
-    MySearch: MySearch
+    MySearch: MySearch,
   },
   data() {
     return {

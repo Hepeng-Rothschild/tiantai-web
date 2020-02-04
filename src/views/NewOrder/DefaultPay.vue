@@ -17,7 +17,7 @@
           <div class="date-input">
             <input type="text"
                    v-model="params.aleStartDate"
-                   oninput="value=value.replace(/[^\d]/g,'')">
+                   oninput="value=value.replace(/[^\d]/g,'')" @click="show_1 = true">
             <van-icon name="clock"
                       @click="show_1 = true" />
           </div>
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="decimal">
-        <div class="right-input"><span class="icon">*</span><span>每x个月一个账期：</span><input type="text"
+        <div class="right-input"><span class="icon">*</span><span>每x个月为账期：</span><input type="text"
                  v-model="params.saleSpaceMonth"
                  oninput="value=value.replace(/[^\d]/g,'')"></div>
       </div>

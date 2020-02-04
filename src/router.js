@@ -144,8 +144,6 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach(async (to, from, next) => {
-  
-
   try {
     
     let result = await Parse.Cloud.run("checkUser")
@@ -157,9 +155,6 @@ router.beforeEach(async (to, from, next) => {
     return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
   }
   
-
-
-
   if (to.meta.title) {
     document.title = to.meta.title;
   }

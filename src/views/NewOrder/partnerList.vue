@@ -14,7 +14,7 @@
         @click="selectPartner(partner)"
       >
         <van-cell
-          :title="partner.AA_Partner_Contact"
+          :title="partner.AA_Partner_name"
           :label="Number(partner.AA_Partner_Pay_AdvPBalance).toFixed(2)"
           is-link
         />

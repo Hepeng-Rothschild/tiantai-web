@@ -5,7 +5,7 @@
         <span>单据编号</span>
         <span>{{indentDetails.code}}</span>
       </div>
-      <div class="flex">  
+      <div class="flex">
         <span>客户</span>
         <span>{{indentDetails.partnerName}}</span>
       </div>
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="goods" v-for="(item,index) in indentDetails.SaleOrderDetails" :key="index">
-      <div class="up border">
+      <div class="main border">
         <div class="left">
           <div class="type dark_color">{{item.AA_Inventory_code}}</div>
           <div>
@@ -49,23 +49,23 @@
         <div class="right">
           <div>
             <span class="light_color margin_right">含税单价</span>
-            <span class="dark_color">￥{{item.taxPrice}}</span>
+            <span class="dark_color">￥{{item.taxPrice.toFixed(2)}}</span>
           </div>
           <div>
             <span class="light_color margin_right">含税金额</span>
-            <span class="dark_color">￥{{item.taxAmount}}</span>
+            <span class="dark_color">￥{{item.taxAmount.toFixed(2)}}</span>
           </div>
         </div>
       </div>
-      <div class="down">
-        <div class="left">
-          <div class="light_color">本币金额</div>
-          <div class="light_color">含税金额</div>
-        </div>
-        <div class="right">
-          <div class="dark_color">￥{{item.discountAmount}}</div>
-          <div class="dark_color">￥{{item.taxAmount}}</div>
-        </div>
+    </div>
+    <div class="total_price">
+      <div class="left">
+        <div class="light_color">本币金额</div>
+        <div class="light_color">含税金额</div>
+      </div>
+      <div class="right">
+        <div class="dark_color">￥{{discountAmount.toFixed(2)}}</div>
+        <div class="dark_color">￥{{taxAmount.toFixed(2)}}</div>
       </div>
     </div>
     <div class="money">
@@ -102,7 +102,9 @@ export default {
   data() {
     return {
       id: Number(this.$route.query.id),
-      indentDetails: null
+      indentDetails: null,
+      discountAmount:0, // 本币金额
+      taxAmount: 0,
     };
   },
   mounted() {
@@ -114,7 +116,12 @@ export default {
         id: this.id
       });
       this.indentDetails = data;
-      console.log(this.indentDetails)
+      
+      this.indentDetails.SaleOrderDetails.forEach(e => {
+        this.discountAmount += e.discountAmount
+        this.taxAmount += e.taxAmount
+      });
+      console.log(this.indentDetails);
     },
     format(time) {
       const dateTime = new Date(time);
@@ -155,7 +162,7 @@ export default {
 .link {
   padding: 15px;
   line-height: 28px;
-  margin-top: 16px;
+  margin: 16px 0;
   background-color: #fff;
   span:first-child {
     display: inline-block;
@@ -169,9 +176,8 @@ export default {
   }
 }
 .goods {
-  margin-top: 16px;
   line-height: 28px;
-  .up {
+  .main {
     display: flex;
     padding: 15px 15px 10px 15px;
     justify-content: space-between;
@@ -188,18 +194,17 @@ export default {
       margin-right: 5px;
     }
   }
-  .down {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 15px 15px 15px;
-
-    background-color: #fff;
-  }
+}
+.total_price {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding: 15px 15px 15px 15px;
+  background-color: #fff;
 }
 .money {
-  padding: 15px 15px 10px 15px;
+  padding: 0px 15px 10px 15px;
   line-height: 28px;
-  margin-top: 16px;
   background-color: #fff;
   span:first-child {
     display: inline-block;

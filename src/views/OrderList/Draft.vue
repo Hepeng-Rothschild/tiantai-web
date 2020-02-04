@@ -37,12 +37,13 @@ import { debounce } from "loadsh";
 export default {
   data() {
     return {
-      searchValue: '',
+      searchValue: "",
       loading: false,
       finished: false,
       pageSize: 10,
       pageSkip: 0,
-      allDraft: []
+      allDraft: [],
+      draft: []
     };
   },
   components: {
@@ -65,32 +66,33 @@ export default {
       let query = new Parse.Query(OrderDraft);
       query.limit(this.pageSize);
       query.skip(this.pageSkip);
-      query.contains('Name', this.searchValue)
+      query.descending("VoucherDate");
+      query.contains("Name", this.searchValue);
       const data = await query.find();
-      let allDraft = JSON.parse(JSON.stringify(data));
-      // console.log(allDraft);
-      allDraft.forEach(item => {
+      let draft = JSON.parse(JSON.stringify(data));
+      console.log(draft);
+      this.draft.push(...draft);
+      this.draft.forEach(item => {
         item.totalPrice = 0;
         item.SaleOrderDetails.forEach(goods => {
           item.totalPrice += goods.OrigTaxAmount;
         });
       });
-      let duration = allDraft.map(item => item.VoucherDate); //存放时间段的数组
+      let duration = this.draft.map(item => item.VoucherDate); //存放时间段的数组
       let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重
         .sort()
         .reverse();
-      allDraft = newDuration.map(duration =>
-        allDraft.filter(draft => draft.VoucherDate == duration)
+      this.allDraft = newDuration.map(duration =>
+        this.draft.filter(draft => draft.VoucherDate == duration)
       );
-      this.allDraft.push(...allDraft);
+      // this.allDraft.push(...allDraft);
       this.loading = false;
-      if (allDraft.length) {
+      if (draft.length) {
         this.pageSkip += 10;
         //为了配合搜索框 finished = false 会继续触发 onLoad 事件
         this.finished = false;
-        console.log(this.pageSkip, this.pageSize);
       }
-      if (!allDraft.length) {
+      if (!draft.length) {
         this.finished = true;
       }
     },
@@ -127,6 +129,9 @@ export default {
   }
   .van-cell__label {
     font-size: 13px;
+  }
+  .van-icon {
+    line-height: 52px;
   }
 }
 </style>

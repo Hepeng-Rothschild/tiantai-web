@@ -11,16 +11,8 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
-
-    this.$Parse.Cloud.run("checkUser")
-      .then(result => {
-        if (result.code == 404) {
-          window.location.href = process.env.VUE_APP_LOGIN_URL;
-        }
-      })
-      .catch(e => {
-        window.location.href = process.env.VUE_APP_LOGIN_URL;
-      });
+     
+   
 
     // if(!this.$Parse.User.current()){
     //   window.location.href = process.env.loginURl

@@ -11,14 +11,11 @@ export default {
     this.listenBeforeUnload();
   },
   mounted() {
-     
-   
-
+    
+    // 以上代码提交代码的时候打开
     // if(!this.$Parse.User.current()){
     //   window.location.href = process.env.loginURl
     // }
-    // 以上代码提交代码的时候打开
-
 
     // this.$store.dispatch("logout");
     // this.$store.dispatch("login");

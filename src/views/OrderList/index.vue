@@ -72,7 +72,6 @@
 <script>
 import dayjs from "dayjs";
 import MySearch from "../../components/Search.vue";
-import MydropDown from "../../components/DropDownFather.vue";
 import { debounce } from "loadsh";
 
 export default {
@@ -262,7 +261,6 @@ export default {
           break;
         default:
           this.overlayShow = true
-          this.dateIndex = null
           break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");

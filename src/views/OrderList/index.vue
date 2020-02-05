@@ -9,7 +9,9 @@
       <van-dropdown-item v-model="dateIndex"
                          :options="dateStatus"
                          @change="changeDate"
-                         @open="open">
+                         ref="item" :title="titleitem">
+        <!-- <div @click="onConfirm">自定义</div> -->
+        <van-cell title="自定义" @click="onConfirm" :class="titleitem != null ?'dropMyself_true':'dropMyself'"><van-icon name="success" v-if="titleitem != null" /></van-cell>
       </van-dropdown-item>
       <van-popup v-model="overlayShow"
                  position="bottom">
@@ -144,19 +146,13 @@ export default {
   created () {
     this.initDate();
   },
-  // mounted () {
-  //   this.getData()
-  // },
-  methods: {
-    async open () {
-      this.dateIndex = 1
-      if (this.dateIndex = 1) {
-        this.pageIndex=0
-        this.order = []
-        await this.initDate()
-        await this.getData();
 
-      }
+  methods: {
+    onConfirm () {
+      this.$refs.item.toggle();
+      this.overlayShow = true
+      this.titleitem = '自定义'
+      this.dateIndex = null
     },
     async onLoad () {
       await this.getData();

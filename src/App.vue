@@ -7,20 +7,29 @@
 <script>
 import { getItem, setItem } from "./utils/Storage.js";
 export default {
-  created() {
+  created () {
     this.listenBeforeUnload();
   },
-  mounted() {
-    // if(!this.$Parse.User.current()){
-    //   window.location.href = process.env.loginURl
-    // }
+  mounted () {
+    this.$Parse.Cloud.run("checkUser")
+      .then(result => {
+        if (result.code == 404) {
+          window.location.href = process.env.VUE_APP_LOGIN_URL;
+        }
+           })
+            .catch(e  => {
+        window.location.href = process.env.VUE_APP_LOGIN_URL;
+      });
+    if (!this.$Parse.User.current()) {
+      window.location.href = process.env.loginURl
+    }
 
     this.$store.dispatch("logout");
     this.$store.dispatch("login");
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据
-    listenBeforeUnload() {
+    listenBeforeUnload () {
       if (sessionStorage.getItem("store")) {
         this.$store.replaceState(
           Object.assign({}, this.$store.state, getItem("store"))

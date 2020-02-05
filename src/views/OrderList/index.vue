@@ -2,48 +2,56 @@
   <van-list>
     <!-- 搜索栏 -->
     <div class="my_search">
-      <my-search v-model="searchValue" placeholder="输入客户名称"></my-search>
+      <my-search v-model="searchValue"
+                 placeholder="输入客户名称"></my-search>
     </div>
-    <!-- 下拉菜单 -->
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex" :options="dateStatus" @change="changeDate"></van-dropdown-item>
-      <van-popup v-model="overlayShow" position="bottom">
+      <van-dropdown-item v-model="dateIndex"
+                         :options="dateStatus"
+                         @change="changeDate" @open="open">
+      </van-dropdown-item>
+      <van-popup v-model="overlayShow"
+                 position="bottom">
         <div class="date_title">
           <div class="box1"></div>
         </div>
         <div class="dete_middle">
           <div @click="isActiveTrue">
             <div class="span">开始日期</div>
-            <div class="date_change" :class="isActive1?'border':''">{{this.startDate}}</div>
+            <div class="date_change"
+                 :class="isActive1?'border':''">{{this.startDate}}</div>
           </div>
           <div @click="isActiveFalse">
             <div class="span">结束日期</div>
-            <div class="date_change" :class="isActive2?'border':''">{{this.endDate}}</div>
+            <div class="date_change"
+                 :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
-        <van-datetime-picker
-          v-model="currentDate"
-          type="date"
-          :item-height="44"
-          :formatter="formatter"
-          @confirm="confirmPicker2"
-          @cancel="overlayShow = false"
-        ></van-datetime-picker>
+        <van-datetime-picker v-model="currentDate"
+                             type="date"
+                             :item-height="44"
+                             :formatter="formatter"
+                             @confirm="confirmPicker2"
+                             @cancel="overlayShow = false"></van-datetime-picker>
       </van-popup>
-      <van-dropdown-item v-model="orderIndex" :options="orderStatus" @change="changeState" />
+      <van-dropdown-item v-model="orderIndex"
+                         :options="orderStatus"
+                         @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-      <div v-for="(indent,i) in orderList" :key="i">
+    <van-list v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              @load="onLoad">
+      <div v-for="(indent,i) in orderList"
+           :key="i">
         <div class="date">{{formatDate(orderList[i][0].madedate)}}</div>
-        <van-cell
-          v-for="(item,index) in orderList[i]"
-          :key="index"
-          :title="item.name"
-          :label="item.code"
-          is-link
-          @click="toDetails(item.id)"
-        >
+        <van-cell v-for="(item,index) in orderList[i]"
+                  :key="index"
+                  :title="item.name"
+                  :label="item.code"
+                  is-link
+                  @click="toDetails(item.id)">
           ￥{{item.taxAmount}}
           <div>
             <van-tag type="primary">{{item.voucherState == 181 ? '未审':'已审'}}</van-tag>
@@ -52,7 +60,8 @@
       </div>
     </van-list>
     <!-- 添加订单按钮 -->
-    <div @click="selectEnter = true" class="my_button">
+    <div @click="selectEnter = true"
+         class="my_button">
       <span>+</span>
     </div>
     <van-popup v-model="selectEnter"
@@ -64,7 +73,8 @@
       <div @click="toNewOrder()"
            class="select-order">新增销售订单</div>
       <div class="select-space"></div>
-      <div @click="selectEnter = false" class="select-cancel">取消</div>
+      <div @click="selectEnter = false"
+           class="select-cancel">取消</div>
     </van-popup>
   </van-list>
 </template>
@@ -79,8 +89,15 @@ export default {
   components: {
     MySearch: MySearch,
   },
-  data() {
+  data () {
     return {
+      // searchList: ['近7天', '本月', '上月', '本季度', '本年', '自定义'],
+      // // 直接通过props传递对象 修改，挺便捷的,但是不规范
+      // selectValue: {
+      //   data: '1'
+      // },
+      // // 通过emit修改，规范写法
+      // selectValue2: '',
       // 动态绑定自定义开始日期得样式
       isActive1: false,
       // 动态绑定自定义结束日期的样式
@@ -104,7 +121,7 @@ export default {
         { text: "上月", value: 2 },
         { text: "本季度", value: 3 },
         { text: "本年", value: 4 },
-        { text: "自定义", value: 5 },
+        { text: '自定义', value: 5 }
       ],
       orderIndex: null,
       orderStatus: [
@@ -126,43 +143,46 @@ export default {
     };
   },
   watch: {
-    searchValue: debounce(async function(newVal) {
+    searchValue: debounce(async function (newVal) {
       this.pageIndex = 0;
       this.order = [];
       await this.getData();
     }, 500)
   },
-  created() {
+  created () {
     this.initDate();
   },
   methods: {
-    async onLoad() {
+    open() {      
+      this.dateIndex = 1
+    },
+    async onLoad () {
       await this.getData();
     },
     // 开关自定义开始时间
-    isActiveTrue() {
+    isActiveTrue () {
       this.isActive1 = true;
       this.isActive2 = false;
       this.startDate = null;
     },
     // 开关自定义结束时间
-    isActiveFalse() {
+    isActiveFalse () {
       this.isActive2 = true;
       this.isActive1 = false;
       this.endDate = null;
     },
     // 跳转到详情页面
-    toDetails(id) {
+    toDetails (id) {
       this.$router.push({ path: "/details", query: { id } });
     },
     // 初始化日期
-    initDate() {
+    initDate () {
       const nowMonth = new Date().setDate(1);
       this.startTime = dayjs(new Date(nowMonth)).format("YYYY-MM-DD");
       this.endTime = dayjs(new Date()).format("YYYY-MM-DD");
     },
     // 调取订单查询接口
-    async getData() {
+    async getData () {
       const { data } = await this.$Parse.Cloud.run("getOrder", {
         pageSize: this.pageSize,
         pageIndex: this.pageIndex,
@@ -192,7 +212,7 @@ export default {
       }
     },
     // 获取本季度开端月份
-    getQuarterStartMonth() {
+    getQuarterStartMonth () {
       let nowMonth = new Date().getMonth();
       var quarterStartMonth = 0;
       if (nowMonth < 3) {
@@ -210,7 +230,7 @@ export default {
       return quarterStartMonth;
     },
     // 获取本年度第一天的日期
-    getCurrentYear() {
+    getCurrentYear () {
       //获取当前时间
       let currentDate = new Date();
       //获得当前年份4位年
@@ -220,7 +240,7 @@ export default {
       return currentYearFirstDate;
     },
     // 改变时间进行筛选
-    async changeDate(orderDate) {
+    async changeDate (orderDate) {
       let startTimeTmp = new Date();
       let endTimeTmp = new Date();
       switch (orderDate) {
@@ -270,7 +290,7 @@ export default {
       await this.getData();
     },
     // 自定义时间的年月日文字
-    formatter(type, value) {
+    formatter (type, value) {
       if (type === "year") {
         return `${value}年`;
       } else if (type === "month") {
@@ -280,12 +300,12 @@ export default {
       }
       return value;
     },
-    formatDate(time) {
+    formatDate (time) {
       let day = dayjs(time).format("YYYY-MM-DD");
       return day;
     },
     // 自定义时间的确定转换
-    async confirmPicker2(value) {
+    async confirmPicker2 (value) {
       if (!this.startDate) {
         this.startDate = dayjs(value).format("YYYY/MM/DD");
         return;
@@ -311,13 +331,13 @@ export default {
       }
     },
     // 改变订单状态值进行筛选
-    async changeState(orderState) {
+    async changeState (orderState) {
       this.state = orderState;
       this.pageIndex = 0;
       this.order = [];
       await this.getData();
     },
-    toNewOrder() {
+    toNewOrder () {
       // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
       this.$store.commit("clearStore");
       this.$router.push('/neworder')
@@ -372,7 +392,6 @@ export default {
 // 自定义日期的遮罩层弹出，，，日期格式的样式
 .van-popup {
   .date_title {
-    
     display: flex;
     padding: 10px 20px 10px 20px;
     justify-content: space-between;
@@ -403,13 +422,13 @@ export default {
   .border {
     border-bottom: 1px solid #388ded;
   }
-    /deep/ .van-picker {
-     .van-hairline--top-bottom {
-       position: absolute;
-       top: -90px;
-       width: 100%;
-        display: flex;
-        justify-content: space-between;
+  /deep/ .van-picker {
+    .van-hairline--top-bottom {
+      position: absolute;
+      top: -90px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
     }
   }
 }

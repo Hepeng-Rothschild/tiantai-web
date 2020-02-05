@@ -65,18 +65,12 @@
          class="my_button">
       <span>+</span>
     </div>
-    <van-popup v-model="selectEnter"
-               position="bottom"
-               round
-               class="selectEnter">
-      <div @click="$router.push('/draft')"
-           class="select-draft">继续编辑草稿</div>
-      <div @click="toNewOrder()"
-           class="select-order">新增销售订单</div>
-      <div class="select-space"></div>
-      <div @click="selectEnter = false"
-           class="select-cancel">取消</div>
-    </van-popup>
+    <van-action-sheet v-model="selectEnter"
+                      :actions="actions"
+                      cancel-text="取消"
+                      @cancel="selectEnter = false"
+                      @select="onSelect"
+                      @click="toNewOrder()" />
   </van-list>
 </template>
 
@@ -92,13 +86,11 @@ export default {
   },
   data () {
     return {
-      // searchList: ['近7天', '本月', '上月', '本季度', '本年', '自定义'],
-      // // 直接通过props传递对象 修改，挺便捷的,但是不规范
-      // selectValue: {
-      //   data: '1'
-      // },
-      // // 通过emit修改，规范写法
-      // selectValue2: '',
+      titleitem:null,
+      actions: [
+        { name: '继续编辑草稿' },
+        { name: '新增销售订单' }
+      ],
       // 动态绑定自定义开始日期得样式
       isActive1: false,
       // 动态绑定自定义结束日期的样式
@@ -122,7 +114,6 @@ export default {
         { text: "上月", value: 2 },
         { text: "本季度", value: 3 },
         { text: "本年", value: 4 },
-        { text: '自定义', value: 5 }
       ],
       orderIndex: null,
       orderStatus: [
@@ -148,7 +139,7 @@ export default {
       this.pageIndex = 0;
       this.order = [];
       await this.getData();
-    }, 500)
+    }, 500),
   },
   created () {
     this.initDate();
@@ -169,6 +160,17 @@ export default {
     },
     async onLoad () {
       await this.getData();
+    },
+    onSelect (index) {
+      if (index.name === '继续编辑草稿') {
+        this.$router.push('/draft')
+        return
+      }
+      if (index.name === '新增销售订单') {
+        this.$router.push('/neworder')
+        return
+
+      }
     },
     // 开关自定义开始时间
     isActiveTrue () {
@@ -252,6 +254,7 @@ export default {
     },
     // 改变时间进行筛选
     async changeDate (orderDate) {
+      this.titleitem = null 
       let startTimeTmp = new Date();
       let endTimeTmp = new Date();
       switch (orderDate) {
@@ -351,7 +354,6 @@ export default {
     toNewOrder () {
       // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
       this.$store.commit("clearStore");
-      this.$router.push('/neworder')
     }
   }
 };
@@ -361,6 +363,27 @@ export default {
 .my_search {
   padding: 13px 10px 10px 10px;
   background-color: rgba(248, 248, 248, 1);
+}
+.dropMyself_true {
+.van-cell__title span{
+    font-size: 14px;
+    color:#1989fa;
+  }
+  .van-cell__value i{
+    font-size: 14px;
+     color:#1989fa;
+  }
+  
+}
+.dropMyself {
+.van-cell__title span{
+    font-size: 14px;
+  }
+  .van-cell__value i{
+    font-size: 14px;
+     color:#1989fa;
+  }
+  
 }
 .van-list {
   .date {
@@ -459,30 +482,6 @@ export default {
     font-size: 42px;
     height: 57px;
     line-height: 57px;
-  }
-}
-.selectEnter {
-  .select-space {
-    height: 2px;
-    background-color: gray;
-  }
-  .select-draft {
-    border-bottom: 1px solid #c0c4cc;
-  }
-  .select-order,
-  .select-draft {
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 17px;
-    color: rgba(16, 16, 16, 1);
-  }
-  .select-cancel {
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 17px;
-    color: rgba(16, 16, 16, 1);
   }
 }
 </style>

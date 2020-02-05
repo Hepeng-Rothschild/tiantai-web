@@ -8,7 +8,8 @@
     <van-dropdown-menu>
       <van-dropdown-item v-model="dateIndex"
                          :options="dateStatus"
-                         @change="changeDate" @open="open">
+                         @change="changeDate"
+                         @open="open">
       </van-dropdown-item>
       <van-popup v-model="overlayShow"
                  position="bottom">
@@ -152,9 +153,19 @@ export default {
   created () {
     this.initDate();
   },
+  // mounted () {
+  //   this.getData()
+  // },
   methods: {
-    open() {      
+    async open () {
       this.dateIndex = 1
+      if (this.dateIndex = 1) {
+        this.pageIndex=0
+        this.order = []
+        await this.initDate()
+        await this.getData();
+
+      }
     },
     async onLoad () {
       await this.getData();

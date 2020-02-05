@@ -9,9 +9,15 @@
       <van-dropdown-item v-model="dateIndex"
                          :options="dateStatus"
                          @change="changeDate"
-                         ref="item" :title="titleitem">
+                         ref="item"
+                         :title="titleitem">
         <!-- <div @click="onConfirm">自定义</div> -->
-        <van-cell title="自定义" @click="onConfirm" :class="titleitem != null ?'dropMyself_true':'dropMyself'"><van-icon name="success" v-if="titleitem != null" /></van-cell>
+        <van-cell title="自定义"
+                  @click="onConfirm"
+                  :class="titleitem != null ?'dropMyself_true':'dropMyself'">
+          <van-icon name="success"
+                    v-if="titleitem != null" />
+        </van-cell>
       </van-dropdown-item>
       <van-popup v-model="overlayShow"
                  position="bottom">
@@ -88,7 +94,7 @@ export default {
   },
   data () {
     return {
-      titleitem:null,
+      titleitem: null,
       actions: [
         { name: '继续编辑草稿' },
         { name: '新增销售订单' }
@@ -97,8 +103,8 @@ export default {
       isActive1: false,
       // 动态绑定自定义结束日期的样式
       isActive2: false,
-      startDate: null, // 自定义开始日期
-      endDate: null, // 自定义结束日期
+      startDate: dayjs(new Date()).format("YYYY/MM/DD"), // 自定义开始日期
+      endDate: dayjs(new Date()).format("YYYY/MM/DD"), // 自定义结束日期
       overlayShow: false, //   开关遮罩层
       selectEnter: false,
       // 列表加载
@@ -250,7 +256,7 @@ export default {
     },
     // 改变时间进行筛选
     async changeDate (orderDate) {
-      this.titleitem = null 
+      this.titleitem = null
       let startTimeTmp = new Date();
       let endTimeTmp = new Date();
       switch (orderDate) {
@@ -289,9 +295,6 @@ export default {
         case 4:
           startTimeTmp = this.getCurrentYear();
           break;
-        default:
-          this.overlayShow = true
-          break;
       }
       this.startTime = dayjs(startTimeTmp).format("YYYY-MM-DD");
       this.endTime = dayjs(endTimeTmp).format("YYYY-MM-DD");
@@ -325,11 +328,12 @@ export default {
         return;
       }
       if (
-        this.startDate &&
-        this.endDate &&
-        this.startDate != null &&
-        this.endDate != null
+        this.startDate <= this.endDate
       ) {
+        //    this.startDate &&
+        // this.endDate &&
+        // this.startDate != null &&
+        // this.endDate != null && 
         this.overlayShow = false;
         this.startTime = this.startDate;
         this.endTime = this.endDate;
@@ -337,7 +341,7 @@ export default {
         this.order = [];
         await this.getData();
       } else {
-        this.$toast.fail("日期填写不完整");
+        this.$toast.fail("结束日期不得早于开始日期");
       }
     },
     // 改变订单状态值进行筛选
@@ -361,25 +365,23 @@ export default {
   background-color: rgba(248, 248, 248, 1);
 }
 .dropMyself_true {
-.van-cell__title span{
+  .van-cell__title span {
     font-size: 14px;
-    color:#1989fa;
+    color: #1989fa;
   }
-  .van-cell__value i{
+  .van-cell__value i {
     font-size: 14px;
-     color:#1989fa;
+    color: #1989fa;
   }
-  
 }
 .dropMyself {
-.van-cell__title span{
+  .van-cell__title span {
     font-size: 14px;
   }
-  .van-cell__value i{
+  .van-cell__value i {
     font-size: 14px;
-     color:#1989fa;
+    color: #1989fa;
   }
-  
 }
 .van-list {
   .date {

@@ -7,20 +7,21 @@
 <script>
 import { getItem, setItem } from "./utils/Storage.js";
 export default {
-  created() {
+  created () {
     this.listenBeforeUnload();
   },
-  mounted() {
-    // if(!this.$Parse.User.current()){
+  mounted () {
+    
+    // if (!this.$Parse.User.current()) {
     //   window.location.href = process.env.loginURl
     // }
 
-    this.$store.dispatch("logout");
-    this.$store.dispatch("login");
+    // this.$store.dispatch("logout");
+    // this.$store.dispatch("login");
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据
-    listenBeforeUnload() {
+    listenBeforeUnload () {
       if (sessionStorage.getItem("store")) {
         this.$store.replaceState(
           Object.assign({}, this.$store.state, getItem("store"))

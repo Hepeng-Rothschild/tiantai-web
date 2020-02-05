@@ -145,14 +145,14 @@ const router = new VueRouter({
 })
 router.beforeEach(async (to, from, next) => {
 
-  // try {
-  //   let result = await this.$Parse.Cloud.run("checkUser")
-  //   if (result.code == 404) {
-  //     return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
-  //   }
-  // }catch(e){
-  //   return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
-  // }
+  try {
+    let result = await Parse.Cloud.run("checkUser")
+    if (result.code == 404) {
+      return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+    }
+  }catch(e){
+    return window.location.href = process.env.VUE_APP_LOGIN_URL+'?path='+ to.name;
+  }
   
   if (to.meta.title) {
     document.title = to.meta.title;

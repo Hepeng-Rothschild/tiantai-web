@@ -1,5 +1,9 @@
 <template>
   <div>
+    <van-notice-bar wrapable
+                    :scrollable="false">
+      由于接口限制，带*号必填项必须全部输入，才能提交成功。
+    </van-notice-bar>
     <van-radio-group v-model="params.radio">
       <van-radio name="全额订金">全额订金</van-radio>
       <van-radio name="全额现结">全额现结</van-radio>
@@ -114,6 +118,9 @@ export default {
 </script>
 
 <style lang = "less" scoped>
+.van-notice-bar {
+  margin-top: 13px;
+}
 .van-radio-group {
   margin-top: 13px;
   border-bottom: 1px solid #c0c4cc;

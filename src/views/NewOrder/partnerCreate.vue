@@ -260,7 +260,7 @@ export default {
         SaleDepartment: this.savePartner.saleDepartmentCode,
         SaleMan: this.savePartner.saleManCode,
         Status: this.savePartner.status,
-        DynamicPropertyKeys: ["pubuserdefnvc1", "priuserdefnvc2", "priuserdefnvc5"],
+        DynamicPropertyKeys: ["priuserdefnvc1", "priuserdefnvc2", "priuserdefnvc5"],
         DynamicPropertyValues: [
           "5", this.savePartner.priuserdefnvc2, this.savePartner.priuserdefnvc5,
         ],

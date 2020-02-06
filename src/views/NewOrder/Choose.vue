@@ -112,10 +112,13 @@ export default {
     async getGoods() {
       var _this = this;
       let { data } = await this.$Parse.Cloud.run("getInventory", {
+        // inventoryCode:_this.searchValue,
         inventoryName: _this.searchValue,
         pageSize: _this.pageSize,
         pageIndex: _this.pageIndex
-      });      
+      });     
+      console.log(data);
+       
       let listData = data.map(item => {
         return {
           id: item.id,

@@ -17,7 +17,8 @@
           <div class="date-input">
             <input type="text"
                    v-model="params.aleStartDate"
-                   oninput="value=value.replace(/[^\d]/g,'')" @click="show_1 = true">
+                   oninput="value=value.replace(/[^\d]/g,'')"
+                   @click="show_1 = true">
             <van-icon name="clock"
                       @click="show_1 = true" />
           </div>

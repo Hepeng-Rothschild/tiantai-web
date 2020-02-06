@@ -17,7 +17,7 @@
           <van-field v-model="popData.Quantity" label="数量" input-align="right" placeholder="请输入" />
         </div>
         <div class="border_top">
-          <van-cell title="单位">{{popData.currentStock.unit?popData.currentStock.unit:'KG'}}</van-cell>
+          <van-cell title="单位" class="unit_color">{{popData.currentStock.unit?popData.currentStock.unit:'KG'}}</van-cell>
         </div>
         <div class="pop_cell border_top">
           <span>含税单价</span>
@@ -110,13 +110,15 @@ export default {
     }
   }
   .gray {
-    color: #969799;
+    // color: #969799;
+    color: #000;
   }
   .padding_left {
     padding-left: 8px;
   }
   /deep/ .van-field__control {
-    color: #969799;
+    // color: #969799;
+    color: #000;
   }
   .pop_cell {
     display: flex;
@@ -125,6 +127,11 @@ export default {
   }
   .border_top {
     border-top: 1px solid rgba(229, 229, 229, 1);
+    .unit_color {
+      .van-cell__value {
+        color:#000;
+      }
+    }
   }
   .van-cell {
     padding: 9px 13px;
@@ -134,7 +141,8 @@ export default {
   .my_input {
     width: 150px;
     border: none;
-    color: #888;
+    // color: #888;
+    color: #000;
     text-align: right;
   }
   .button {

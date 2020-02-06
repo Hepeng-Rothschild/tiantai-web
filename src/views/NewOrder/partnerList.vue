@@ -15,7 +15,7 @@
       >
         <van-cell
           :title="partner.AA_Partner_name"
-          :label="Number(partner.AA_Partner_Pay_AdvPBalance).toFixed(2)"
+          :label="Number(partner.AA_Partner_ARBalance_Abandon).toFixed(2)"
           is-link
         />
       </van-cell-group>
@@ -64,7 +64,7 @@ export default {
         name: this.searchValue,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
-      });
+      });            
       this.partner.push(...data[0]);
       this.loading = false;
       if (data[0].length) {

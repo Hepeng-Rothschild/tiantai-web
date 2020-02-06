@@ -115,7 +115,7 @@ export default {
         inventoryName: _this.searchValue,
         pageSize: _this.pageSize,
         pageIndex: _this.pageIndex
-      });
+      });      
       let listData = data.map(item => {
         return {
           id: item.id,
@@ -146,7 +146,7 @@ export default {
     showPopup(item) {
       this.show = true;
       item = JSON.parse(JSON.stringify(item));
-      item.Quantity = 0;
+      item.Quantity = null;
       item.OrigDiscountAmount = 0; // 总价
       item.OrigTaxAmount = 0; // 含税总价
       item.OrigTax = 0; // 税额

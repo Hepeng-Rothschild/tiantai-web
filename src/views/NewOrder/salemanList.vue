@@ -1,23 +1,19 @@
 <template>
   <div>
-    <my-search v-model="searchValue" placeholder="请输入业务员名称"></my-search>
-
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      :offset="100"
-      @load="onLoad"
-    >
-      <van-cell-group v-for="item in saleMan" :key="item.id" @click="selectSaleMan(item)">
-        <van-cell :title="item.name" is-link />
+    <my-search v-model="searchValue"
+               placeholder="请输入业务员名称"></my-search>
+    <van-list v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              :offset="100"
+              @load="onLoad">
+      <van-cell-group v-for="item in saleMan"
+                      :key="item.id"
+                      @click="selectSaleMan(item)">
+        <van-cell :title="item.name"
+                  is-link />
       </van-cell-group>
     </van-list>
-
-    <!-- 新增按钮 -->
-    <div @click="$router.push('/partnercreate')" class="my_button">
-      <span>+</span>
-    </div>
   </div>
 </template>
 
@@ -29,7 +25,7 @@ export default {
   components: {
     MySearch: MySearch
   },
-  data() {
+  data () {
     return {
       searchValue: null,
       saleMan: [],
@@ -40,19 +36,19 @@ export default {
     };
   },
   watch: {
-     searchValue: debounce(async function(newValue, oldValue) {
+    searchValue: debounce(async function (newValue, oldValue) {
       this.pageIndex = 0;
       this.saleMan = [];
       this.getSaleMan();
-    },500)
+    }, 500)
   },
   methods: {
-    onLoad() {
+    onLoad () {
       this.getSaleMan();
     },
     // getSaleMan 获取业务员
-    async getSaleMan() {
-      
+    async getSaleMan () {
+
       const { data } = await this.$Parse.Cloud.run("getSaleMan", {
         name: this.searchValue,
         pageIndex: this.pageIndex,
@@ -64,12 +60,12 @@ export default {
         this.pageIndex++;
         //为了配合搜索框 finished = false 会继续触发 onLoad 事件
         this.finished = false
-      } 
-      if (!data[0].length ||data[0].length<this.pageSize) {
+      }
+      if (!data[0].length || data[0].length < this.pageSize) {
         this.finished = true;
       }
     },
-    selectSaleMan(saleMan) {
+    selectSaleMan (saleMan) {
       this.$router.back();
       this.$store.commit("saveSelectedSaleMan", saleMan);
     }
@@ -88,23 +84,5 @@ export default {
   color: #000000;
   font-size: 17px;
   align-items: center;
-}
-.my_button {
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  bottom: 50px;
-  right: 30px;
-  width: 57px;
-  height: 57px;
-  box-shadow: 0px 3px 10px -2px rgba(170, 170, 170, 1);
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.7);
-  span {
-    color: rgba(1, 113, 240, 1);
-    font-size: 42px;
-    height: 57px;
-    line-height: 57px;
-  }
 }
 </style>

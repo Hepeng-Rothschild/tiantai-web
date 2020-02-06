@@ -7,11 +7,12 @@
           <van-field v-model="savePartner.name"
                      placeholder="请输入"
                      input-align="right"
-                     style="border:0px;"/>
+                     style="border:0px;" />
         </van-cell>
         <van-cell title="客户性质"
                   :value="savePartner.partnerTypeName?savePartner.partnerTypeName:'客户'"
                   is-link
+                  :class="savePartner.partnerTypeName?'van-cell_true':'van-cell_true'"
                   @click="showProperty = true">
         </van-cell>
         <van-popup v-model="showProperty"
@@ -24,6 +25,7 @@
         <van-cell title="所属类别"
                   :value="savePartner.partnerClassName?savePartner.partnerClassName:'请选择'"
                   is-link
+                  :class="savePartner.partnerClassName?'van-cell_true':'van-cell'"
                   @click="showCategory = true">
         </van-cell>
         <van-popup v-model="showCategory"
@@ -38,6 +40,7 @@
         <van-cell title="分管部门 选填"
                   :value="savePartner.saleDepartmentName?savePartner.saleDepartmentName:'请选择'"
                   is-link
+                  :class="savePartner.saleDepartmentName?'van-cell_true':'van-cell'"
                   @click="showDepartment = true">
         </van-cell>
         <van-popup v-model="showDepartment"
@@ -50,6 +53,7 @@
         <van-cell title="分管人员"
                   :value="savePartner.saleManName?savePartner.saleManName:'请选择'"
                   is-link
+                  :class="savePartner.saleManName?'van-cell_true':'van-cell'"
                   @click="showManages = true">
         </van-cell>
         <van-popup v-model="showManages"
@@ -64,6 +68,7 @@
         <van-cell title="默认收款方式"
                   :value="savePartner.saleSettleStyleName?savePartner.saleSettleStyleName:'请选择'"
                   is-link
+                  :class="savePartner.saleSettleStyleName?'van-cell_true':'van-cell'"
                   to="/defaultPay">
         </van-cell>
       </div>
@@ -90,13 +95,13 @@
       </div>
       <div class="spacing-two moveleft">
         <van-cell title="发货要求">
-          <van-field v-model="savePartner.sendgoodsAsk"
+          <van-field v-model="savePartner.priuserdefnvc2"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
         </van-cell>
         <van-cell title="到货要求">
-          <van-field v-model="savePartner.remarks"
+          <van-field v-model="savePartner.priuserdefnvc5"
                      placeholder="请输入"
                      input-align="right"
                      style="border:0px;" />
@@ -157,8 +162,8 @@ export default {
         saleManName: null,
         saleManCode: { Code: null },
         departmentCode: null,
-        sendgoodsAsk: '',//发货要求
-        remarks: '',// 发货备注
+        priuserdefnvc2: null,//发货要求
+        priuserdefnvc5: null,// 发货备注
         // 默认收款方式----开始
         saleSettleStyleName: null,
         saleStartDate: null,
@@ -255,9 +260,10 @@ export default {
         SaleDepartment: this.savePartner.saleDepartmentCode,
         SaleMan: this.savePartner.saleManCode,
         Status: this.savePartner.status,
-        DynamicPropertyKeys: {
-          pubuserdefnvc1: '5'
-        },
+        DynamicPropertyKeys: ["pubuserdefnvc1", "priuserdefnvc2", "priuserdefnvc5"],
+        DynamicPropertyValues: [
+          "5", this.savePartner.priuserdefnvc2, this.savePartner.priuserdefnvc5,
+        ],
         SaleSettleStyle: this.saleSettleStyle,
         SaleStartDate: this.savePartner.saleStartDate || null,
         SaleSpaceMonth: this.savePartner.saleSpaceMonth || null,
@@ -306,7 +312,22 @@ export default {
       } else if (!inputPartner.shipmentAddress) {
         this.$toast.fail('到货地址不能为空')
         return
-      } else {
+      }
+      // 以下代码有待测试
+      // else if (!inputPartner.saleCreditDays) {
+      //   this.$toast.fail('销货x天内收款不能为空')
+      // }
+      // else if (!inputPartner.aleStartDate) {
+      //   this.$toast.fail('账单起始日不能为空')
+      // }
+      // else if (!inputPartner.saleSpaceMonth) {
+      //   this.$toast.fail('每x个月为账期不能为空')
+      // }else if (!inputPartner.saleCheckMonth) {
+      //   this.$toast.fail('对账月不能为空')
+      // }else if (!inputPartner.SaleCheckDate) {
+      //   this.$toast.fail('对账日不能为空')
+      // }
+      else {
         this.createPartner()
         this.$router.push({ name: 'partnerList' })
         this.$toast.success('新增客户成功')
@@ -356,6 +377,7 @@ export default {
       color: rgba(16, 16, 16, 1);
     }
   }
+  // 常规状态下单元格样式
   .van-cell {
     padding: 10px 15px 10px 15px;
     border-bottom: 1px solid #c0c4cc;
@@ -371,18 +393,52 @@ export default {
       text-align: left;
       font-family: "PingFangSC-regular";
     }
-    .van-cell__value {
+    /deep/ .van-cell__value {
       color: #888;
+      // color: #000;
       font-size: 17px;
       text-align: right;
       font-family: "PingFangSC-regular";
+      input {
+        color: #000;
+      }
     }
     // 右边的标签
     .van-icon {
       align-self: center;
     }
   }
-
+  // 用于动态绑定选中后的文字样式
+  .van-cell_true {
+    padding: 10px 15px 10px 15px;
+    border-bottom: 1px solid #c0c4cc;
+    // 单元格内输入框样式
+    .van-field {
+      padding: 0px;
+      font-size: 17px;
+      padding-right: 20px;
+    }
+    .van-cell__title {
+      color: rgba(0, 0, 0, 1);
+      font-size: 17px;
+      text-align: left;
+      font-family: "PingFangSC-regular";
+    }
+    /deep/ .van-cell__value {
+      color: #000;
+      font-size: 17px;
+      text-align: right;
+      font-family: "PingFangSC-regular";
+      input {
+        color: #000;
+      }
+    }
+    // 右边的标签
+    .van-icon {
+      align-self: center;
+    }
+  }
+  // 遮罩层样式
   .van-overlay {
     .van-picker {
       width: 100%;

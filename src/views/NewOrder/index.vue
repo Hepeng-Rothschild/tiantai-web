@@ -349,6 +349,7 @@ export default {
         return item.id == this.partner.AA_Partner_idsaleman;
       });
       this.saleMan = saleMan[0];
+
       this.orderMessage.deliveryRequire1 = this.partner.AA_Partner_priuserdefnvc2
       this.orderMessage.deliveryRequire2 = this.partner.AA_Partner_priuserdefnvc5
     }

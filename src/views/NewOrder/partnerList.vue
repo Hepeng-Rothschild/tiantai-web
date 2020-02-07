@@ -73,7 +73,7 @@ export default {
       if (!data[0].length || data[0].length < this.pageSize) {
         this.finished = true;
       }
-      console.log(data);
+      // console.log(data);
       let arr = this.partner
       for (let i = 0; i < arr.length; i++) {
         this.cellLabel = '应收余额：￥' + Number(this.partner[i].AA_Partner_ARBalance_Abandon).toFixed(2)

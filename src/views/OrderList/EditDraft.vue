@@ -190,7 +190,7 @@ export default {
   },
   methods: {
     getDraft () {
-      console.log("==================", this.Draft);
+      // console.log("==================", this.Draft);
       this.partner = this.SelectedPartner || this.Draft.Customer;
       this.saleMan = this.SelectedSaleMan || this.Draft.Clerk;
       this.orderMessage.voucherDate = this.Draft.VoucherDate;
@@ -321,7 +321,7 @@ export default {
         ],
         SaleOrderDetails: this.SaleOrderDetails
       });
-      console.log(data);
+      // console.log(data);
       if (data.code === 200) {
         this.$toast.success({
           message: "创建订单成功",
@@ -358,7 +358,7 @@ export default {
       draft.set("Memo", this.orderMessage.memo);
       draft.set("Name", this.partner.AA_Partner_name);
       const data = await draft.save();
-      console.log("修改草稿", data.attributes);
+      // console.log("修改草稿", data.attributes);
       if (data.attributes) {
         this.$toast.success({
           message: "修改草稿成功",

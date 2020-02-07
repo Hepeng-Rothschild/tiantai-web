@@ -117,7 +117,7 @@ export default {
         pageSize: _this.pageSize,
         pageIndex: _this.pageIndex
       });     
-      console.log(data);
+      // console.log(data);
        
       let listData = data.map(item => {
         return {

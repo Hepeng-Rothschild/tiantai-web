@@ -284,6 +284,7 @@ export default {
     // 判断页面中的内容进行提示
     inputMessage () {
       let inputPartner = this.savePartner
+      let payDate = this.$store.state.defaultPay
       if (!inputPartner.name) {
         this.$toast.fail('客户名称不能为空')
         return
@@ -314,19 +315,19 @@ export default {
         return
       }
       // 以下代码有待测试
-      // else if (!inputPartner.saleCreditDays) {
-      //   this.$toast.fail('销货x天内收款不能为空')
-      // }
-      // else if (!inputPartner.aleStartDate) {
-      //   this.$toast.fail('账单起始日不能为空')
-      // }
-      // else if (!inputPartner.saleSpaceMonth) {
-      //   this.$toast.fail('每x个月为账期不能为空')
-      // }else if (!inputPartner.saleCheckMonth) {
-      //   this.$toast.fail('对账月不能为空')
-      // }else if (!inputPartner.SaleCheckDate) {
-      //   this.$toast.fail('对账日不能为空')
-      // }
+      else if (!payDate.saleCreditDays) {
+        this.$toast.fail('销货x天内收款不能为空')
+      }
+      else if (!payDate.aleStartDate) {
+        this.$toast.fail('账单起始日不能为空')
+      }
+      else if (!payDate.saleSpaceMonth) {
+        this.$toast.fail('每x个月为账期不能为空')
+      }else if (!payDate.saleCheckMonth) {
+        this.$toast.fail('结算日期为对账后的x个月不能为空')
+      }else if (!payDate.saleCheckDate) {
+        this.$toast.fail('结算日期为对账后的x日不能为空')
+      }
       else {
         this.createPartner()
         this.$router.push({ name: 'partnerList' })

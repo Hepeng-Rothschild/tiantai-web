@@ -52,7 +52,7 @@ export default {
   watch: {
     searchValue: debounce(async function(newVal) {
       this.pageSkip = 0;
-      this.allDraft = [];
+      this.draft = [];
       this.getOrderDraft();
     }, 500)
   },
@@ -70,7 +70,7 @@ export default {
       query.contains("Name", this.searchValue);
       const data = await query.find();
       let draft = JSON.parse(JSON.stringify(data));
-      console.log(draft);
+      // console.log(draft);
       this.draft.push(...draft);
       this.draft.forEach(item => {
         item.totalPrice = 0;

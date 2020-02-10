@@ -11,7 +11,7 @@
                       :key="index"
                       @click="selectPartner(partner)">
         <van-cell :title="partner.AA_Partner_name"
-                  :label="cellLabel"
+                  :label="'应收余额：￥'+partner.AA_Partner_Receive_aRBalance.toFixed(2)"
                   is-link />
       </van-cell-group>
     </van-list>
@@ -36,7 +36,6 @@ export default {
   data () {
     return {
       // 单元格label
-      cellLabel: null,
       searchValue: null,
       partner: [],
       loading: false,
@@ -73,13 +72,6 @@ export default {
       if (!data[0].length || data[0].length < this.pageSize) {
         this.finished = true;
       }
-      // console.log(data);
-      let arr = this.partner
-      for (let i = 0; i < arr.length; i++) {
-        this.cellLabel = '应收余额：￥' + Number(this.partner[i].AA_Partner_ARBalance_Abandon).toFixed(2)
-      }
-
-
     },
     selectPartner (partner) {
       this.$router.back();

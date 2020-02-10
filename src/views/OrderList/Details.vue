@@ -1,5 +1,6 @@
 <template>
-  <div v-if="indentDetails" class="details">
+  <div v-if="indentDetails"
+       class="details">
     <div class="order border">
       <div>
         <span>单据编号</span>
@@ -33,7 +34,9 @@
         <span>{{indentDetails.address}}</span>
       </div>
     </div>
-    <div class="goods" v-for="(item,index) in indentDetails.SaleOrderDetails" :key="index">
+    <div class="goods"
+         v-for="(item,index) in indentDetails.SaleOrderDetails"
+         :key="index">
       <div class="main border">
         <div class="left">
           <div class="type dark_color">{{item.AA_Inventory_code}}</div>
@@ -99,40 +102,49 @@
 import { getItem } from "../../utils/Storage.js";
 export default {
   name: "detailsIndex",
-  data() {
+  data () {
     return {
       id: Number(this.$route.query.id),
       indentDetails: null,
-      discountAmount:0, // 本币金额
+      discountAmount: 0, // 本币金额
       taxAmount: 0,
     };
   },
-  mounted() {
+
+  mounted () {
     this.getOrderById();
   },
   methods: {
-    async getOrderById() {
+    async getOrderById () {
       const { data } = await this.$Parse.Cloud.run("getOrderById", {
         id: this.id
       });
       this.indentDetails = data;
-      
+
       this.indentDetails.SaleOrderDetails.forEach(e => {
         this.discountAmount += e.discountAmount
         this.taxAmount += e.taxAmount
       });
       console.log(this.indentDetails);
     },
-    format(time) {
+    format (time) {
       const dateTime = new Date(time);
       const year = dateTime.getFullYear();
       const month = dateTime.getMonth() + 1;
       const date = dateTime.getDate();
       return `${year}-${this.addZero(month)}-${this.addZero(date)} `;
     },
-    addZero(v) {
+    addZero (v) {
       return v < 10 ? "0" + v : v;
     }
+  },
+    beforeRouteLeave (to, from, next) {
+    if (to.path === "/orderlist") {
+      to.meta.keepAlive = true;      
+    } else {
+      to.meta.keepAlive = false;      
+    }
+    next();
   }
 };
 </script>

@@ -24,11 +24,19 @@
 import { setItem, getItem } from "../../utils/Storage.js";
 
 export default {
-  data() {
+  data () {
     return {
       detail: getItem("inventory")
     };
   },
+  beforeRouteLeave (to, from, next) {
+    if (to.path === "/inventory") {
+      to.meta.keepAlive = true;      
+    } else {
+      to.meta.keepAlive = false;
+    }
+    next();
+  }
 };
 </script>
 

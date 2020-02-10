@@ -1,17 +1,20 @@
 <template>
   <div class="inventory">
     <div class="my_search">
-      <my-search v-model="searchValue" placeholder="请输入商品名称" class="search" />
+      <my-search v-model="searchValue"
+                 placeholder="请输入商品名称"
+                 class="search" />
     </div>
     <!-- list -->
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
-      :offset="100"
-    >
-      <div class="cell" v-for="(item,index) in inventory" :key="index" @click="goToDtail(item)">
+    <van-list v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              @load="onLoad"
+              :offset="100">
+      <div class="cell"
+           v-for="(item,index) in inventory"
+           :key="index"
+           @click="goToDtail(item)">
         <div class="text">
           <div class="text_title">{{item.name}}</div>
           <div class="text_txt">
@@ -20,7 +23,8 @@
           </div>
         </div>
         <div class="arrow">
-          <img src="../../assets/arrow.png" alt />
+          <img src="../../assets/arrow.png"
+               alt />
         </div>
       </div>
     </van-list>
@@ -33,7 +37,7 @@ import { setItem, getItem } from "../../utils/Storage.js";
 import { debounce } from "loadsh";
 
 export default {
-  data() {
+  data () {
     return {
       searchValue: null,
       shopName: null,
@@ -47,22 +51,26 @@ export default {
   components: {
     MySearch: MySearch
   },
+  beforeRouteLeave (to, from, next) {
+    from.meta.keepAlive = false;
+    next();
+  },
   watch: {
-    searchValue: debounce(async function(newValue, oldValue) {
+    searchValue: debounce(async function (newValue, oldValue) {
       this.pageIndex = 1;
       this.inventory = [];
       this.getData();
     }, 500)
   },
   methods: {
-    onLoad() {
+    onLoad () {
       this.getData();
     },
-    goToDtail(item) {
+    goToDtail (item) {
       this.$router.push({ name: "detailinfo" });
       setItem("inventory", item);
     },
-    async getData() {
+    async getData () {
       const { data } = await this.$Parse.Cloud.run("getInventory", {
         inventoryName: this.searchValue,
         pageSize: this.pageSize,

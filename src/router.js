@@ -37,7 +37,9 @@ const routes = [
   {
     path: '/orderList',
     name: 'orderList',
-    meta: { title: '销售订单' },
+    meta: { title: '销售订单',
+    keepAlive:true  //  需要缓存的页面
+  },
     component: () => import('@/views/OrderList')
   },
   {
@@ -122,7 +124,7 @@ const routes = [
   {
     path: '/inventory',
     name: 'inventory',
-    meta: { title: '库存查询' },
+    meta: { title: '库存查询',keepAlive:true },
     component: () => import('@/views/Inventory/Inventory.vue')
   },
   {
@@ -150,6 +152,7 @@ const router = new VueRouter({
   // base: process.env.BASE_URL,
   routes
 })
+  
 router.beforeEach(async (to, from, next) => {
 
   try {

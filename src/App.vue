@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <router-view />
+    <keep-alive>
+      <router-view v-if='$route.meta.keepAlive' />
+    </keep-alive>
+
+    <router-view v-if='!$route.meta.keepAlive' />
+
   </div>
 </template>
 
@@ -11,7 +16,7 @@ export default {
     this.listenBeforeUnload();
   },
   mounted () {
-    
+
     // if (!this.$Parse.User.current()) {
     //   window.location.href = process.env.loginURl
     // }

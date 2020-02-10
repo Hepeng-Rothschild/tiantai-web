@@ -139,9 +139,10 @@ export default {
       // 订单状态
       state: null,
       pageSize: 10,
-      pageIndex: 0
+      pageIndex: 0,
     };
   },
+
   watch: {
     searchValue: debounce(async function (newVal) {
       this.pageIndex = 0;
@@ -150,9 +151,11 @@ export default {
     }, 500),
   },
   created () {
-    this.initDate();
+    this.initDate()
   },
-
+  activated () {
+    
+  },
   methods: {
     onConfirm () {
       this.$refs.item.toggle();
@@ -355,7 +358,11 @@ export default {
       // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
       this.$store.commit("clearStore");
     }
-  }
+  },
+    beforeRouteLeave (to, from, next) {
+    from.meta.keepAlive = false;
+    next();
+  },
 };
 </script>
 

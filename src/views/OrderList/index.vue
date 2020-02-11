@@ -184,7 +184,7 @@ export default {
         this.$router.push('/draft')
         return
       }
-      if (index === 1) {
+      if (index === "新增销售订单") {
         this.$router.push("/neworder");
       }
       },40)

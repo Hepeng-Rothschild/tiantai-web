@@ -61,7 +61,7 @@
                   :label="item.code"
                   is-link
                   @click="toDetails(item.id)">
-          ￥{{item.taxAmount}}
+          ￥{{item.taxAmount.toFixed(2)}}
           <div>
             <van-tag type="primary">{{item.voucherState == 181 ? '未审':'已审'}}</van-tag>
           </div>

@@ -162,9 +162,11 @@ export default {
     //进入时读取位置
     document.body.scrollTop = this.scrollY
     document.documentElement.scrollTop = this.scrollY;
+    alert('111')
   },
   deactivated () {
     this.scrollY = document.body.scrollTop;
+    alert('222')
   },
   methods: {
     onConfirm () {

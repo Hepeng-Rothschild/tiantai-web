@@ -167,6 +167,18 @@ export default {
     this.scrollY = document.body.scrollTop;
   },
   methods: {
+    wxRefresh:function(to) {
+      // 在链接后加一个随机参数wxr，以解决iOS赋值链接的问题
+      let wxr = 'wxr' + new Date().getTime()
+      let url = location.protocol + '//' +location.host + to.fullPath
+      if(location.search) {
+        url = url + '&' + wxr
+
+      }else {
+        url = url + '?' + wxr
+      }
+      window.location.replace(url)
+    },
     onConfirm () {
       this.$refs.item.toggle();
       this.overlayShow = true

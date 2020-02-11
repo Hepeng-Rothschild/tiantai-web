@@ -53,26 +53,24 @@ export default {
     MySearch: MySearch
   },
   beforeRouteLeave (to, from, next) {
-    from.meta.keepAlive = false;
+    if (to.name == "detailinfo") {
+      from.meta.keepAlive = true;
+    } else {
+      from.meta.keepAlive = false;
+    }
     next();
-  },
-  activated () {
-    //进入时读取位置
-    document.body.scrollTop = this.scrollY
-    document.documentElement.scrollTop = this.scrollY;
-  },
-  deactivated () {
-    this.scrollY = document.body.scrollTop;
   },
   watch: {
     searchValue: debounce(async function (newValue, oldValue) {
       this.pageIndex = 1;
       this.inventory = [];
+      alert('searchValue变化了')
       this.getData();
     }, 500)
   },
   methods: {
     onLoad () {
+      alert('onload获取数据')
       this.getData();
     },
     goToDtail (item) {

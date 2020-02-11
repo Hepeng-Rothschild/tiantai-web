@@ -159,11 +159,11 @@ export default {
     //进入时读取位置
     document.body.scrollTop = this.scrollY;
     document.documentElement.scrollTop = this.scrollY;
-    // alert('111')
+    alert('缓存激活')
   },
   deactivated() {
     this.scrollY = document.body.scrollTop;
-    // alert('222')
+    alert('缓存销毁')
   },
   methods: {
     onConfirm() {

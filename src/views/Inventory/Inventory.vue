@@ -57,7 +57,7 @@ export default {
     next();
   },
   activated () {
-    //进入时读取位置
+    //进入时读取位置d 
     document.body.scrollTop = this.scrollY
     document.documentElement.scrollTop = this.scrollY;
   },

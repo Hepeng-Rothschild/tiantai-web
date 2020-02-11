@@ -155,16 +155,16 @@ export default {
   created() {
     this.initDate();
   },
-  activated() {
-    //进入时读取位置
-    // document.body.scrollTop = this.scrollY;
-    // document.documentElement.scrollTop = this.scrollY;
-    // alert('缓存激活')
-  },
-  deactivated() {
-    // this.scrollY = document.body.scrollTop;
-    // alert('缓存销毁')
-  },
+  // activated() {
+  //   //进入时读取位置
+  //   // document.body.scrollTop = this.scrollY;
+  //   // document.documentElement.scrollTop = this.scrollY;
+  //   // alert('缓存激活')
+  // },
+  // deactivated() {
+  //   // this.scrollY = document.body.scrollTop;
+  //   // alert('缓存销毁')
+  // },
   methods: {
     onConfirm() {
       this.$refs.item.toggle();

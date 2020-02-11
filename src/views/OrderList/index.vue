@@ -165,16 +165,21 @@ export default {
     async onLoad() {
       await this.getData();
     },
-    onSelect(item, index) {
-      if (index === 0) {
-        this.$router.push("/draft");
-      }
-      if (index === 1) {
-        this.$router.push("/neworder");
-      }
+    onSelect (index) {
       this.selectEnter = false
-      // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
+       // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
       this.$store.commit("clearStore");
+      setTimeout(()=> {
+      if (index.name === '继续编辑草稿') {
+        this.$router.push('/draft')
+        return
+      }
+      if (index.name === "新增销售订单") {
+        this.$router.push("/neworder");
+        return
+      }
+      },40)
+      
     },
     // 开关自定义开始时间
     isActiveTrue() {

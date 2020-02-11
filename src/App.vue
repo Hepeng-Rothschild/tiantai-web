@@ -3,7 +3,6 @@
     <keep-alive :include="include">
       <router-view v-if='$route.meta.keepAlive' />
     </keep-alive>
-
     <router-view v-if='!$route.meta.keepAlive' />
 
   </div>
@@ -26,8 +25,8 @@ export default {
     //   window.location.href = process.env.loginURl
     // }
 
-    this.$store.dispatch("logout");
-    this.$store.dispatch("login");
+    // this.$store.dispatch("logout");
+    // this.$store.dispatch("login");
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据

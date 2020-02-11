@@ -30,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.detail)
+    // console.log(this.detail)
   },
   beforeRouteLeave (to, from, next) {
     if (to.path === "/inventory") {

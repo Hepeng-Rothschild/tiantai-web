@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Parse from './utils/parse.js'
-const _import = require('./_import_' + process.env.NODE_ENV);
-const Login = _import('index/loginView')
+// const _import = require('./_import_' + process.env.NODE_ENV);
+// const Login = _import('index/loginView')
 Vue.use(VueRouter)
 
 const routes = [
@@ -43,8 +43,8 @@ const routes = [
       title: '销售订单',
       keepAlive: true,
     },
-    // component: () => import('@/views/OrderList')
-    component: () => import(Login)
+    component: () => import('@/views/OrderList')
+    // component: () => import(Login)
     
   },
   {

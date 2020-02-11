@@ -111,11 +111,12 @@ export default {
     };
   },
   beforeRouteLeave (to, from, next) {
-    if (to.path === "/orderlist") {
+    if (to.path === "/orderList") {
       to.meta.keepAlive = true;
-
+      // console.log('进入');
     } else {
       to.meta.keepAlive = false;
+      // console.log('不进入');
     }
     next();
   },

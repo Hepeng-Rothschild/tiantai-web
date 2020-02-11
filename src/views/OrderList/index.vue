@@ -145,6 +145,7 @@ export default {
   },
   beforeRouteLeave (to, from, next) {
     from.meta.keepAlive = false;
+    // console.log('离开');
     next();
   },
   watch: {

@@ -56,14 +56,14 @@ export default {
     from.meta.keepAlive = false;
     next();
   },
-  activated () {
-    //进入时读取位置
-    document.body.scrollTop = this.scrollY
-    document.documentElement.scrollTop = this.scrollY;
-  },
-  deactivated () {
-    this.scrollY = document.body.scrollTop;
-  },
+  // activated () {
+  //   //进入时读取位置
+  //   document.body.scrollTop = this.scrollY
+  //   document.documentElement.scrollTop = this.scrollY;
+  // },
+  // deactivated () {
+  //   this.scrollY = document.body.scrollTop;
+  // },
   watch: {
     searchValue: debounce(async function (newValue, oldValue) {
       this.pageIndex = 1;

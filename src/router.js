@@ -35,8 +35,8 @@ const routes = [
     component: () => import('@/views/NewOrder/salemanList.vue')
   },
   {
-    path: '/orderList',
-    name: 'orderList',
+    path: '/orderlist',
+    name: 'orderlist',
     meta: { title: '销售订单',
     keepAlive:true,  //  需要缓存的页面
 
@@ -125,7 +125,7 @@ const routes = [
   {
     path: '/inventory',
     name: 'inventory',
-    meta: { title: '库存查询',keepAlive:false },
+    meta: { title: '库存查询',keepAlive:true },
     component: () => import('@/views/Inventory/Inventory.vue')
   },
   {

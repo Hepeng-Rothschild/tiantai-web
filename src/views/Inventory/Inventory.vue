@@ -37,7 +37,7 @@ import { setItem, getItem } from "../../utils/Storage.js";
 import { debounce } from "loadsh";
 
 export default {
-  name:'myInventory',
+  name: 'myInventory',
   data () {
     return {
       searchValue: null,
@@ -55,6 +55,14 @@ export default {
   beforeRouteLeave (to, from, next) {
     from.meta.keepAlive = false;
     next();
+  },
+  activated () {
+    //进入时读取位置
+    document.body.scrollTop = this.scrollY
+    document.documentElement.scrollTop = this.scrollY;
+  },
+  deactivated () {
+    this.scrollY = document.body.scrollTop;
   },
   watch: {
     searchValue: debounce(async function (newValue, oldValue) {

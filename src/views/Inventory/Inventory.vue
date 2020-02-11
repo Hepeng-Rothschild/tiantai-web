@@ -60,6 +60,14 @@ export default {
     }
     next();
   },
+  activated () {
+    //进入时读取位置d 
+    document.body.scrollTop = this.scrollY
+    document.documentElement.scrollTop = this.scrollY;
+  },
+  deactivated () {
+    this.scrollY = document.body.scrollTop;
+  },
   watch: {
     searchValue: debounce(async function (newValue, oldValue) {
       this.pageIndex = 1;

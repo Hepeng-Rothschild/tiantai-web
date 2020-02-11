@@ -37,6 +37,7 @@ import { setItem, getItem } from "../../utils/Storage.js";
 import { debounce } from "loadsh";
 
 export default {
+  name:'myInventory',
   data () {
     return {
       searchValue: null,

@@ -162,11 +162,11 @@ export default {
     //进入时读取位置
     document.body.scrollTop = this.scrollY
     document.documentElement.scrollTop = this.scrollY;
-    alert('111')
+    // alert('111')
   },
   deactivated () {
     this.scrollY = document.body.scrollTop;
-    alert('222')
+    // alert('222')
   },
   methods: {
     onConfirm () {
@@ -179,6 +179,8 @@ export default {
       await this.getData();
     },
     onSelect (index) {
+      this.selectEnter = false
+      setTimeout(()=> {
       if (index.name === '继续编辑草稿') {
         this.$router.push('/draft')
         return
@@ -188,6 +190,8 @@ export default {
         return
 
       }
+      },40)
+      
     },
     // 开关自定义开始时间
     isActiveTrue () {

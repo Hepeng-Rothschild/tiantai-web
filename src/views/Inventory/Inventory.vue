@@ -64,13 +64,11 @@ export default {
     searchValue: debounce(async function (newValue, oldValue) {
       this.pageIndex = 1;
       this.inventory = [];
-      alert('searchValue变化了')
       this.getData();
     }, 500)
   },
   methods: {
     onLoad () {
-      alert('onload获取数据')
       this.getData();
     },
     goToDtail (item) {

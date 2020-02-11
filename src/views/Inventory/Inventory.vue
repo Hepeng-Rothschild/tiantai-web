@@ -53,7 +53,11 @@ export default {
     MySearch: MySearch
   },
   beforeRouteLeave (to, from, next) {
-    from.meta.keepAlive = false;
+    if (to.name == "detailinfo") {
+      from.meta.keepAlive = true;
+    } else {
+      from.meta.keepAlive = false;
+    }
     next();
   },
   activated () {

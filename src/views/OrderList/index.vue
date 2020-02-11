@@ -137,7 +137,7 @@ export default {
     };
   },
   beforeRouteLeave(to, from, next) {
-    console.log(to, from);
+    // console.log(to, from);
     if (to.name == "details") {
       from.meta.keepAlive = true;
     } else {
@@ -157,13 +157,13 @@ export default {
   },
   activated() {
     //进入时读取位置
-    document.body.scrollTop = this.scrollY;
-    document.documentElement.scrollTop = this.scrollY;
-    alert('缓存激活')
+    // document.body.scrollTop = this.scrollY;
+    // document.documentElement.scrollTop = this.scrollY;
+    // alert('缓存激活')
   },
   deactivated() {
-    this.scrollY = document.body.scrollTop;
-    alert('缓存销毁')
+    // this.scrollY = document.body.scrollTop;
+    // alert('缓存销毁')
   },
   methods: {
     onConfirm() {

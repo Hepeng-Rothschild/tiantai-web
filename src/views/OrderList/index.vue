@@ -2,65 +2,61 @@
   <van-list>
     <!-- 搜索栏 -->
     <div class="my_search">
-      <my-search v-model="searchValue"
-                 placeholder="输入客户名称"></my-search>
+      <my-search v-model="searchValue" placeholder="输入客户名称"></my-search>
     </div>
     <van-dropdown-menu>
-      <van-dropdown-item v-model="dateIndex"
-                         :options="dateStatus"
-                         @change="changeDate"
-                         ref="item"
-                         :title="titleitem">
-        <!-- <div @click="onConfirm">自定义</div> -->
-        <van-cell title="自定义"
-                  @click="onConfirm"
-                  :class="titleitem != null ?'dropMyself_true':'dropMyself'">
-          <van-icon name="success"
-                    v-if="titleitem != null" />
+      <van-dropdown-item
+        v-model="dateIndex"
+        :options="dateStatus"
+        @change="changeDate"
+        ref="item"
+        :title="titleitem"
+      >
+        <van-cell
+          title="自定义"
+          @click="onConfirm"
+          :class="titleitem != null ?'dropMyself_true':'dropMyself'"
+        >
+          <van-icon name="success" v-if="titleitem != null" />
         </van-cell>
       </van-dropdown-item>
-      <van-popup v-model="overlayShow"
-                 position="bottom">
+      <van-popup v-model="overlayShow" position="bottom">
         <div class="date_title">
           <div class="box1"></div>
         </div>
         <div class="dete_middle">
           <div @click="isActiveTrue">
             <div class="span">开始日期</div>
-            <div class="date_change"
-                 :class="isActive1?'border':''">{{this.startDate}}</div>
+            <div class="date_change" :class="isActive1?'border':''">{{this.startDate}}</div>
           </div>
           <div @click="isActiveFalse">
             <div class="span">结束日期</div>
-            <div class="date_change"
-                 :class="isActive2?'border':''">{{this.endDate}}</div>
+            <div class="date_change" :class="isActive2?'border':''">{{this.endDate}}</div>
           </div>
         </div>
-        <van-datetime-picker v-model="currentDate"
-                             type="date"
-                             :item-height="44"
-                             :formatter="formatter"
-                             @confirm="confirmPicker2"
-                             @cancel="overlayShow = false"></van-datetime-picker>
+        <van-datetime-picker
+          v-model="currentDate"
+          type="date"
+          :item-height="44"
+          :formatter="formatter"
+          @confirm="confirmPicker2"
+          @cancel="overlayShow = false"
+        ></van-datetime-picker>
       </van-popup>
-      <van-dropdown-item v-model="orderIndex"
-                         :options="orderStatus"
-                         @change="changeState" />
+      <van-dropdown-item v-model="orderIndex" :options="orderStatus" @change="changeState" />
     </van-dropdown-menu>
     <!-- 筛选列表 -->
-    <van-list v-model="loading"
-              :finished="finished"
-              finished-text="没有更多了"
-              @load="onLoad">
-      <div v-for="(indent,i) in orderList"
-           :key="i">
+    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <div v-for="(indent,i) in orderList" :key="i">
         <div class="date">{{formatDate(orderList[i][0].madedate)}}</div>
-        <van-cell v-for="(item,index) in orderList[i]"
-                  :key="index"
-                  :title="item.name"
-                  :label="item.code"
-                  is-link
-                  @click="toDetails(item.id)">
+        <van-cell
+          v-for="(item,index) in orderList[i]"
+          :key="index"
+          :title="item.name"
+          :label="item.code"
+          is-link
+          @click="toDetails(item.id)"
+        >
           ￥{{item.taxAmount.toFixed(2)}}
           <div>
             <van-tag type="primary">{{item.voucherState == 181 ? '未审':'已审'}}</van-tag>
@@ -69,16 +65,16 @@
       </div>
     </van-list>
     <!-- 添加订单按钮 -->
-    <div @click="selectEnter = true"
-         class="my_button">
+    <div @click="selectEnter = true" class="my_button">
       <span>+</span>
     </div>
-    <van-action-sheet v-model="selectEnter"
-                      :actions="actions"
-                      cancel-text="取消"
-                      @cancel="selectEnter = false"
-                      @select="onSelect"
-                      @click="toNewOrder()" />
+    <van-action-sheet
+      v-model="selectEnter"
+      :actions="actions"
+      cancel-text="取消"
+      @cancel="selectEnter = false"
+      @select="onSelect"
+    />
   </van-list>
 </template>
 
@@ -90,15 +86,12 @@ import { debounce } from "loadsh";
 export default {
   name: "indentIndex",
   components: {
-    MySearch: MySearch,
+    MySearch: MySearch
   },
-  data () {
+  data() {
     return {
       titleitem: null,
-      actions: [
-        { name: '继续编辑草稿' },
-        { name: '新增销售订单' }
-      ],
+      actions: [{ name: "继续编辑草稿" }, { name: "新增销售订单" }],
       // 动态绑定自定义开始日期得样式
       isActive1: false,
       // 动态绑定自定义结束日期的样式
@@ -121,7 +114,7 @@ export default {
         { text: "本月", value: 1 },
         { text: "上月", value: 2 },
         { text: "本季度", value: 3 },
-        { text: "本年", value: 4 },
+        { text: "本年", value: 4 }
       ],
       orderIndex: null,
       orderStatus: [
@@ -143,73 +136,78 @@ export default {
       scrollY: 0
     };
   },
-  beforeRouteLeave (to, from, next) {
-    from.meta.keepAlive = false;
+  beforeRouteLeave(to, from, next) {
+    console.log(to, from);
+    if (to.name == "details") {
+      from.meta.keepAlive = true;
+    } else {
+      from.meta.keepAlive = false;
+    }
     next();
   },
   watch: {
-    searchValue: debounce(async function (newVal) {
+    searchValue: debounce(async function(newVal) {
       this.pageIndex = 0;
       this.order = [];
       await this.getData();
-    }, 500),
+    }, 500)
   },
-  created () {
-    this.initDate()
+  created() {
+    this.initDate();
   },
-  activated () {
+  activated() {
     //进入时读取位置
-    document.body.scrollTop = this.scrollY
+    document.body.scrollTop = this.scrollY;
     document.documentElement.scrollTop = this.scrollY;
   },
-  deactivated () {
+  deactivated() {
     this.scrollY = document.body.scrollTop;
   },
   methods: {
-    onConfirm () {
+    onConfirm() {
       this.$refs.item.toggle();
-      this.overlayShow = true
-      this.titleitem = '自定义'
-      this.dateIndex = null
+      this.overlayShow = true;
+      this.titleitem = "自定义";
+      this.dateIndex = null;
     },
-    async onLoad () {
+    async onLoad() {
       await this.getData();
     },
-    onSelect (index) {
-      if (index.name === '继续编辑草稿') {
-        this.$router.push('/draft')
-        return
+    onSelect(item, index) {
+      if (index === 0) {
+        this.$router.push("/draft");
       }
-      if (index.name === '新增销售订单') {
-        this.$router.push('/neworder')
-        return
-
+      if (index === 1) {
+        this.$router.push("/neworder");
       }
+      this.selectEnter = false
+      // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
+      this.$store.commit("clearStore");
     },
     // 开关自定义开始时间
-    isActiveTrue () {
+    isActiveTrue() {
       this.isActive1 = true;
       this.isActive2 = false;
       this.startDate = null;
     },
     // 开关自定义结束时间
-    isActiveFalse () {
+    isActiveFalse() {
       this.isActive2 = true;
       this.isActive1 = false;
       this.endDate = null;
     },
     // 跳转到详情页面
-    toDetails (id) {
+    toDetails(id) {
       this.$router.push({ path: "/details", query: { id } });
     },
     // 初始化日期
-    initDate () {
+    initDate() {
       const nowMonth = new Date().setDate(1);
       this.startTime = dayjs(new Date(nowMonth)).format("YYYY-MM-DD");
       this.endTime = dayjs(new Date()).format("YYYY-MM-DD");
     },
     // 调取订单查询接口
-    async getData () {
+    async getData() {
       const { data } = await this.$Parse.Cloud.run("getOrder", {
         pageSize: this.pageSize,
         pageIndex: this.pageIndex,
@@ -239,7 +237,7 @@ export default {
       }
     },
     // 获取本季度开端月份
-    getQuarterStartMonth () {
+    getQuarterStartMonth() {
       let nowMonth = new Date().getMonth();
       var quarterStartMonth = 0;
       if (nowMonth < 3) {
@@ -257,7 +255,7 @@ export default {
       return quarterStartMonth;
     },
     // 获取本年度第一天的日期
-    getCurrentYear () {
+    getCurrentYear() {
       //获取当前时间
       let currentDate = new Date();
       //获得当前年份4位年
@@ -267,8 +265,8 @@ export default {
       return currentYearFirstDate;
     },
     // 改变时间进行筛选
-    async changeDate (orderDate) {
-      this.titleitem = null
+    async changeDate(orderDate) {
+      this.titleitem = null;
       let startTimeTmp = new Date();
       let endTimeTmp = new Date();
       switch (orderDate) {
@@ -315,7 +313,7 @@ export default {
       await this.getData();
     },
     // 自定义时间的年月日文字
-    formatter (type, value) {
+    formatter(type, value) {
       if (type === "year") {
         return `${value}年`;
       } else if (type === "month") {
@@ -325,12 +323,12 @@ export default {
       }
       return value;
     },
-    formatDate (time) {
+    formatDate(time) {
       let day = dayjs(time).format("YYYY-MM-DD");
       return day;
     },
     // 自定义时间的确定转换
-    async confirmPicker2 (value) {
+    async confirmPicker2(value) {
       if (!this.startDate) {
         this.startDate = dayjs(value).format("YYYY/MM/DD");
         return;
@@ -339,13 +337,11 @@ export default {
         this.endDate = dayjs(value).format("YYYY/MM/DD");
         return;
       }
-      if (
-        this.startDate <= this.endDate
-      ) {
+      if (this.startDate <= this.endDate) {
         //    this.startDate &&
         // this.endDate &&
         // this.startDate != null &&
-        // this.endDate != null && 
+        // this.endDate != null &&
         this.overlayShow = false;
         this.startTime = this.startDate;
         this.endTime = this.endDate;
@@ -357,18 +353,13 @@ export default {
       }
     },
     // 改变订单状态值进行筛选
-    async changeState (orderState) {
+    async changeState(orderState) {
       this.state = orderState;
       this.pageIndex = 0;
       this.order = [];
       await this.getData();
-    },
-    toNewOrder () {
-      // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
-      this.$store.commit("clearStore");
     }
   }
-
 };
 </script>
 

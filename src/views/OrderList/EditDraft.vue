@@ -190,7 +190,6 @@ export default {
   },
   methods: {
     getDraft () {
-      // console.log("==================", this.Draft);
       this.partner = this.SelectedPartner || this.Draft.Customer;
       this.saleMan = this.SelectedSaleMan || this.Draft.Clerk;
       this.orderMessage.voucherDate = this.Draft.VoucherDate;

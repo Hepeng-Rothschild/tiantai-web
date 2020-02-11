@@ -77,6 +77,7 @@ export default {
         pageIndex: this.pageIndex
       });
       this.inventory.push(...data);
+      console.log(this.inventory)
       this.loading = false;
       if (data.length) {
         this.pageIndex++;

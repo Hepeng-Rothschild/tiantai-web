@@ -231,7 +231,7 @@ export default {
 
     finish() {
       this.$store.commit("saveSelectGoods", this.SaleOrderDetails);
-      this.$router.back();
+      this.$router.push("/neworder");
     }
   }
 };

@@ -29,6 +29,9 @@ export default {
       detail: getItem("inventory")
     };
   },
+  mounted() {
+    console.log(this.detail)
+  },
   beforeRouteLeave (to, from, next) {
     if (to.path === "/inventory") {
       to.meta.keepAlive = true;      

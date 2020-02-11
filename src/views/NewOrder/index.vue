@@ -160,6 +160,7 @@ export default {
   components: {
     MyPop: MyPop
   },
+
   watch: {
     orderMessage: {
       handler () {
@@ -179,6 +180,9 @@ export default {
       this.selectPartner();
     }
     this.getCurrency();
+    // 初始化滚动条置顶
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
   },
   methods: {
     changeMoneyType (type) {

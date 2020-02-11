@@ -2,25 +2,23 @@
   <div class="draft">
     <!-- 搜索栏 -->
     <div class="my_search">
-      <my-search v-model="searchValue" placeholder="请输入客户名称"></my-search>
+      <my-search v-model="searchValue"
+                 placeholder="请输入客户名称"></my-search>
     </div>
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      :offset="200"
-      finished-text="没有更多了"
-      @load="onLoad"
-    >
-      <div v-for="(draft,i) in allDraft" :key="i">
+    <van-list v-model="loading"
+              :finished="finished"
+              :offset="200"
+              finished-text="没有更多了"
+              @load="onLoad">
+      <div v-for="(draft,i) in allDraft"
+           :key="i">
         <div class="date">{{allDraft[i][0].VoucherDate}}</div>
-        <van-cell
-          v-for="(item,index) in draft"
-          :key="index"
-          :title="item.Customer.AA_Partner_name?item.Customer.AA_Partner_name:'未填写'"
-          :label="item.code"
-          is-link
-          @click="toEdit(item)"
-        >
+        <van-cell v-for="(item,index) in draft"
+                  :key="index"
+                  :title="item.Customer.AA_Partner_name?item.Customer.AA_Partner_name:'未填写'"
+                  :label="item.code"
+                  is-link
+                  @click="toEdit(item)">
           <div>￥{{item.totalPrice?item.totalPrice:'未填写'}}</div>
           <div>
             <van-tag>草稿</van-tag>
@@ -35,7 +33,7 @@
 import MySearch from "../../components/Search.vue";
 import { debounce } from "loadsh";
 export default {
-  data() {
+  data () {
     return {
       searchValue: "",
       loading: false,
@@ -50,17 +48,22 @@ export default {
     MySearch: MySearch
   },
   watch: {
-    searchValue: debounce(async function(newVal) {
+    searchValue: debounce(async function (newVal) {
       this.pageSkip = 0;
       this.draft = [];
       this.getOrderDraft();
     }, 500)
   },
+  created () {
+    // 初始化滚动条置顶
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  },
   methods: {
-    onLoad() {
+    onLoad () {
       this.getOrderDraft();
     },
-    async getOrderDraft() {
+    async getOrderDraft () {
       const Parse = this.$Parse;
       let OrderDraft = Parse.Object.extend("OrderDraft");
       let query = new Parse.Query(OrderDraft);
@@ -96,7 +99,7 @@ export default {
         this.finished = true;
       }
     },
-    toEdit(item) {
+    toEdit (item) {
       this.$store.commit("saveDraft", item);
       this.$store.commit("saveTotalPrice", item.totalPrice);
       this.$router.push("/editdraft");

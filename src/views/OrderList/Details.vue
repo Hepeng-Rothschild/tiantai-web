@@ -110,11 +110,25 @@ export default {
       taxAmount: 0,
     };
   },
+  beforeRouteLeave (to, from, next) {
+    if (to.path === "/orderlist") {
+      to.meta.keepAlive = true;
 
+    } else {
+      to.meta.keepAlive = false;
+    }
+    next();
+  },
   mounted () {
     this.getOrderById();
+    // 初始化滚动条置顶
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
   },
+
+
   methods: {
+
     async getOrderById () {
       const { data } = await this.$Parse.Cloud.run("getOrderById", {
         id: this.id
@@ -125,7 +139,7 @@ export default {
         this.discountAmount += e.discountAmount
         this.taxAmount += e.taxAmount
       });
-      console.log(this.indentDetails);
+      // console.log(this.indentDetails);
     },
     format (time) {
       const dateTime = new Date(time);
@@ -137,15 +151,8 @@ export default {
     addZero (v) {
       return v < 10 ? "0" + v : v;
     }
-  },
-    beforeRouteLeave (to, from, next) {
-    if (to.path === "/orderlist") {
-      to.meta.keepAlive = true;      
-    } else {
-      to.meta.keepAlive = false;      
-    }
-    next();
   }
+
 };
 </script>
 

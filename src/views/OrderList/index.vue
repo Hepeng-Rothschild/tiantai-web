@@ -140,9 +140,13 @@ export default {
       state: null,
       pageSize: 10,
       pageIndex: 0,
+      scrollY: 0
     };
   },
-
+  beforeRouteLeave (to, from, next) {
+    from.meta.keepAlive = false;
+    next();
+  },
   watch: {
     searchValue: debounce(async function (newVal) {
       this.pageIndex = 0;
@@ -154,7 +158,12 @@ export default {
     this.initDate()
   },
   activated () {
-    
+    //进入时读取位置
+    document.body.scrollTop = this.scrollY
+    document.documentElement.scrollTop = this.scrollY;
+  },
+  deactivated () {
+    this.scrollY = document.body.scrollTop;
   },
   methods: {
     onConfirm () {
@@ -358,11 +367,8 @@ export default {
       // 点击完草稿后，去新增订单页面，此时显示的是刚才那个草稿的信息
       this.$store.commit("clearStore");
     }
-  },
-    beforeRouteLeave (to, from, next) {
-    from.meta.keepAlive = false;
-    next();
-  },
+  }
+
 };
 </script>
 

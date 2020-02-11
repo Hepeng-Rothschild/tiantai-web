@@ -159,9 +159,11 @@ export default {
     //进入时读取位置
     document.body.scrollTop = this.scrollY;
     document.documentElement.scrollTop = this.scrollY;
+    alert('111')
   },
   deactivated() {
     this.scrollY = document.body.scrollTop;
+    alert('222')
   },
   methods: {
     onConfirm() {
@@ -447,6 +449,7 @@ export default {
         font-size: 15px;
         color: #606266;
       }
+
       .date_change {
         height: 25px;
         text-align: center;

@@ -9,7 +9,7 @@ export default {
         }
     },
     mounted(){
-        
+        window.localStorage.clear()
         this.$Parse.User.become(this.$route.query.token).then(v =>{
             this.$router.push({path: this.$route.query.path})
         })

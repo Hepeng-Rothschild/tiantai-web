@@ -113,9 +113,10 @@ export default {
   beforeRouteLeave (to, from, next) {
     if (to.path === "/orderlist") {
       to.meta.keepAlive = true;
-
+      // console.log(to.path);
     } else {
       to.meta.keepAlive = false;
+      // console.log(to.path);
     }
     next();
   },

@@ -151,7 +151,15 @@ const routes = [
 const router = new VueRouter({
   // mode: 'history',
   // base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior(to, form, savedPosition) {
+    console.log(to,form,savedPosition)
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
 })
 
 router.beforeEach(async (to, from, next) => {
@@ -173,5 +181,6 @@ router.beforeEach(async (to, from, next) => {
   }
   next()
 });
+
 
 export default router

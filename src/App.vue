@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <keep-alive :include="include">
-      <router-view v-if='$route.meta.keepAlive' />
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive" />
     </keep-alive>
-    <router-view v-if='!$route.meta.keepAlive' />
-
+    <router-view v-if="!$route.meta.keepAlive" />
   </div>
 </template>
 
@@ -12,25 +11,18 @@
 import { getItem, setItem } from "./utils/Storage.js";
 export default {
   data() {
-    return {
-      include:'indentIndex,myInventory'
-    }
+    return {};
   },
-  created () {
+  created() {
     this.listenBeforeUnload();
   },
-  mounted () {
-
-    // if (!this.$Parse.User.current()) {
-    //   window.location.href = process.env.loginURl
-    // }
-
+  mounted() {
     // this.$store.dispatch("logout");
     // this.$store.dispatch("login");
   },
   methods: {
     // 监听浏览器关闭 保存 vuex 的数据
-    listenBeforeUnload () {
+    listenBeforeUnload() {
       if (sessionStorage.getItem("store")) {
         this.$store.replaceState(
           Object.assign({}, this.$store.state, getItem("store"))

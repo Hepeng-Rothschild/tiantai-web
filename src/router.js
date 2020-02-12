@@ -44,7 +44,6 @@ const routes = [
       keepAlive: true,
     },
     component: () => import('@/views/OrderList')
-    // component: () => import(Login)
     
   },
   {
@@ -149,6 +148,12 @@ const routes = [
     name: 'login',
     meta: { title: '登陆' },
     component: () => import('@/views/login.vue')
+  },
+  {
+    path: '/user',
+    name: 'user',
+    meta: { title: '' },
+    component: () => import('@/views/User/User.vue')
   }
 ]
 
@@ -157,7 +162,6 @@ const router = new VueRouter({
   // base: process.env.BASE_URL,
   routes,
   scrollBehavior(to, form, savedPosition) {
-    console.log(to,form,savedPosition)
     if (savedPosition) {
       return savedPosition
     } else {

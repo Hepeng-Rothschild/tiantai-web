@@ -137,7 +137,6 @@ export default {
     };
   },
   beforeRouteLeave(to, from, next) {
-    console.log(to, from);
     if (to.name == "details") {
       from.meta.keepAlive = true;
     } else {
@@ -155,14 +154,14 @@ export default {
   created() {
     this.initDate();
   },
-  // activated() {
-  //   //进入时读取位置
-  //   document.body.scrollTop = this.scrollY;
-  //   document.documentElement.scrollTop = this.scrollY;
-  // },
-  // deactivated() {
-  //   this.scrollY = document.body.scrollTop;
-  // },
+  activated() {
+    //进入时读取位置
+    document.body.scrollTop = this.scrollY;
+    document.documentElement.scrollTop = this.scrollY;
+  },
+  deactivated() {
+    this.scrollY = document.body.scrollTop;
+  },
   methods: {
     onConfirm() {
       this.$refs.item.toggle();

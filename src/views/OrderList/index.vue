@@ -337,14 +337,6 @@ export default {
     },
     // 自定义时间的确定转换
     async confirmPicker2 (value) {
-      if (!this.startDate) {
-        this.startDate = dayjs(value).format("YYYY/MM/DD");
-        return;
-      }
-      if (!this.endDate) {
-        this.endDate = dayjs(value).format("YYYY/MM/DD");
-        return;
-      }
       if (this.startDate <= this.endDate) {
         //    this.startDate &&
         // this.endDate &&

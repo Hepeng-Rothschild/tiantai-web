@@ -19,7 +19,7 @@ export default new Vuex.Store({
     OrderMessage: null,
     SelectedPartner: null,
     SelectedSaleMan: null,
-    Draft:null,
+    Draft: null,
   },
   mutations: {
     savePay(state, data) {
@@ -55,7 +55,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    
+
     // 获取 token
     async login(context) {
       const {
@@ -73,7 +73,11 @@ export default new Vuex.Store({
       await Parse.User.logOut();
       console.log("退出登录");
     },
+    async getCurrentUser() {
+      const currentUser = Parse.User.current()
+      console.log(currentUser,'===')
 
+    }
   },
 
 })

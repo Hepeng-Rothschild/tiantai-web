@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <keep-alive :include="include">
+    <keep-alive>
       <router-view v-if='$route.meta.keepAlive' />
     </keep-alive>
     <router-view v-if='!$route.meta.keepAlive' />
-
   </div>
 </template>
 
@@ -13,18 +12,12 @@ import { getItem, setItem } from "./utils/Storage.js";
 export default {
   data() {
     return {
-      include:'indentIndex,myInventory'
     }
   },
   created () {
     this.listenBeforeUnload();
   },
   mounted () {
-
-    // if (!this.$Parse.User.current()) {
-    //   window.location.href = process.env.loginURl
-    // }
-
     // this.$store.dispatch("logout");
     // this.$store.dispatch("login");
   },

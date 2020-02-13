@@ -133,7 +133,6 @@ export default {
       state: null,
       pageSize: 10,
       pageIndex: 0,
-      scrollY: 0
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -154,14 +153,6 @@ export default {
   created() {
     this.initDate();
   },
-  // activated() {
-  //   //进入时读取位置
-  //   document.body.scrollTop = this.scrollY;
-  //   document.documentElement.scrollTop = this.scrollY;
-  // },
-  // deactivated() {
-  //   this.scrollY = document.body.scrollTop;
-  // },
   methods: {
     onConfirm() {
       this.$refs.item.toggle();

@@ -46,7 +46,8 @@ export default {
       loading: false,
       finished: false,
       pageIndex: 1,
-      pageSize: 10
+      pageSize: 10,
+      scrollY:0
     };
   },
   components: {

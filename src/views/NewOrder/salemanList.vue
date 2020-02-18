@@ -49,12 +49,13 @@ export default {
     // getSaleMan 获取业务员
     async getSaleMan () {
 
-      const { data } = await this.$Parse.Cloud.run("getSaleMan", {
+      const { data } = await this.$Parse.Cloud.run("getPerson", {
         name: this.searchValue,
         pageIndex: this.pageIndex,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        onlySaleMan: true,
       });
-      this.saleMan.push(...data[0]);
+      this.saleMan.push(...data);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++;

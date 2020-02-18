@@ -212,7 +212,7 @@ export default {
         state: this.state
       });
       let orderList = JSON.parse(JSON.stringify(data));
-      // console.log(orderList,'===')
+      
       this.order.push(...orderList);
       let duration = this.order.map(item => item.madedate); //存放时间段的数组
       let newDuration = Array.from(new Set(duration)) // 对 存放时间字符串的数组 进行去重

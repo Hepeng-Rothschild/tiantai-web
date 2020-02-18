@@ -63,7 +63,8 @@ export default {
       const { data } = await this.$Parse.Cloud.run("getPartner", {
         name: this.searchValue,
         pageIndex: this.pageIndex,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        type: [211, 228], //客户、客户供应商
       });
       let newData = data[0]
       .filter(item => item.AA_Partner_partnerType!=226 ) // 不显示供应商

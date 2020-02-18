@@ -180,10 +180,7 @@ export default {
     if (this.Draft) {
       this.getDraft();
     }
-    if (
-      this.$store.state.SelectedPartner &&
-      !this.$store.state.SelectedSaleMan
-    ) {
+    if (this.$store.state.SelectedPartner &&!this.$store.state.SelectedSaleMan) {
       this.selectPartner();
     }
     this.getCurrency();
@@ -379,11 +376,9 @@ export default {
     },
     // 选择客户
     async selectPartner () {
-      const { data } = await this.$Parse.Cloud.run("getAllSaleMan");
-      const saleMan = data.filter(item => {
-        return item.id == this.partner.AA_Partner_idsaleman;
-      });
-      this.saleMan = saleMan[0];
+      const { data } = await this.$Parse.Cloud.run("getPersonById",{id: this.partner.AA_Partner_idsaleman})
+      //todo 测试
+      this.saleMan = data[0];
     }
   }
 };

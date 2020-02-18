@@ -353,10 +353,8 @@ export default {
     },
     // 选择客户
     async selectPartner() {
-      const { data } = await this.$Parse.Cloud.run("getAllSaleMan");
-      const saleMan = data.filter(item => {
-        return item.id == this.partner.AA_Partner_idsaleman;
-      });
+      const { data } = await this.$Parse.Cloud.run("getPersonById",{id: this.partner.AA_Partner_idsaleman});
+      //todo 测试
       this.saleMan = saleMan[0];
       this.orderMessage.deliveryRequire1 = this.partner.AA_Partner_priuserdefnvc2;
       this.orderMessage.deliveryRequire2 = this.partner.AA_Partner_priuserdefnvc5;

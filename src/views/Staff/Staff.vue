@@ -50,17 +50,18 @@ export default {
       const { data } = await this.$Parse.Cloud.run("getPerson", {
         name: this.searchValue,
         pageIndex: this.pageIndex,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        isAll: true,
+        onlySaleMan: false  
       });
-      this.staffList.push(...data[0]);
-      // console.log(data[0], "===");
+      this.staffList.push(...data);
       this.loading = false;
-      if (data[0].length==this.pageSize) {
+      if (data.length==this.pageSize) {
         this.pageIndex++;
         //为了配合搜索框 finished = false 会继续触发 onLoad 事件
         this.finished = false;
       }
-      if (data[0].length < this.pageSize) {
+      if (data.length < this.pageSize) {
         this.finished = true;
       }
     },

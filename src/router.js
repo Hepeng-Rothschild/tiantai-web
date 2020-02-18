@@ -154,7 +154,17 @@ const routes = [
     name: 'staff',
     meta: { title: '员工列表' },
     component: () => import('@/views/Staff/Staff.vue')
-  }
+  },
+  {
+    path: '*',
+    name: 'orderList',
+    meta: {
+      title: '销售订单',
+      keepAlive: true,
+    },
+    component: () => import('@/views/OrderList')
+    
+  },
 ]
 
 const router = new VueRouter({
@@ -172,17 +182,17 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
 
-  try {
-    if (to.name != 'login') {
-      let result = await Parse.Cloud.run("checkUser")
-      if (result.code == 404) {
-        return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
-      }
-    }
+  // try {
+  //   if (to.name != 'login') {
+  //     let result = await Parse.Cloud.run("checkUser")
+  //     if (result.code == 404) {
+  //       return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
+  //     }
+  //   }
 
-  } catch (e) {
-    return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
-  }
+  // } catch (e) {
+  //   return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
+  // }
 
   if (to.meta.title) {
     document.title = to.meta.title;

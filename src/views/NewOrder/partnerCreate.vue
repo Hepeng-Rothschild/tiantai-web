@@ -244,10 +244,14 @@ export default {
     },
     // 选择分管人员
     async changeSaleman() {
-      const { data } = await this.$Parse.Cloud.run("getPersonByDepartment", {
-        departmentCode: this.savePartner.departmentCode || null
-      });
-      this.saleMan = data.filter(obj => obj.isSaleman == true);
+      const { data } = await this.$Parse.Cloud.run("department");
+      let saleMan = []
+      if(this.savePartner.departmentCode){
+        saleMan = data.find(v => v.code === this.savePartner.departmentCode).staffList
+      }else{
+        data.forEach(v => saleMan =  saleMan.concat(v.staffList))
+      }
+      this.saleMan = saleMan 
     },
     changeSalemanName(manageNew) {
       this.savePartner.saleManCode.Code = manageNew.code;

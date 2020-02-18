@@ -156,7 +156,7 @@ export default {
       //  收款方式的代号，不能放在对象里，会报错
       saleSettleStyle: { Code: null },
       // 选择要储存的参数，把它们包装成一个大数组
-      savePartner: this.$store.state.savePartners || {
+      savePartner: {
         //客户名称
         name: null,
         // 联系人
@@ -191,6 +191,14 @@ export default {
         // 默认收款方式----结束
       }
     };
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.name == "defaultPay") {
+      from.meta.keepAlive = true;
+    } else {
+      from.meta.keepAlive = false;
+    }
+    next();
   },
   watch: {
     savePartner: {

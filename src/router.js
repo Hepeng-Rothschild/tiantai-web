@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/partnerCreate',
     name: 'partnerCreate',
-    meta: { title: '新增客户' },
+    meta: { title: '新增客户' ,keepAlive: true,},
     component: () => import('@/views/NewOrder/partnerCreate.vue')
   },
   {

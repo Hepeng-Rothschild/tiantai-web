@@ -138,10 +138,16 @@ const routes = [
     component: () => import('@/views/Inventory/DetailInfo.vue')
   },
   {
-    path: '/remind',
-    name: 'remind',
-    meta: { title: '应收账款', icon: true },
-    component: () => import('@/views/Remind/Remind.vue')
+    path: '/warning',
+    name: 'warning',
+    meta: { title: '应收预警', icon: true },
+    component: () => import('@/views/EarlyWarning/EarlyWarning.vue')
+  },
+  {
+    path: '/warninginfo',
+    name: 'warninginfo',
+    meta: { title: '应收预警详情', icon: true },
+    component: () => import('@/views/EarlyWarning/WarningDetails.vue')
   },
   {
     path: '/login',

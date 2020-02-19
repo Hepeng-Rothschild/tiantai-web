@@ -18,8 +18,8 @@ export default {
     this.getCurrentUser();
   },
   mounted() {
-    // this.$store.dispatch("logout");
-    // this.$store.dispatch("login");
+    this.$store.dispatch("logout");
+    this.$store.dispatch("login");
   },
   methods: {
     async getCurrentUser() {

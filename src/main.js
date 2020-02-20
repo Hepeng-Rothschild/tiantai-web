@@ -7,7 +7,6 @@ import 'vant/lib/index.css'
 import './utils/rem'
 import 'amfe-flexible/index.js'
 import './styles/index.less'
-
 import Parse from './utils/parse.js'
 // let parseCloudRun =  Parse.Cloud.run
 // Parse.Cloud.run = async function(name , data, session){

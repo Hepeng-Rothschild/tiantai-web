@@ -1,11 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Parse from './utils/parse.js'
-// const _import = require('./_import_' + process.env.NODE_ENV);
-// const Login = _import('index/loginView')
+
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/date',
+    name: 'date',
+    meta: { title: 'test' },
+    component: () => import('@/components/father.vue')
+  },
   {
     path: '/choose',
     name: 'choose',
@@ -172,17 +177,17 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
 
-  try {
-    if (to.name != 'login') {
-      let result = await Parse.Cloud.run("checkUser")
-      if (result.code == 404) {
-        return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
-      }
-    }
+  // try {
+  //   if (to.name != 'login') {
+  //     let result = await Parse.Cloud.run("checkUser")
+  //     if (result.code == 404) {
+  //       return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
+  //     }
+  //   }
 
-  } catch (e) {
-    return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
-  }
+  // } catch (e) {
+  //   return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
+  // }
 
   if (to.meta.title) {
     document.title = to.meta.title;

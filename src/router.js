@@ -155,10 +155,10 @@ const routes = [
     component: () => import('@/views/login.vue')
   },
   {
-    path: '/user',
-    name: 'user',
-    meta: { title: '' },
-    component: () => import('@/views/User/User.vue')
+    path: '/staff',
+    name: 'staff',
+    meta: { title: '员工列表' },
+    component: () => import('@/views/Staff/Staff.vue')
   }
 ]
 

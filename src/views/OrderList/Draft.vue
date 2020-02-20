@@ -56,8 +56,8 @@ export default {
   },
   created () {
     // 初始化滚动条置顶
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
+    // document.body.scrollTop = 0;
+    // document.documentElement.scrollTop = 0;
   },
   methods: {
     onLoad () {
@@ -88,7 +88,6 @@ export default {
       this.allDraft = newDuration.map(duration =>
         this.draft.filter(draft => draft.VoucherDate == duration)
       );
-      // this.allDraft.push(...allDraft);
       this.loading = false;
       if (draft.length) {
         this.pageSkip += 10;

@@ -135,7 +135,6 @@ export default {
       state: null,
       pageSize: 10,
       pageIndex: 0,
-      scrollY: 0
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -156,7 +155,6 @@ export default {
   created () {
     this.initDate();
   },
-
   methods: {
     onConfirm () {
       this.$refs.item.toggle();

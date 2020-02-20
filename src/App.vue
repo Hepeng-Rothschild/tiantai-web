@@ -15,12 +15,19 @@ export default {
   },
   created() {
     this.listenBeforeUnload();
+    this.getCurrentUser();
   },
   mounted() {
     // this.$store.dispatch("logout");
     // this.$store.dispatch("login");
   },
   methods: {
+    async getCurrentUser() {
+      const currentUser = this.$Parse.User.current();
+      if (!currentUser.attributes.hadAuth) {
+        this.$router.push('/staff')
+      }
+    },
     // 监听浏览器关闭 保存 vuex 的数据
     listenBeforeUnload() {
       if (sessionStorage.getItem("store")) {

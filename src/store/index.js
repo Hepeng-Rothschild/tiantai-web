@@ -73,11 +73,7 @@ export default new Vuex.Store({
       await Parse.User.logOut();
       console.log("退出登录");
     },
-    async getCurrentUser() {
-      const currentUser = Parse.User.current()
-      console.log(currentUser,'===')
-
-    }
+   
   },
 
 })

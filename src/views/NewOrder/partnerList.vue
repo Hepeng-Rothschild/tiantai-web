@@ -5,7 +5,7 @@
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
-      :offset="200"
+      :offset="300"
       @load="onLoad"
     >
       <van-cell-group
@@ -65,10 +65,10 @@ export default {
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
       });
-      let newData = data[0].filter(item => item.AA_Partner_partnerType!=226 ) // 不显示供应商
+      let newData = data[0]
+      .filter(item => item.AA_Partner_partnerType!=226 ) // 不显示供应商
       this.partner.push(...newData);
       this.loading = false;
-      console.log(this.partner)
       if (data[0].length) {
         this.pageIndex++;
         //为了配合搜索框 finished = false 会继续触发 onLoad 事件

@@ -6,13 +6,13 @@
         <van-dropdown-item v-model="orderStatus" :options="orderStatusOptions" />
       </van-dropdown-menu>
     </div>
-    <div class="total_number dark_color">
+    <div class="total_number dark_color fz14">
       单据数
-      <span class="margin_right">142</span>
+      <span class="mr30">142</span>
       金额
       <span>2132142142</span>
     </div>
-    <div class="order_list">
+    <div class="goods_list">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <div v-for="(item,index) in orderList" :key="index" class="order_item">
           <div class="up flex">
@@ -22,37 +22,37 @@
               :class="{ 'expect': true, 'expire':false,'near': false }"
             >逾期 99+</span>
           </div>
-          <div class="down flex">
-            <div class="left">
-              <div class="margin_bottom">
-                <span class="light_color">单据日期</span>
+          <div class="down flex light_color">
+            <div>
+              <div class="mb8">
+                <span class="mr8">单据日期</span>
                 <span class="dark_color">2019-12-30</span>
               </div>
-              <div class="margin_bottom">
-                <span class="light_color">单据类型</span>
+              <div class="mb8">
+                <span class="mr8">单据类型</span>
                 <span class="dark_color">销货单</span>
               </div>
-              <div class="margin_bottom">
-                <span class="light_color">金额</span>
+              <div class="mb8">
+                <span class="mr8">金额</span>
                 <span class="dark_color">123456</span>
               </div>
             </div>
             <div class="middle">
-              <div class="margin_bottom">
-                <span class="light_color">到期日期</span>
+              <div class="mb8">
+                <span class="mr8">到期日期</span>
                 <span class="dark_color">2019-12-30</span>
               </div>
-              <div class="margin_bottom">
-                <span class="light_color">业务员</span>
+              <div class="mb8">
+                <span class="mr8">业务员</span>
                 <span class="dark_color">张华</span>
               </div>
-              <div class="margin_bottom">
-                <span class="light_color">余额</span>
+              <div class="mb8">
+                <span class="mr8">余额</span>
                 <span class="dark_color">123456</span>
               </div>
             </div>
-            <div class="margin_top">
-              <img src="../../assets/arrow.png" class="image" />
+            <div class="mt10">
+              <img src="../../assets/arrow.png" class="arrow_img" />
             </div>
           </div>
         </div>
@@ -110,54 +110,26 @@ export default {
 <style lang="less" scoped>
 .warning {
   height: 100%;
-  background-color: rgba(244, 244, 244, 1);
+  background-color: @bgColor_gray;
   .select {
     padding-top: 12px;
   }
   .total_number {
-    font-size: 14px;
     padding: 12px 18px;
   }
-  .order_list {
+  .goods_list {
     background-color: #fff;
   }
 }
 .order_item {
   font-size: 13px;
-  border-bottom: 1px solid rgba(230, 230, 230, 1);
+  border-bottom: 1px solid @borderColor_gray;
   .up {
     padding: 12px 0 12px 18px;
   }
   .down {
     padding: 0px 8px 6px 18px;
   }
-}
-.image {
-  width: 10px;
-  height: 15px;
-}
-.fz16 {
-  font-size: 16px;
-}
-.margin_bottom {
-  margin-bottom: 8px;
-}
-.margin_right {
-  margin-right: 30px;
-}
-.margin_top {
-  margin-top: 10px;
-}
-.flex {
-  display: flex;
-  justify-content: space-between;
-}
-.light_color {
-  color: rgba(144, 147, 153, 1);
-  margin-right: 5px;
-}
-.dark_color {
-  color: rgba(48, 49, 51, 1);
 }
 // 逾期 到期 临近 的基本样式
 .status_icon {
@@ -180,7 +152,7 @@ export default {
 }
 // 逾期的类名
 .expect {
-  color: rgba(255, 255, 255, 1);
+  color: #fff;
   background-color: rgba(255, 104, 0, 1);
 }
 </style>

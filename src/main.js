@@ -6,7 +6,7 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import './utils/rem'
 import 'amfe-flexible/index.js'
-import './styles/index.less'
+import './styles/common.less'
 
 import Parse from './utils/parse.js'
 // let parseCloudRun =  Parse.Cloud.run

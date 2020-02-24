@@ -1,27 +1,11 @@
 <template>
-  <div class="choose">
+  <div class="choose light_color fz14">
     <div class="header">
       <!-- 搜索栏 -->
       <my-search v-model="searchValue" placeholder="请输入商品名称"></my-search>
     </div>
     <!-- 交易历史记录 -->
-    <!-- <div class="title">{{}}的历史购买</div>
-    <div class="history">
-      <div v-for="(item,index) in 3" :key="index" class="cell">
-        <div>
-          <div class="fontSize_18">19D</div>
-          <div class="fontSize_14">滑石粉</div>
-        </div>
-        <div class="fontSize_14 align_self_end">现存量 847.00</div>
-        <van-icon
-          name="add-o"
-          color="#0071f0"
-          size="0.8rem"
-          class="align_self_center"
-          @click="showPopup()"
-        />
-    </div>-->
-    <!-- </div> -->
+
     <!-- 所有存货 -->
     <div class="title">所有存货</div>
     <div class="all">
@@ -32,13 +16,13 @@
         @load="onLoad"
         :offset="200"
       >
-        <div v-for="(item,index) in inventory" :key="index" class="cell">
+        <div v-for="(item,index) in inventory" :key="index" class="cell flex">
           <div class="left">
-            <div class="fontSize_18">{{item?item.code:''}}</div>
-            <div class="fontSize_14">{{item?item.name:''}}</div>
+            <div class="fz18 dark_color">{{item?item.code:''}}</div>
+            <div class="mt8">{{item?item.name:''}}</div>
           </div>
           <div
-            class="fontSize_14 align_self_end right"
+            class="align_self_end right"
           >现存量：{{item.currentStock.baseQuantity?item.currentStock.baseQuantity :'无'}}{{item.currentStock.unit}}</div>
           <van-icon
             name="add-o"
@@ -52,8 +36,8 @@
     </div>
     <!-- 底部按钮 -->
     <div class="fixed">
-      <div class="footer">
-        <div class="left">
+      <div class="footer flex fz16">
+        <div class="left dark_color">
           <div>已选{{SaleOrderDetails.length}}种</div>
           <div>￥{{totalPrice.toFixed(2)}}</div>
         </div>
@@ -116,9 +100,9 @@ export default {
         inventoryName: _this.searchValue,
         pageSize: _this.pageSize,
         pageIndex: _this.pageIndex
-      });     
+      });
       // console.log(data);
-       
+
       let listData = data.map(item => {
         return {
           id: item.id,
@@ -244,55 +228,24 @@ export default {
     padding: 10px 10px 12px 10px;
   }
 }
-.pop {
-  border: none;
-  height: 1px;
-  background-color: #bbb;
-  margin-bottom: 80px;
-}
 .title {
-  color: rgba(144, 147, 153, 1);
-  font-size: 14px;
   height: 27px;
   line-height: 27px;
   padding: 0 16px;
-  background-color: rgba(244, 244, 244, 1);
-}
-.history {
-  margin-left: 16px;
-  .cell {
-    display: flex;
-    justify-content: space-between;
-    padding: 11px 16px 11px 0;
-    border-bottom: 1px solid rgba(144, 147, 153, 1);
-    &:last-child {
-      border-bottom: 0;
-    }
-  }
+  background-color: @bgColor_gray;
 }
 .all {
   margin-left: 16px;
   .cell {
-    display: flex;
-    justify-content: space-between;
     padding: 11px 16px 11px 0;
-    border-bottom: 1px solid rgba(144, 147, 153, 1);
+    border-bottom: 1px solid @borderColor_gray;
     .left {
-      width: 40%;
+      flex: 0.4;
     }
     .right {
-      width: 45%;
+      flex: 0.45;
     }
   }
-}
-.fontSize_18 {
-  height: 30px;
-  color: rgba(16, 16, 16, 1);
-  font-size: 18px;
-}
-.fontSize_14 {
-  color: rgba(144, 147, 153, 1);
-  font-size: 14px;
 }
 .align_self_end {
   align-self: flex-end;
@@ -300,21 +253,15 @@ export default {
 .align_self_center {
   align-self: center;
 }
-
 .fixed {
   position: fixed;
   bottom: 0;
   width: 100%;
   background-color: #fff;
   .footer {
-    display: flex;
-    justify-content: space-between;
-    height: 100%;
-    border-top: 1.3px solid rgba(229, 229, 229, 1);
+    border-top: 1.3px solid @borderColor_gray;
     .left {
       padding: 7px 0 0 12px;
-      color: rgba(16, 16, 16, 1);
-      font-size: 16px;
     }
   }
 }
@@ -322,7 +269,7 @@ export default {
   width: 104px;
   height: 100%;
   line-height: 56px;
-  font-size: 18px;
+  font-size: 20px;
   border-radius: 5px;
   background-color: rgba(1, 113, 240, 1);
 }

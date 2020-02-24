@@ -5,7 +5,7 @@
     <van-list v-model="loading"
               :finished="finished"
               finished-text="没有更多了"
-              :offset="100"
+              :offset="200"
               @load="onLoad">
       <van-cell-group v-for="item in saleMan"
                       :key="item.id"
@@ -55,7 +55,7 @@ export default {
         pageSize: this.pageSize,
         onlySaleMan: true,
       });
-      this.saleMan.push(...data);
+      this.saleMan.push(...data[0]);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++;

@@ -25,7 +25,7 @@ export default {
     async getCurrentUser() {
       const currentUser = this.$Parse.User.current();
       if (!currentUser.attributes.hadAuth) {
-        this.$router.push('/staff')
+        this.$router.push("/staff");
       }
     },
     // 监听浏览器关闭 保存 vuex 的数据
@@ -44,21 +44,7 @@ export default {
 </script>
 
 <style lang="less">
-html,
-body {
-  height: 100%;
-}
 #app {
   height: 100%;
-  & /deep/ .van-nav-bar__text {
-    color: #000;
-  }
-  & /deep/ .van-nav-bar {
-    z-index: 4;
-  }
-
-  .icon {
-    font-size: 20px;
-  }
 }
 </style>

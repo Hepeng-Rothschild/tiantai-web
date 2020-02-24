@@ -123,13 +123,13 @@ export default {
 }
 .van-radio-group {
   margin-top: 13px;
-  border-bottom: 1px solid #c0c4cc;
+  border-bottom: 1px solid @borderColor_gray;
   padding-left: 16px;
   padding-right: 16px;
   .van-radio {
     padding-bottom: 20px;
     /deep/ .van-radio__label {
-      color: rgba(0, 0, 0, 1);
+      color: @fontColor_black;
       font-size: 17px;
       line-height: 0px;
       text-align: left;
@@ -155,21 +155,20 @@ export default {
       }
       input {
         width: 120px;
-        border: 1px solid #c0c4cc;
+        border: 1px solid @borderColor_gray;
         border-radius: 0px;
-        -webkit-appearance: none;
+        appearance: none;
       }
       .date-input {
         font-size: 17px;
         display: flex;
-        border: 1px solid #c0c4cc;
+        border: 1px solid @borderColor_gray;
         input {
           width: 100px;
           border: 0px;
-          -webkit-appearance: none;
+          appearance: none;
         }
         .van-icon {
-          -webkit-align-self: center;
           align-self: center;
         }
       }
@@ -188,14 +187,12 @@ export default {
   bottom: 0px;
   width: 100%;
   background-color: #fff;
-  padding-top: 53px;
-  padding-bottom: 53px;
-  /* // 按钮样式 */
+  padding: 25px 0;
+
   /deep/ .van-button {
     left: 20px;
     width: 87%;
-
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
     text-align: center;
   }
 }

@@ -2,21 +2,38 @@
   <div class="detail">
     <div class="name">{{detail.name}}</div>
     <div class="type">
-      <span>型号</span>
-      <span>{{detail.specification}}</span>
+      <span>编码</span>
+      <span> {{detail.code}}</span>
     </div>
+
     <div class="text">
-      <span>仓库</span>
-      <span>{{detail.currentStock.warehouse_name?detail.currentStock.warehouse_name:'无'}}</span>
+      <span>可用量</span>
+      <span>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}} {{detail.currentStock.unit}}</span>
     </div>
     <div class="text">
       <span>现存量</span>
-      <span>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}} {{detail.unit}}</span>
+      <span>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}} {{detail.currentStock.unit}}</span>
     </div>
-    <div class="text">
-      <span>可用量</span>
-      <span>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}} {{detail.unit}}</span>
+
+    <div class="text-detail">
+      <div class="text-middle">
+        库房名称
+        <div>{{detail.currentStock.warehouse_name?detail.currentStock.warehouse_name:'无'}}</div>
+      </div>
+
+      <div class="text-middle">
+        可用量({{detail.currentStock.unit}})
+        <div>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}}</div>
+
+      </div>
+
+      <div class="text-middle">
+        现存量({{detail.currentStock.unit}})
+        <div>{{parseInt(detail.currentStock.baseQuantity?detail.currentStock.baseQuantity:0).toFixed(2)}}</div>
+
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -29,12 +46,12 @@ export default {
       detail: getItem("inventory")
     };
   },
-  mounted() {
+  mounted () {
     // console.log(this.detail)
   },
   beforeRouteLeave (to, from, next) {
     if (to.path === "/inventory") {
-      to.meta.keepAlive = true;      
+      to.meta.keepAlive = true;
     } else {
       to.meta.keepAlive = false;
     }
@@ -54,7 +71,8 @@ export default {
   .type {
     color: rgba(153, 153, 153, 1);
     font-size: 14px;
-    height: 46px;
+    // height: 46px;
+    margin-bottom: 12px;
   }
   .text {
     color: rgba(153, 153, 153, 1);
@@ -67,6 +85,20 @@ export default {
     span:last-child {
       color: rgba(16, 16, 16, 1);
       font-size: 15px;
+    }
+  }
+  .text-detail {
+    display: flex;
+    margin-top: 33px;
+    .text-middle {
+      color: rgba(153, 153, 153, 1);
+      font-size: 15px;
+      height: 25px;
+      flex: 1;
+      div {
+        padding-top:10px;
+        color:rgba(16, 16, 16, 1);
+      }
     }
   }
 }

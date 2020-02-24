@@ -24,9 +24,9 @@ export default {
   methods: {
     async getCurrentUser() {
       const currentUser = this.$Parse.User.current();
-      if (!currentUser.attributes.hadAuth) {
-        this.$router.push('/staff')
-      }
+      // if (!currentUser.attributes.hadAuth) {
+      //   this.$router.push('/staff')
+      // }
     },
     // 监听浏览器关闭 保存 vuex 的数据
     listenBeforeUnload() {

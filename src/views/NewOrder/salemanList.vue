@@ -77,12 +77,12 @@ export default {
 <style lang="less" scoped>
 .search {
   padding: 10px;
-  background-color: rgba(248, 248, 248, 1);
-  border-bottom: 1px solid #c0c4cc;
+  background-color: @bgColor_gray;
+  border-bottom: 1px solid @borderColor_gray;
 }
 .van-cell {
-  border-bottom: 1px solid #c0c4cc;
-  color: #000000;
+  border-bottom: 1px solid @borderColor_gray;
+  color: @fontColor_black;
   font-size: 17px;
   align-items: center;
 }

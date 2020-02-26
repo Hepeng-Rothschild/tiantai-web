@@ -101,7 +101,7 @@
 <script>
 import { getItem } from "../../utils/Storage.js";
 export default {
-  name: "detailsIndex",
+  name: "orderDetails",
   data () {
     return {
       id: Number(this.$route.query.id),
@@ -113,10 +113,8 @@ export default {
   beforeRouteLeave (to, from, next) {
     if (to.path === "/orderList") {
       to.meta.keepAlive = true;
-      // console.log(to.path);
     } else {
       to.meta.keepAlive = false;
-      // console.log(to.path);
     }
     next();
   },
@@ -126,10 +124,7 @@ export default {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   },
-
-
   methods: {
-
     async getOrderById () {
       const { data } = await this.$Parse.Cloud.run("getOrderById", {
         id: this.id
@@ -162,7 +157,7 @@ export default {
   height: 100%;
   padding-top: 20px;
   font-size: 15px;
-  background-color: rgba(248, 248, 248, 1);
+  background-color: @bgColor_gray;
 }
 .order {
   padding: 15px;
@@ -171,12 +166,12 @@ export default {
   span:first-child {
     display: inline-block;
     width: 90px;
-    color: rgba(153, 153, 153, 1);
+    color: @fontColor_gray;
   }
   span:last-child {
     display: inline-block;
     width: 200px;
-    color: rgba(16, 16, 16, 1);
+    color: @fontColor_black;
   }
 }
 .link {
@@ -187,20 +182,20 @@ export default {
   span:first-child {
     display: inline-block;
     width: 90px;
-    color: rgba(153, 153, 153, 1);
+    color: @fontColor_gray;
   }
   span:last-child {
     display: inline-block;
     width: 200px;
-    color: rgba(16, 16, 16, 1);
+    color: @fontColor_black;
   }
 }
 .goods {
   line-height: 28px;
   .main {
     display: flex;
-    padding: 15px 15px 10px 15px;
     justify-content: space-between;
+    padding: 15px 15px 10px 15px;
     background-color: #fff;
     .left {
       .type {
@@ -229,12 +224,12 @@ export default {
   span:first-child {
     display: inline-block;
     width: 90px;
-    color: rgba(153, 153, 153, 1);
+    color: @fontColor_gray;
   }
   span:last-child {
     display: inline-block;
     width: 200px;
-    color: rgba(16, 16, 16, 1);
+    color: @fontColor_black;
   }
 }
 .memo {
@@ -244,12 +239,12 @@ export default {
   span:first-child {
     display: inline-block;
     width: 90px;
-    color: rgba(153, 153, 153, 1);
+    color: @fontColor_gray;
   }
   span:last-child {
     display: inline-block;
     width: 200px;
-    color: rgba(16, 16, 16, 1);
+    color: @fontColor_black;
   }
 }
 .flex {
@@ -259,13 +254,13 @@ export default {
   color: rgba(1, 113, 240, 1);
 }
 .light_color {
-  color: rgba(153, 153, 153, 1);
+  color: @fontColor_gray;
 }
 .dark_color {
-  color: rgba(16, 16, 16, 1);
+  color: @fontColor_black;
 }
 .border {
-  border-bottom: 1px solid rgba(170, 170, 170, 1);
+  border-bottom: 1px solid @borderColor_gray;
 }
 </style>
 

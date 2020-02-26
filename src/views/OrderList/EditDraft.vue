@@ -1,126 +1,134 @@
 <template>
   <div class="neworder">
     <van-cell-group>
-      <van-cell title="单据日期*"
-                :value="orderMessage.voucherDate"
-                is-link
-                :class="orderMessage.voucherDate?'van-cell_true':'van-cell'"
-                @click="showDate1 = true"></van-cell>
-      <van-cell title="预计交货日期*"
-                :value="orderMessage.deliveryDate"
-                :class="orderMessage.deliveryDate?'van-cell_true':'van-cell'"
-                is-link
-                @click="showDate2=true"></van-cell>
+      <van-cell
+        title="单据日期*"
+        :value="orderMessage.voucherDate"
+        is-link
+        :class="orderMessage.voucherDate?'van-cell_true':'van-cell'"
+        @click="showDate1 = true"
+      ></van-cell>
+      <van-cell
+        title="预计交货日期*"
+        :value="orderMessage.deliveryDate"
+        :class="orderMessage.deliveryDate?'van-cell_true':'van-cell'"
+        is-link
+        @click="showDate2=true"
+      ></van-cell>
       <!-- 选择客户 -->
-      <van-cell title="客户*"
-                is-link
-                style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
-                :class="partner?'van-cell_true':'van-cell'"
-                to="/partnerList">{{ partner?partner.AA_Partner_name:'请选择客户' }}</van-cell>
+      <van-cell
+        title="客户*"
+        is-link
+        style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
+        :class="partner?'van-cell_true':'van-cell'"
+        @click="$router.push({path: '/partnerList', query: {path: 'editdraft'}})"
+      >{{ partner?partner.AA_Partner_name:'请选择客户' }}</van-cell>
       <!-- 选择业务员 -->
-      <van-cell title="业务员"
-                is-link
-                 style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
-                 :class="saleMan?'van-cell_true':'van-cell'"
-                to="/salemanList">{{saleMan?saleMan.name:'请选择'}}</van-cell>
+      <van-cell
+        title="业务员"
+        is-link
+        style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
+        :class="saleMan?'van-cell_true':'van-cell'"
+        to="/salemanList"
+      >{{saleMan?saleMan.name:'请选择'}}</van-cell>
       <!-- 选择商品 -->
-      <van-cell title="选择商品"
-                value="请选择"
-                is-link
-                style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
-                to="/choose"></van-cell>
+      <van-cell
+        title="选择商品"
+        value="请选择"
+        is-link
+        style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
+        to="/choose"
+      ></van-cell>
       <div v-if="SaleOrderDetails">
-        <div v-for="item in SaleOrderDetails"
-             :key="item.code"
-             class="goods">
+        <div v-for="item in SaleOrderDetails" :key="item.code" class="goods flex light_color">
           <div class="left">
-            <div class="code">{{item.code}}</div>
-            <div class="gray">{{item.name}}</div>
-            <div class="gray">￥{{item.OrigTaxPrice}}*{{item.Quantity}}</div>
+            <div class="dark_color fz17">{{item.code}}</div>
+            <div>{{item.name}}</div>
+            <div>￥{{item.OrigTaxPrice}}*{{item.Quantity}}</div>
           </div>
-          <div class="right">
-            <div class="edit"
-                 @click="showPopData(item)">编辑</div>
-            <div class="money">￥{{item.OrigTaxAmount.toFixed(2)}}</div>
+          <div class="right flex">
+            <div class="edit" @click="showPopData(item)">编辑</div>
+            <div class="dark_color">￥{{item.OrigTaxAmount.toFixed(2)}}</div>
           </div>
         </div>
       </div>
       <div class="spacing">
-        <van-cell title="币种"
-                  :value="orderMessage.moneyType.name"
-                  :class="orderMessage.moneyType.name?'van-cell_true':'van-cell'"
-                  is-link
-                  @click="popupShowCoin = true"></van-cell>
+        <van-cell
+          title="币种"
+          :value="orderMessage.moneyType.name"
+          :class="orderMessage.moneyType.name?'van-cell_true':'van-cell'"
+          is-link
+          @click="popupShowCoin = true"
+        ></van-cell>
 
         <van-cell title="汇率">
-          <van-field v-model="orderMessage.exchangeRate"
-                     placeholder="请输入"
-                     input-align="right" />
+          <van-field v-model="orderMessage.exchangeRate" placeholder="请输入" input-align="right" />
         </van-cell>
       </div>
       <div class="spacing">
         <div class="my_cell">
           <span class>发货要求</span>
-          <input type="text"
-                 v-model="orderMessage.deliveryRequire1"
-                 class="my_input"
-                 placeholder="请输入" />
+          <input
+            type="text"
+            v-model="orderMessage.deliveryRequire1"
+            class="my_input"
+            placeholder="请输入"
+          />
         </div>
-        <div class="my_cell">
+        <div class="my_cell flex">
           <span class>送货要求</span>
-          <input type="text"
-                 v-model="orderMessage.deliveryRequire2"
-                 class="my_input"
-                 placeholder="请输入" />
+          <input
+            type="text"
+            v-model="orderMessage.deliveryRequire2"
+            class="my_input"
+            placeholder="请输入"
+          />
         </div>
       </div>
       <div class="remark spacing">
         <div class="remark-name">备注</div>
-        <van-field v-model="orderMessage.memo"
-                   placeholder="添加备注"
-                   style="border:0px;" />
+        <van-field v-model="orderMessage.memo" placeholder="添加备注" style="border:0px;" />
       </div>
     </van-cell-group>
     <div class="buttonBox">
-      <van-button plain
-                  type="primary"
-                  @click="editDraft()">修改草稿</van-button>
-      <van-button type="info"
-                  @click="createOrder()">提交订单</van-button>
+      <van-button plain type="primary" @click="editDraft()">修改草稿</van-button>
+      <van-button type="info" @click="createOrder()">提交订单</van-button>
     </div>
     <!-- 日期弹窗 -->
-    <van-popup v-model="showDate2"
-               position="bottom"
-               :style="{ height: '45%' }">
-      <van-datetime-picker v-model="currentDate"
-                           type="date"
-                           @confirm="confirmPicker2"
-                           @cancel="showDate2=false" />
+    <van-popup v-model="showDate2" position="bottom" :style="{ height: '45%' }">
+      <van-datetime-picker
+        v-model="currentDate"
+        type="date"
+        @confirm="confirmPicker2"
+        @cancel="showDate2=false"
+      />
     </van-popup>
     <!-- 日期弹窗 -->
-    <van-popup v-model="showDate1"
-               position="bottom"
-               :style="{ height: '45%' }">
-      <van-datetime-picker v-model="currentDate"
-                           type="date"
-                           @confirm="confirmPicker1"
-                           @cancel="showDate1=false" />
+    <van-popup v-model="showDate1" position="bottom" :style="{ height: '45%' }">
+      <van-datetime-picker
+        v-model="currentDate"
+        type="date"
+        @confirm="confirmPicker1"
+        @cancel="showDate1=false"
+      />
     </van-popup>
     <!-- 币种弹窗 -->
-    <van-popup v-model="popupShowCoin"
-               position="bottom"
-               :style="{ height: '40%' }">
-      <div v-for="item in currency"
-           :key="item.id"
-           class
-           @click="changeMoneyType(item)">{{item.name}}</div>
+    <van-popup v-model="popupShowCoin" position="bottom" :style="{ height: '40%' }">
+      <div
+        v-for="item in currency"
+        :key="item.id"
+        class
+        @click="changeMoneyType(item)"
+      >{{item.name}}</div>
     </van-popup>
     <!-- 商品信息弹窗 -->
-    <my-pop :show="showPop"
-            :popData="popData"
-            @changeShow="changeShow"
-            @changePopData="changePopData"
-            @delete="deleteGoods"></my-pop>
+    <my-pop
+      :show="showPop"
+      :popData="popData"
+      @changeShow="changeShow"
+      @changePopData="changePopData"
+      @delete="deleteGoods"
+    ></my-pop>
   </div>
 </template>
 
@@ -130,7 +138,7 @@ import { mapState } from "vuex";
 import { getItem, setItem } from "../../utils/Storage.js";
 import MyPop from "../../components/Pop.vue";
 export default {
-  data () {
+  data() {
     return {
       // 币种
       currency: null,
@@ -162,7 +170,7 @@ export default {
   },
   watch: {
     orderMessage: {
-      handler () {
+      handler() {
         this.$store.commit("saveOrderMessage", this.orderMessage);
       },
       deep: true
@@ -176,17 +184,20 @@ export default {
       "SelectedSaleMan"
     ])
   },
-  mounted () {
+  mounted() {
     if (this.Draft) {
       this.getDraft();
     }
-    if (this.$store.state.SelectedPartner &&!this.$store.state.SelectedSaleMan) {
+    if (
+      this.$store.state.SelectedPartner &&
+      !this.$store.state.SelectedSaleMan
+    ) {
       this.selectPartner();
     }
     this.getCurrency();
   },
   methods: {
-    getDraft () {
+    getDraft() {
       this.partner = this.SelectedPartner || this.Draft.Customer;
       this.saleMan = this.SelectedSaleMan || this.Draft.Clerk;
       this.orderMessage.voucherDate = this.Draft.VoucherDate;
@@ -198,23 +209,23 @@ export default {
       this.orderMessage.deliveryRequire2 = this.Draft.priuserdefnvc3;
       this.$store.commit("saveSelectGoods", this.Draft.SaleOrderDetails);
     },
-    changeMoneyType (type) {
+    changeMoneyType(type) {
       this.orderMessage.moneyType = type;
       this.popupShowCoin = false;
     },
-    confirmPicker1 (value) {
+    confirmPicker1(value) {
       this.showDate1 = false;
       this.orderMessage.voucherDate = dayjs(value).format("YYYY-MM-DD");
     },
-    confirmPicker2 (value) {
+    confirmPicker2(value) {
       this.showDate2 = false;
       this.orderMessage.deliveryDate = dayjs(value).format("YYYY-MM-DD");
     },
     // 子传父
-    changeShow (show) {
+    changeShow(show) {
       this.showPop = show;
     },
-    deleteGoods () {
+    deleteGoods() {
       this.showPop = false;
       let index = this.SaleOrderDetails.findIndex(
         v => v.code == this.popData.code
@@ -225,14 +236,14 @@ export default {
       for (let j = 0; j < this.SaleOrderDetails.length; j++) {
         totalPrice += Number(
           this.SaleOrderDetails[j].OrigTaxPrice *
-          this.SaleOrderDetails[j].Quantity
+            this.SaleOrderDetails[j].Quantity
         );
       }
       this.totalPrice = totalPrice;
       this.$store.commit("saveTotalPrice", totalPrice);
     },
     // 修改弹窗的商品信息
-    changePopData () {
+    changePopData() {
       let index = this.SaleOrderDetails.findIndex(
         v => v.code == this.popData.code
       );
@@ -258,17 +269,17 @@ export default {
           (this.SaleOrderDetails[j].rate / 100); // 税额
         totalPrice += Number(
           this.SaleOrderDetails[j].OrigTaxPrice *
-          this.SaleOrderDetails[j].Quantity
+            this.SaleOrderDetails[j].Quantity
         );
       }
       this.totalPrice = totalPrice;
       this.$store.commit("saveTotalPrice", totalPrice);
     },
-    showPopData (item) {
+    showPopData(item) {
       this.showPop = true;
       this.popData = item;
     },
-    validate () {
+    validate() {
       if (
         this.orderMessage.voucherDate == "请选择" ||
         this.orderMessage.deliveryDate == "请选择"
@@ -292,7 +303,7 @@ export default {
       }
       return true;
     },
-    clearStore () {
+    clearStore() {
       this.$store.state.OrderMessage = null;
       this.$store.state.SaleOrderDetails = null;
       this.$store.state.TotalPrice = null;
@@ -300,7 +311,7 @@ export default {
       this.$store.state.SelectedSaleMan = null;
     },
     // 提交订单
-    async createOrder () {
+    async createOrder() {
       if (!this.validate()) return;
       const data = await this.$Parse.Cloud.run("createOrder", {
         VoucherDate: this.orderMessage.voucherDate, //1、单据日期。 2、此参数可不传，默认系统日期。
@@ -326,7 +337,7 @@ export default {
             let OrderDraft = this.$Parse.Object.extend("OrderDraft");
             let query = new this.$Parse.Query(OrderDraft);
             let draft = await query.get(this.Draft.objectId);
-            draft.destroy()
+            draft.destroy();
           }
         });
       } else {
@@ -337,7 +348,7 @@ export default {
       this.clearStore();
     },
     // 修改草稿
-    async editDraft () {
+    async editDraft() {
       if (!this.validate()) return;
       let OrderDraft = this.$Parse.Object.extend("OrderDraft");
       let query = new this.$Parse.Query(OrderDraft);
@@ -370,15 +381,17 @@ export default {
       }
     },
     // 获取币种
-    async getCurrency () {
+    async getCurrency() {
       const { data } = await this.$Parse.Cloud.run("getCurrency");
       this.currency = data[0];
     },
     // 选择客户
-    async selectPartner () {
-      const { data } = await this.$Parse.Cloud.run("getPersonById",{id: this.partner.AA_Partner_idsaleman})
+    async selectPartner() {
+      const { data } = await this.$Parse.Cloud.run("getPersonById", {
+        id: this.partner.AA_Partner_idsaleman
+      });
       //todo 测试
-      this.saleMan = data[0];
+      this.saleMan = data;
     }
   }
 };
@@ -387,76 +400,47 @@ export default {
 <style lang="less" scoped>
 .neworder {
   padding-top: 20px;
-  background-color: rgba(248, 248, 248, 1);
+  background-color: @bgColor_gray;
 }
 .van-cell-group {
-  border-top: 1px solid #c0c4cc;
-  background-color: rgba(248, 248, 248, 1);
+  border-top: 1px solid @borderColor_gray;
+  background-color: @bgColor_gray;
   margin-bottom: 16px;
-      // 常规下单元格内输入框样式
+  // 常规下单元格内输入框样式
   .van-cell {
     padding: 10px 15px;
-    border-bottom: 1px solid #c0c4cc;
+    border-bottom: 1px solid @borderColor_gray;
     font-size: 17px;
+    align-items: center;
     .van-field {
       border: 0px;
       padding: 0px;
       padding-right: 20px;
-    }
-    .van-cell__title {
-      color: rgba(0, 0, 0, 1);
-    }
-    /deep/ .van-cell__value {
-      color: #888888;
-      input {
-        color: #000;
-      }
-    }
-  }
- //   输入值时单元格样式
-   .van-cell_true {
-    padding: 10px 15px;
-    border-bottom: 1px solid #c0c4cc;
-    font-size: 17px;
-    .van-field {
-      border: 0px;
-      padding: 0px;
-      padding-right: 20px;
-    }
-    .van-cell__title {
-      color: rgba(0, 0, 0, 1);
-    }
-    /deep/ .van-cell__value {
-      color: #000;
-      input {
-        color: #000;
-      }
     }
   }
   // 带间距的单元格样式
   .spacing {
     margin-top: 17px;
-    border-top: 1px solid #c0c4cc;
+    border-top: 1px solid @borderColor_gray;
   }
   .my_cell {
-    display: flex;
-    justify-content: space-between;
     padding: 10px 35px 10px 15px;
     font-size: 17px;
     background-color: #fff;
     &:last-child {
-      border-top: 1px solid #c0c4cc;
-      border-bottom: 1px solid #c0c4cc;
+      border-top: 1px solid @borderColor_gray;
+      border-bottom: 1px solid @borderColor_gray;
     }
     .my_input {
       width: 180px;
+      margin-left: 22px;
       text-align: right;
-      color: #000;
+      color: @fontColor_gray;
       border: none;
     }
   }
   .remark {
-    border-bottom: 1px solid #c0c4cc;
+    border-bottom: 1px solid @borderColor_gray;
     .remark-name {
       background-color: #fff;
       padding-left: 16px;
@@ -472,14 +456,17 @@ export default {
     line-height: 40px;
     text-align: center;
     font-size: 17px;
-    color: rgba(16, 16, 16, 1);
+    color: @fontColor_black;
   }
+}
+/deep/ .van-field__control {
+  color: @fontColor_gray;
 }
 // 底部按钮
 .buttonBox {
-  padding-bottom: 20px;
   display: flex;
   justify-content: space-evenly;
+  padding-bottom: 20px;
   .van-button--primary {
     color: #0071f0;
     width: 45%;
@@ -494,34 +481,16 @@ export default {
   }
 }
 .goods {
-  display: flex;
-  justify-content: space-between;
   padding: 6px 14px;
   font-size: 15px;
-  border-bottom: 1px solid #c0c4cc;
+  border-bottom: 1px solid @borderColor_gray;
   background-color: #fff;
-
-  .code {
-    color: rgba(16, 16, 16, 1);
-    font-size: 17px;
-  }
-  .gray {
-    color: rgba(153, 153, 153, 1);
-  }
-
   .right {
-    display: flex;
     flex-direction: column;
-    justify-content: space-between;
-
     .edit {
-      color: rgba(40, 142, 248, 1);
+      color: #288ef8;
       font-size: 16px;
       text-align: right;
-    }
-    .money {
-      color: rgba(51, 51, 51, 1);
-      font-size: 15px;
     }
   }
 }

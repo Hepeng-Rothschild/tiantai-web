@@ -18,7 +18,7 @@
         title="客户*"
         is-link
         style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
-        to="/partnerList"
+        @click="$router.push({path: '/partnerList', query: {path: 'neworder'}})"
       >{{ partner?partner.AA_Partner_name:'请选择客户' }}</van-cell>
       <!-- 选择业务员 -->
       <van-cell
@@ -351,7 +351,7 @@ export default {
       const { data } = await this.$Parse.Cloud.run("getPersonById", {
         id: this.partner.AA_Partner_idsaleman
       });
-      this.saleMan = data[0];
+      this.saleMan = data;
       this.orderMessage.deliveryRequire1 = this.partner.AA_Partner_priuserdefnvc2;
       this.orderMessage.deliveryRequire2 = this.partner.AA_Partner_priuserdefnvc5;
     }
@@ -373,6 +373,7 @@ export default {
     padding: 10px 15px;
     border-bottom: 1px solid @borderColor_gray;
     font-size: 17px;
+    align-items: center;
     // 单元格内输入框样式
     .van-field {
       border: 0px;
@@ -408,7 +409,7 @@ export default {
   }
 }
 /deep/ .van-field__control {
-  color:@fontColor_gray;
+  color: @fontColor_gray;
 }
 // 底部弹框样式
 .van-popup {

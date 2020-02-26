@@ -4,7 +4,7 @@
       <my-search v-model="searchValue" placeholder="请输入商品名称或编码" class="search" />
     </div>
     <van-dropdown-menu>
-      <van-dropdown-item v-model="categoryNum" :options="category" @change="changeCategory" />
+      <van-dropdown-item v-model="categoryNum" :options="categoryOptions" @change="changeCategory" />
     </van-dropdown-menu>
     <!-- list -->
     <van-list
@@ -24,12 +24,18 @@
           <div class="fz16 dark_color">{{item.name}}</div>
           <div class="mt8">编码 {{item.code}}</div>
           <div class="flex mt8">
-            <span>可用量 {{item.currentStock.baseQuantity?item.currentStock.baseQuantity:'无'}} {{item.currentStock.unit}}</span>
-            <span>现存量 {{item.currentStock.baseQuantity?item.currentStock.baseQuantity:'无'}} {{item.currentStock.unit}}</span>
+            <span>
+              可用量 {{getArraytotal(item.baseQuantity,item.OtherForDispatch).toFixed(2)}}
+              {{item.currentStock.length?item.currentStock[0].unit:''}}
+            </span>
+            <span>
+              现存量 {{getArraytotal(item.baseQuantity).toFixed(2)}}
+              {{item.currentStock.length?item.currentStock[0].unit:''}}
+            </span>
           </div>
         </div>
         <div class="flex">
-          <img src="../../assets/arrow.png" class="arrow_img"/>
+          <img src="../../assets/arrow.png" class="arrow_img" />
         </div>
       </div>
     </van-list>
@@ -46,47 +52,15 @@ export default {
   data() {
     return {
       searchValue: null,
-      shopName: null,
       inventory: [],
       loading: false,
       finished: false,
       pageIndex: 1,
       pageSize: 10,
-      scrollY: 0,
+      inventoryClassId: null,
       // 筛选类别
       categoryNum: "0",
-      category: [
-        { text: "全部分类", value: "0" },
-        { text: "钛白粉", value: "1" },
-        { text: "沉淀硫酸钡", value: "201" },
-        { text: "重质硫酸钡", value: "202" },
-        { text: "立德粉", value: "C3" },
-        { text: "滑石粉", value: "D4" },
-        { text: "轻钙", value: "D5" },
-        { text: "重钙", value: "D6" },
-        { text: "高光粉", value: "E1" },
-        { text: "云母粉", value: "E2" },
-        { text: "石英粉", value: "E21" },
-        { text: "硅灰石粉", value: "E3" },
-        { text: "煅烧高岭土", value: "E5" },
-        { text: "水洗高岭土", value: "E6" },
-        { text: "透明粉", value: "E7" },
-        { text: "膨润土", value: "E8" },
-        { text: "消光粉", value: "E9" },
-        { text: "白炭黑", value: "F1" },
-        { text: "抗氧剂", value: "F2" },
-        { text: "氧化铁系列", value: "F3" },
-        { text: "硬脂酸系列", value: "F4" },
-        { text: "助剂", value: "F5" },
-        { text: "固化剂", value: "F6" },
-        { text: "乳液", value: "F7" },
-        { text: "煅烧石英粉", value: "F91" },
-        { text: "结晶石英", value: "F92" },
-        { text: "钛矿", value: "T1" },
-        { text: "包装袋", value: "H1" },
-        { text: "服务", value: "Q00" },
-        { text: "其他", value: "F8" }
-      ]
+      categoryOptions: [{ text: "全部分类", value: "0" }]
     };
   },
   components: {
@@ -105,29 +79,66 @@ export default {
     searchValue: debounce(async function(newValue, oldValue) {
       this.pageIndex = 1;
       this.inventory = [];
-      this.getData();
+      this.getInventory();
     }, 500)
+  },
+  created() {
+    this.getInventoryClass();
   },
   methods: {
     onLoad() {
-      this.getData();
+      this.getInventory();
     },
     goToDtail(item) {
       this.$router.push({ name: "detailinfo" });
       setItem("inventory", item);
     },
-    // 进行商品类别筛选
-    changeCategory(categoryState) {
-      console.log(categoryState);
+    async getInventoryClass() {
+      const { data } = await this.$Parse.Cloud.run("getInventoryClass");
+      // 更改对象属性名
+      let dataOptions = JSON.parse(
+        JSON.stringify(data)
+          .replace(/name/g, "text")
+          .replace(/id/g, "value")
+      );
+      // 把每一项的value转换为字符串
+      dataOptions.map(item => (item.value = String(item.value)));
+      this.categoryOptions.push(...dataOptions);
     },
-    async getData() {
+    // 进行商品类别筛选
+    changeCategory(id) {
+      if (id == 0) {
+        this.inventoryClassId = null;
+      } else {
+        this.inventoryClassId = id;
+      }
+      this.pageIndex = 1;
+      this.inventory = [];
+      this.getInventory();
+    },
+    async getInventory() {
       const { data } = await this.$Parse.Cloud.run("getInventory", {
+        inventoryClassId: this.inventoryClassId,
         inventoryName: this.searchValue,
         pageSize: this.pageSize,
         pageIndex: this.pageIndex
       });
+      data.map(v => {
+        return (v.baseQuantity = v.currentStock.map(i => {
+          return i.baseQuantity;
+        }));
+      });
+      data.map(v => {
+        return (v.OtherForDispatch = v.currentStock.map(i => {
+          if (i.OtherForDispatch) {
+            return i.OtherForDispatch;
+          } else {
+            return 0;
+          }
+        }));
+      });
       this.inventory.push(...data);
-      // console.log(this.inventory)
+      // console.log(this.inventory);
       this.loading = false;
       if (data.length) {
         this.pageIndex++;
@@ -136,6 +147,18 @@ export default {
       if (!data.length || data.length < this.pageSize) {
         this.finished = true;
       }
+    },
+    // 可用量 现存量 数组求和
+    getArraytotal(baseQuantity, OtherForDispatch = []) {
+      let baseTotal = 0;
+      let otherTotal = 0;
+      for (let i = 0; i < baseQuantity.length; i++) {
+        baseTotal += baseQuantity[i];
+      }
+      for (let i = 0; i < OtherForDispatch.length; i++) {
+        otherTotal += OtherForDispatch[i];
+      }
+      return baseTotal - otherTotal;
     }
   }
 };
@@ -154,10 +177,8 @@ export default {
   .flex {
     align-items: center;
     span:first-child {
-      width:150px;
+      width: 150px;
     }
-    
   }
-  
 }
 </style>

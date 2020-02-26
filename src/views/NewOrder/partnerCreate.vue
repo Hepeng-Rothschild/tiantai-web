@@ -418,7 +418,7 @@ export default {
     // 常规状态下单元格样式
     .van-cell {
       font-size: 17px;
-      padding: 10px 15px 10px 15px;
+      padding: 10px 15px;
       border-bottom: 1px solid @borderColor_gray;
       // 单元格内输入框样式
       .van-field {
@@ -438,7 +438,7 @@ export default {
     padding: 27px 20px 19px 20px;
     .van-button {
       width: 100%;
-      border-radius: 5px 5px 5px 5px;
+      border-radius: 5px;
       text-align: center;
     }
   }

@@ -18,10 +18,11 @@ export default {
     this.getCurrentUser();
   },
   mounted() {
-    this.$store.dispatch("logout");
+    // this.$store.dispatch("logout");
     this.$store.dispatch("login");
   },
   methods: {
+    // 绑定用户
     async getCurrentUser() {
       const currentUser = this.$Parse.User.current();
       if (!currentUser.attributes.hadAuth) {

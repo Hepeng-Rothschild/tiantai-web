@@ -16,17 +16,17 @@ export default {};
 
   .info_box {
     height: 46px;
-    border-top: 1.5px solid #e5e5e5;
-    border-bottom: 1.5px solid #e5e5e5;
+    border-top: 1.5px solid @borderColor_gray;
+    border-bottom: 1.5px solid @borderColor_gray;
 
     .van-cell__title {
-      color: #000;
+      color: @fontColor_black;
       font-size: 17px;
     }
     .van-cell__value {
       width: 68px;
       height: 24px;
-      color: #888888;
+      color: @fontColor_gray;
       font-size: 17px;
     }
   }

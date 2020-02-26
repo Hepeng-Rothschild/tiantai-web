@@ -5,7 +5,7 @@
     <van-list v-model="loading"
               :finished="finished"
               finished-text="没有更多了"
-              :offset="100"
+              :offset="200"
               @load="onLoad">
       <van-cell-group v-for="item in saleMan"
                       :key="item.id"
@@ -55,7 +55,7 @@ export default {
         pageSize: this.pageSize,
         onlySaleMan: true,
       });
-      this.saleMan.push(...data);
+      this.saleMan.push(...data[0]);
       this.loading = false;
       if (data[0].length) {
         this.pageIndex++;
@@ -77,12 +77,12 @@ export default {
 <style lang="less" scoped>
 .search {
   padding: 10px;
-  background-color: rgba(248, 248, 248, 1);
-  border-bottom: 1px solid #c0c4cc;
+  background-color: @bgColor_gray;
+  border-bottom: 1px solid @borderColor_gray;
 }
 .van-cell {
-  border-bottom: 1px solid #c0c4cc;
-  color: #000000;
+  border-bottom: 1px solid @borderColor_gray;
+  color: @fontColor_black;
   font-size: 17px;
   align-items: center;
 }

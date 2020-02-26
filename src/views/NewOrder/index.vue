@@ -1,17 +1,15 @@
 <template>
-  <div class="neworder">
+  <div class="neworder fz17">
     <van-cell-group>
       <van-cell
         title="单据日期*"
         :value="orderMessage.voucherDate?orderMessage.voucherDate:'请选择'"
-        :class="orderMessage.voucherDate?'van-cell_true':'van-cell'"
         is-link
         @click="showDate1 = true"
       ></van-cell>
       <van-cell
         title="预计交货日期*"
         :value="orderMessage.deliveryDate?orderMessage.deliveryDate:'请选择'"
-        :class="orderMessage.deliveryDate?'van-cell_true':'van-cell'"
         is-link
         @click="showDate2=true"
       ></van-cell>
@@ -19,16 +17,14 @@
       <van-cell
         title="客户*"
         is-link
-        :class="partner?'van-cell_true':'van-cell'"
         style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
-        to="/partnerList"
+        @click="$router.push({path: '/partnerList', query: {path: 'neworder'}})"
       >{{ partner?partner.AA_Partner_name:'请选择客户' }}</van-cell>
       <!-- 选择业务员 -->
       <van-cell
         title="业务员"
         is-link
         style="margin-top: 17px;border-top: 1px solid #c0c4cc;"
-        :class="saleMan?'van-cell_true':'van-cell'"
         to="/salemanList"
       >{{saleMan?saleMan.name:'请选择'}}</van-cell>
       <!-- 选择商品 -->
@@ -40,15 +36,15 @@
         to="/choose"
       ></van-cell>
       <div v-if="SaleOrderDetails">
-        <div v-for="item in SaleOrderDetails" :key="item.code" class="goods">
+        <div v-for="item in SaleOrderDetails" :key="item.code" class="goods flex fz15">
           <div class="left">
-            <div class="code">{{item.code}}</div>
-            <div class="gray">{{item.name}}</div>
-            <div class="gray">￥{{item.OrigTaxPrice}}*{{item.Quantity}}</div>
+            <div class="fz17 dark_color">{{item.code}}</div>
+            <div class="light_color">{{item.name}}</div>
+            <div class="light_color">￥{{item.OrigTaxPrice}}*{{item.Quantity}}</div>
           </div>
-          <div class="right">
-            <div class="edit" @click="showPopData(item)">编辑</div>
-            <div class="money">￥{{item.OrigTaxAmount.toFixed(2)}}</div>
+          <div class="right flex">
+            <div class="edit fz16" @click="showPopData(item)">编辑</div>
+            <div class="dark_color">￥{{item.OrigTaxAmount.toFixed(2)}}</div>
           </div>
         </div>
       </div>
@@ -56,7 +52,6 @@
         <van-cell
           title="币种"
           :value="orderMessage.moneyType.name"
-          :class="orderMessage.moneyType.name?'van-cell_true':'van-cell'"
           is-link
           @click="popupShowCoin = true"
         ></van-cell>
@@ -66,21 +61,21 @@
         </van-cell>
       </div>
       <div class="spacing">
-        <div class="my_cell">
+        <div class="my_cell flex">
           <span class>发货要求</span>
           <input
             type="text"
             v-model="orderMessage.deliveryRequire1"
-            class="my_input"
+            class="my_input light_color"
             placeholder="请输入"
           />
         </div>
-        <div class="my_cell">
+        <div class="my_cell flex">
           <span class>送货要求</span>
           <input
             type="text"
             v-model="orderMessage.deliveryRequire2"
-            class="my_input"
+            class="my_input light_color"
             placeholder="请输入"
           />
         </div>
@@ -353,9 +348,10 @@ export default {
     },
     // 选择客户
     async selectPartner() {
-      const { data } = await this.$Parse.Cloud.run("getPersonById",{id: this.partner.AA_Partner_idsaleman});
-      //todo 测试
-      this.saleMan = saleMan[0];
+      const { data } = await this.$Parse.Cloud.run("getPersonById", {
+        id: this.partner.AA_Partner_idsaleman
+      });
+      this.saleMan = data;
       this.orderMessage.deliveryRequire1 = this.partner.AA_Partner_priuserdefnvc2;
       this.orderMessage.deliveryRequire2 = this.partner.AA_Partner_priuserdefnvc5;
     }
@@ -366,95 +362,54 @@ export default {
 <style lang="less" scoped>
 .neworder {
   padding-top: 20px;
-  background-color: rgba(248, 248, 248, 1);
+  background-color: @bgColor_gray;
 }
 .van-cell-group {
-  border-top: 1px solid #c0c4cc;
-  background-color: rgba(248, 248, 248, 1);
+  border-top: 1px solid @borderColor_gray;
+  background-color: @bgColor_gray;
   margin-bottom: 16px;
   // 常规状态下单元格样式
   .van-cell {
     padding: 10px 15px;
-    border-bottom: 1px solid #c0c4cc;
+    border-bottom: 1px solid @borderColor_gray;
     font-size: 17px;
+    align-items: center;
     // 单元格内输入框样式
     .van-field {
       border: 0px;
       padding: 0px;
       padding-right: 20px;
-    }
-    .van-cell__title {
-      color: rgba(0, 0, 0, 1);
-    }
-    /deep/ .van-cell__value {
-      color: #888888;
-      .van-field__body {
-        input {
-          color: #000;
-        }
-      }
-    }
-    // 右边的标签
-    .van-icon {
-      align-self: center;
-    }
-  }
-
-  // 选中状态下单元格样式
-  .van-cell_true {
-    padding: 10px 15px;
-    border-bottom: 1px solid #c0c4cc;
-    font-size: 17px;
-
-    // 单元格内输入框样式
-    .van-field {
-      border: 0px;
-      padding: 0px;
-      padding-right: 20px;
-    }
-    .van-cell__title {
-      color: rgba(0, 0, 0, 1);
-    }
-    .van-cell__value {
-      color: #000;
-    }
-    // 右边的标签
-    .van-icon {
-      align-self: center;
     }
   }
 
   // 带间距的单元格样式
   .spacing {
     margin-top: 17px;
-    border-top: 1px solid #c0c4cc;
+    border-top: 1px solid @borderColor_gray;
   }
   .my_cell {
-    display: flex;
-    justify-content: space-between;
     padding: 10px 35px 10px 15px;
-    font-size: 17px;
     background-color: #fff;
     &:last-child {
-      border-top: 1px solid #c0c4cc;
-      border-bottom: 1px solid #c0c4cc;
+      border-top: 1px solid @borderColor_gray;
+      border-bottom: 1px solid @borderColor_gray;
     }
     .my_input {
       width: 180px;
       text-align: right;
-      color: #000;
       border: none;
     }
   }
   .remark {
-    border-bottom: 1px solid #c0c4cc;
+    border-bottom: 1px solid @borderColor_gray;
+    background-color: #fff;
     .remark-name {
-      background-color: #fff;
-      padding-left: 16px;
-      padding-top: 10px;
-      font-size: 17px;
+      padding: 10px 0 0 16px;
     }
   }
+}
+/deep/ .van-field__control {
+  color: @fontColor_gray;
 }
 // 底部弹框样式
 .van-popup {
@@ -462,15 +417,13 @@ export default {
     height: 40px;
     line-height: 40px;
     text-align: center;
-    font-size: 17px;
-    color: rgba(16, 16, 16, 1);
   }
 }
 // 底部按钮
 .buttonBox {
-  padding-bottom: 20px;
   display: flex;
   justify-content: space-evenly;
+  padding-bottom: 20px;
   .van-button--primary {
     color: #0071f0;
     width: 45%;
@@ -485,34 +438,14 @@ export default {
   }
 }
 .goods {
-  display: flex;
-  justify-content: space-between;
   padding: 6px 14px;
-  font-size: 15px;
-  border-bottom: 1px solid #c0c4cc;
+  border-bottom: 1px solid @borderColor_gray;
   background-color: #fff;
-
-  .code {
-    color: rgba(16, 16, 16, 1);
-    font-size: 17px;
-  }
-  .gray {
-    color: rgba(153, 153, 153, 1);
-  }
-
   .right {
-    display: flex;
     flex-direction: column;
-    justify-content: space-between;
-
     .edit {
       color: rgba(40, 142, 248, 1);
-      font-size: 16px;
       text-align: right;
-    }
-    .money {
-      color: rgba(51, 51, 51, 1);
-      font-size: 15px;
     }
   }
 }

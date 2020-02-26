@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="create_partner">
     <van-cell-group>
-      <div class="spacing-two">
-        <van-cell title="客户名称" class="moveleft">
+      <div class="mb17 border_top">
+        <van-cell title="客户名称">
           <van-field
             v-model="savePartner.name"
             placeholder="请输入"
@@ -14,7 +14,6 @@
           title="客户性质"
           :value="savePartner.partnerTypeName?savePartner.partnerTypeName:'客户'"
           is-link
-          :class="savePartner.partnerTypeName?'van-cell_true':'van-cell_true'"
           @click="showProperty = true"
         ></van-cell>
         <van-popup v-model="showProperty" position="bottom" :style="{ height: '30%' }">
@@ -39,12 +38,11 @@
           >{{category.Name}}</div>
         </van-popup>
       </div>
-      <div class="spacing-two">
+      <div class="mb17 border_top">
         <van-cell
           title="分管部门 选填"
           :value="savePartner.saleDepartmentName?savePartner.saleDepartmentName:'请选择'"
           is-link
-          :class="savePartner.saleDepartmentName?'van-cell_true':'van-cell'"
           @click="showDepartment = true"
         ></van-cell>
         <van-popup v-model="showDepartment" position="bottom" :style="{ height: '30%' }">
@@ -58,7 +56,6 @@
           title="分管人员"
           :value="savePartner.saleManName?savePartner.saleManName:'请选择'"
           is-link
-          :class="savePartner.saleManName?'van-cell_true':'van-cell'"
           @click="showManages = true"
         ></van-cell>
         <van-popup v-model="showManages" position="bottom" :style="{ height: '30%' }">
@@ -69,17 +66,15 @@
           >{{manage.name}}</div>
         </van-popup>
       </div>
-      <div class="spacing">
+      <div class="mb17 border_top">
         <van-cell
           title="默认收款方式"
           :value="savePartner.saleSettleStyleName?savePartner.saleSettleStyleName:'请选择'"
           is-link
-          :class="savePartner.saleSettleStyleName?'van-cell_true':'van-cell'"
           to="/defaultPay"
         ></van-cell>
       </div>
-
-      <div class="spacing-two moveleft">
+      <div class="mb17 border_top">
         <van-cell title="联系人">
           <van-field
             v-model="savePartner.contact"
@@ -105,7 +100,7 @@
           />
         </van-cell>
       </div>
-      <div class="spacing-two moveleft">
+      <div class="border_top">
         <van-cell title="发货要求">
           <van-field
             v-model="savePartner.priuserdefnvc2"
@@ -124,7 +119,9 @@
         </van-cell>
       </div>
     </van-cell-group>
-    <van-button type="info" @click="inputMessage">保存</van-button>
+    <div class="button">
+      <van-button type="info" @click="inputMessage">保存</van-button>
+    </div>
   </div>
 </template>
 
@@ -192,7 +189,7 @@ export default {
       }
     };
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (to.name == "defaultPay") {
       from.meta.keepAlive = true;
     } else {
@@ -218,7 +215,6 @@ export default {
   },
   mounted() {
     this.selectDate();
-    console.log(this.savePartners)
   },
   methods: {
     changePartnerType(propertyNew) {
@@ -243,6 +239,8 @@ export default {
       this.saleDepartment = data;
     },
     changeManageName(departmentNew) {
+      console.log(departmentNew, "123");
+
       this.savePartner.saleDepartmentName = departmentNew.name;
       this.savePartner.saleDepartmentCode.Code = departmentNew.code;
       this.savePartner.departmentCode = departmentNew.code;
@@ -252,14 +250,15 @@ export default {
     },
     // 选择分管人员
     async changeSaleman() {
-      const { data } = await this.$Parse.Cloud.run("department");
-      let saleMan = []
-      if(this.savePartner.departmentCode){
-        saleMan = data.find(v => v.code === this.savePartner.departmentCode).staffList
-      }else{
-        data.forEach(v => saleMan =  saleMan.concat(v.staffList))
-      }
-      this.saleMan = saleMan 
+      // const { data } = await this.$Parse.Cloud.run("department");
+      // // console.log(data,'==========')
+      // let saleMan = []
+      // if(this.savePartner.departmentCode){
+      //   saleMan = data.find(v => v.code === this.savePartner.departmentCode).staffList
+      // }else{
+      //   data.forEach(v => saleMan =  saleMan.concat(v.staffList))
+      // }
+      // this.saleMan = saleMan
     },
     changeSalemanName(manageNew) {
       this.savePartner.saleManCode.Code = manageNew.code;
@@ -398,107 +397,50 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.van-cell-group {
-  margin-top: 13px;
-  border-top: 1px solid #c0c4cc;
-  margin-bottom: 16px;
-  // 底部弹框样式
-  .van-popup {
-    div {
-      height: 40px;
-      line-height: 40px;
-      text-align: center;
-      font-size: 17px;
-      color: rgba(16, 16, 16, 1);
-    }
-  }
-  // 常规状态下单元格样式
-  .van-cell {
-    padding: 10px 15px 10px 15px;
-    border-bottom: 1px solid #c0c4cc;
-    // 单元格内输入框样式
-    .van-field {
-      padding: 0px;
-      font-size: 17px;
-      padding-right: 20px;
-    }
-    .van-cell__title {
-      color: rgba(0, 0, 0, 1);
-      font-size: 17px;
-      text-align: left;
-      font-family: "PingFangSC-regular";
-    }
-    /deep/ .van-cell__value {
-      color: #888;
-      // color: #000;
-      font-size: 17px;
-      text-align: right;
-      font-family: "PingFangSC-regular";
-      input {
-        color: #000;
+.create_partner {
+  height: 100%;
+  background-color: @bgColor_gray;
+  .van-cell-group {
+    padding-top: 14px;
+    color: @fontColor_black;
+    border-top: 1px solid @borderColor_gray;
+    background-color: @bgColor_gray;
+
+    // 底部弹框样式
+    .van-popup {
+      div {
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        font-size: 17px;
       }
     }
-    // 右边的标签
-    .van-icon {
-      align-self: center;
-    }
-  }
-  // 用于动态绑定选中后的文字样式
-  .van-cell_true {
-    padding: 10px 15px 10px 15px;
-    border-bottom: 1px solid #c0c4cc;
-    // 单元格内输入框样式
-    .van-field {
-      padding: 0px;
+    // 常规状态下单元格样式
+    .van-cell {
       font-size: 17px;
-      padding-right: 20px;
-    }
-    .van-cell__title {
-      color: rgba(0, 0, 0, 1);
-      font-size: 17px;
-      text-align: left;
-      font-family: "PingFangSC-regular";
-    }
-    /deep/ .van-cell__value {
-      color: #000;
-      font-size: 17px;
-      text-align: right;
-      font-family: "PingFangSC-regular";
-      input {
-        color: #000;
+      padding: 10px 15px;
+      border-bottom: 1px solid @borderColor_gray;
+      // 单元格内输入框样式
+      .van-field {
+        padding: 0px;
+        padding-right: 20px;
+      }
+      .van-cell__title {
+        color: @fontColor_black;
       }
     }
-    // 右边的标签
-    .van-icon {
-      align-self: center;
+    .filed {
+      border-top: 1px solid @borderColor_gray;
     }
   }
-  // 遮罩层样式
-  .van-overlay {
-    .van-picker {
+  .button {
+    background-color: @bgColor_gray;
+    padding: 27px 20px 19px 20px;
+    .van-button {
       width: 100%;
-      position: fixed;
-      bottom: 0;
+      border-radius: 5px;
+      text-align: center;
     }
   }
-  // 带间距的单元格样式
-  .spacing {
-    margin: 0px 0px 17px 0px;
-    border-top: 1px solid #c0c4cc;
-  }
-  .spacing-two {
-    border-top: 1px solid #c0c4cc;
-    margin-bottom: 17px;
-  }
-  .filed {
-    border-top: 1px solid #c0c4cc;
-  }
-}
-// 按钮样式
-.van-button {
-  margin: 10px 20px 19px 20px;
-  width: 87%;
-  border-radius: 5px 5px 5px 5px;
-  text-align: center;
 }
 </style>

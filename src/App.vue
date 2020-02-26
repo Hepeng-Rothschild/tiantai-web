@@ -22,6 +22,7 @@ export default {
     // this.$store.dispatch("login");
   },
   methods: {
+    // 绑定用户
     async getCurrentUser() {
       const currentUser = this.$Parse.User.current();
       // if (!currentUser.attributes.hadAuth) {
@@ -44,21 +45,7 @@ export default {
 </script>
 
 <style lang="less">
-html,
-body {
-  height: 100%;
-}
 #app {
   height: 100%;
-  & /deep/ .van-nav-bar__text {
-    color: #000;
-  }
-  & /deep/ .van-nav-bar {
-    z-index: 4;
-  }
-
-  .icon {
-    font-size: 20px;
-  }
 }
 </style>

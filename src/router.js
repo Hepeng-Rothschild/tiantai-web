@@ -26,7 +26,7 @@ const routes = [
   {
     path: '/partnerCreate',
     name: 'partnerCreate',
-    meta: { title: '新增客户' ,keepAlive: true,},
+    meta: { title: '新增客户', keepAlive: true, },
     component: () => import('@/views/NewOrder/partnerCreate.vue')
   },
   {
@@ -49,7 +49,7 @@ const routes = [
       keepAlive: true,
     },
     component: () => import('@/views/OrderList')
-    
+
   },
   {
     path: '/editDraft',
@@ -143,10 +143,16 @@ const routes = [
     component: () => import('@/views/Inventory/DetailInfo.vue')
   },
   {
-    path: '/remind',
-    name: 'remind',
-    meta: { title: '应收账款', icon: true },
-    component: () => import('@/views/Remind/Remind.vue')
+    path: '/warning',
+    name: 'warning',
+    meta: { title: '应收预警', icon: true },
+    component: () => import('@/views/EarlyWarning/EarlyWarning.vue')
+  },
+  {
+    path: '/warninginfo',
+    name: 'warninginfo',
+    meta: { title: '应收预警详情', icon: true },
+    component: () => import('@/views/EarlyWarning/WarningDetails.vue')
   },
   {
     path: '/login',
@@ -168,7 +174,7 @@ const routes = [
       keepAlive: true,
     },
     component: () => import('@/views/OrderList')
-    
+
   },
 ]
 
@@ -186,8 +192,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-
-
   try {
     if (to.name != 'login') {
       let result = await Parse.Cloud.run("checkUser")
@@ -198,7 +202,6 @@ router.beforeEach(async (to, from, next) => {
   } catch (e) {
     return window.location.href = process.env.VUE_APP_LOGIN_URL + '?path=' + to.name;
   }
-
 
   if (to.meta.title) {
     document.title = to.meta.title;

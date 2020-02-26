@@ -44,7 +44,7 @@ export default {
       loading: false,
       finished: false,
       pageIndex: 0,
-      pageSize: 10
+      pageSize: 10,
     };
   },
   watch: {
@@ -80,7 +80,11 @@ export default {
       }
     },
     selectPartner(partner) {
-      this.$router.push("/neworder");
+      if (this.$route.query.path=='editdraft') {
+        this.$router.push("/editdraft");
+      }else {
+        this.$router.push("/neworder");
+      }
       this.$store.commit("saveSelectedPartner", partner);
       // 清除上一次选择的销售员数据
       this.$store.commit("saveSelectedSaleMan", null);
@@ -92,12 +96,12 @@ export default {
 <style lang="less" scoped>
 .search {
   padding: 10px;
-  background-color: rgba(248, 248, 248, 1);
+  background-color: @bgColor_gray;
   border-bottom: 1px solid #c0c4cc;
 }
 .van-cell {
-  border-bottom: 1px solid #c0c4cc;
-  color: #000000;
+  border-bottom: 1px solid @borderColor_gray;
+  color: @fontColor_black;
   font-size: 17px;
   align-items: center;
 }

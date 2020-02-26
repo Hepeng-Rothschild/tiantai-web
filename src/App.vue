@@ -19,7 +19,7 @@ export default {
   },
   mounted() {
     // this.$store.dispatch("logout");
-    this.$store.dispatch("login");
+    // this.$store.dispatch("login");
   },
   methods: {
     // 绑定用户

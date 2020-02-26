@@ -27,7 +27,7 @@
     </div>
     <div class="goods_list">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-        <div v-for="(item,index) in orderList" :key="index" @click="toDetails()" class="order_item">
+        <div v-for="(item,index) in orderList" :key="index" @click="toDetails(item)" class="order_item">
           <div class="up flex">
             <span class="fz16 dark_color name">{{item.partnerName}}</span>
             <span
@@ -152,8 +152,10 @@ export default {
         this.finished = true;
       }
     },
-    toDetails() {
-      this.$router.push("/warninginfo");
+    toDetails(item) {
+      this.$store.commit("saveGoodsDetails");
+      console.log(this.$store.state)
+      // this.$router.push("/warninginfo");
     },
     // 逾期天数
     getOverdueDays(offsetTime) {
